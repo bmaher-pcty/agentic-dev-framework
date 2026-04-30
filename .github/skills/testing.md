@@ -1,0 +1,60 @@
+---
+name: testing
+description: 'Testing patterns with clear arrange-act-assert structure and coverage goals.'
+---
+
+# Testing
+
+## When to Use
+- Writing or changing services, APIs, components, and utilities.
+
+## Procedure
+1. Structure tests using Arrange / Act / Assert.
+2. Cover success, validation, and failure paths.
+3. Mock external dependencies deterministically.
+4. Keep test data isolated via fixtures/builders.
+5. When the change affects a user-facing workflow, add integration or E2E coverage for where the user sees the result.
+6. If the workflow depends on runtime infrastructure, verify the closest realistic path available and call out any remaining gap explicitly.
+7. Never modify or weaken tests only to make them pass.
+8. Treat unexpected failures as potential product regressions until proven otherwise.
+9. Run canonical smoke verification from repository root: `{{SMOKE_COMMAND}}`.
+
+## Coverage Targets
+- Services: >80%
+- Utilities: >90%
+- API handlers: >60% (plus integration tests)
+
+## Test Data Builder Pattern
+```
+// Use builders for test fixtures, not literals
+// Example shown in {{UNIT_TEST_ adapt to your frameworkFRAMEWORK}} 
+function createUserFixture(overrides) {
+  return {
+    id: 'user-test-id',
+    email: 'test@example.com',
+    role: 'viewer',
+    createdAt: new Date('2024-01-01'),
+    ...overrides,
+  };
+}
+```
+
+## Mock Strategy
+- Mock at the boundary (HTTP client, DB  not deep inside service logic.client) 
+- Use {{UNIT_TEST_FRAMEWORK}} spy/mock functions for verifying calls and replacing behavior.
+- Reset mocks after each test to prevent test order dependencies.
+
+## Checklist
+- [ ] Tests are deterministic (no `Date.now()` without mocking, no random).
+- [ ] Edge cases and failure paths are included, not just happy path.
+- [ ] Assertions are explicit and  one concern per test.minimal 
+- [ ] Coverage remains at or above targets.
+- [ ] User-visible outcomes are asserted for feature-critical flows.
+- [ ] A change is not marked complete when only unit tests are green but workflow output is unverified.
+- [ ] Required automated tests are run and passing before pushing and opening/updating a PR.
+- [ ] Behavior contract changes are reflected in both implementation and tests in the same change.
+
+## Anti-Patterns
+- Testing implementation details (mocking internal function  breaks on refactoring.calls) 
+- `expect(something).toBeDefined()` as the only  catches nothing meaningful.assertion 
+- Modifying tests to make them pass without understanding why they failed.
