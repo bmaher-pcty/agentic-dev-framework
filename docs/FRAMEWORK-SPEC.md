@@ -13,9 +13,9 @@ A configuration framework that encodes engineering judgment as agent definitions
 
 The framework consists of:
 - **12 agents** — named roles with scoped responsibilities and explicit constraints
-- **25 skills** — procedural guidance for specific engineering activities
-- **5 instruction files** — path-scoped rules applied to matching file patterns
-- **Prompts** — reusable, structured task templates
+- **29 skills** — procedural guidance for specific engineering activities
+- **6 instruction files** — path-scoped rules applied to matching file patterns
+- **9 prompts** — reusable, structured task templates
 - **Institutional memory** — project-specific context that persists across sessions
 
 ---

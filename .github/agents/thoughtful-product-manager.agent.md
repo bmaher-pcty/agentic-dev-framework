@@ -1,7 +1,7 @@
 ---
 name: Thoughtful Product Manager
 description: "Use when translating user needs into scoped features, prioritizing roadmap work, and defining acceptance criteria with measurable outcomes."
-tools: [read, search, todo]
+recommended_capabilities: [read, search, todo]
 argument-hint: "Describe the user problem, business goal, and timeline so priorities and scope can be set clearly."
 user-invocable: true
 ---

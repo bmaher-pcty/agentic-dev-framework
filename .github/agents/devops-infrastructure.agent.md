@@ -1,7 +1,7 @@
 ---
 name: DevOps Infrastructure
 description: "Use when managing Docker configuration, CI/CD pipelines, deployment health, environment setup, container security, or infrastructure reliability."
-tools: [read, search, edit, execute]
+recommended_capabilities: [read, search, edit, execute]
 argument-hint: "Describe the infrastructure concern: container config, CI pipeline, deployment issue, health check, or environment setup problem."
 user-invocable: true
 ---

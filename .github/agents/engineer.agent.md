@@ -1,7 +1,7 @@
 ---
 name: Engineer
 description: "Use when implementing features, fixing bugs, validating runtime behavior, or closing the gap between backend plumbing and working user-visible outcomes."
-tools: [read, search, edit, execute, todo]
+recommended_capabilities: [read, search, edit, execute, todo]
 argument-hint: "Describe the feature or bug, the expected user-visible behavior, and any runtime environment constraints that affect verification."
 user-invocable: true
 ---

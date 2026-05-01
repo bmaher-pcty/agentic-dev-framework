@@ -1,7 +1,7 @@
 ---
 name: Accessibility
 description: "Use when auditing WCAG compliance, fixing accessibility barriers, testing keyboard navigation, or ensuring screen reader compatibility."
-tools: [read, search, edit, execute]
+recommended_capabilities: [read, search, edit, execute]
 argument-hint: "Describe the component, page, or flow to audit for accessibility. Specify whether you need automated scan, manual audit, or fix implementation."
 user-invocable: true
 ---

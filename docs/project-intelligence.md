@@ -1,5 +1,5 @@
 ---
-framework_version: "v1.0.0"
+framework_version: "v1.1.0"
 last_updated: ""
 last_updated_by: ""
 anti_pattern_count: 0

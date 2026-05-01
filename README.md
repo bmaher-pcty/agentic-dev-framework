@@ -14,6 +14,21 @@ A complete set of `.github/` configuration files that give GitHub Copilot:
 
 All technology-specific values are replaced with `{{TOKEN}}` placeholders so the framework works for any project: web apps, CLIs, data pipelines, microservices.
 
+## How Agents Actually Work (Honest Disclosure)
+
+The framework uses the term "agent" the way the AI-coding ecosystem uses it today: **a named role with a scoped prompt, a constraint set, and recommended tool capabilities.** Agents in this repository are **Markdown prompt conventions, not runtime-enforced primitives.** They work because:
+
+1. The model loads the agent file as context (via `.github/agents/<name>.agent.md`).
+2. The user invokes the role by name (e.g., `@engineer`, `@review-council`) so the model adopts the role.
+3. The constraints and decision patterns in the file shape the model's response — but **enforcement is by convention, not by a runtime gate.** No process spawns a separate agent. No tool registry blocks calls. The `recommended_capabilities:` frontmatter (formerly `tools:`) is advisory.
+
+What this means for you:
+- ✅ The verification labels, completion gate, severity rubric, and council methodology work in any compatible AI assistant (Copilot, Claude, Cursor, etc.) because they are textual rules the model follows.
+- ❌ Listing `tools: [edit, execute]` in an agent file does **not** sandbox or restrict that agent at runtime. If your AI assistant grants edit/execute permissions for the session, every agent inherits them.
+- 🟡 Roadmap: where a runtime *does* support real agent primitives — Claude Code Subagents, future Copilot custom chat participants — we will ship native bindings. Until then, the framework is honest about what it is: a high-quality, opinionated prompt scaffolding kit.
+
+If your enterprise security model requires hard tool isolation per role, do not rely on this framework's frontmatter to provide it. Use your AI assistant's native permission model.
+
 ## Deployment Profiles
 
 Choose a profile before running bootstrap. Profiles reduce coordination overhead — not quality bars.

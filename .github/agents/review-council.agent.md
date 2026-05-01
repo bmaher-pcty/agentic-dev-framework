@@ -1,7 +1,7 @@
 ---
 name: Review Council
 description: "Use when you want multi-perspective review of code, prompts, architecture, or UX from a council of 7 specialized reviewers who deliberate and produce a unified assessment."
-tools: [read, search, edit]
+recommended_capabilities: [read, search, edit]
 argument-hint: "Describe what to review: specific files, a feature area, a PR diff, a prompt, or 'full codebase' for comprehensive audit."
 user-invocable: true
 ---
