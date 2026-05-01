@@ -275,11 +275,11 @@ Each agent has:
 ### Phase 2: Core Domain
 - Primary data model and schema
 - Core business logic and API layer
-- Authentication and authorization
+- Authentication and authorization (e.g., `{{AUTH_PROVIDER}}`)
 - Basic UI shell (if applicable)
 
 ### Phase 3: Integration
-- External service integrations
+- External service integrations (e.g., `{{INTEGRATION_PLATFORM}}`)
 - Webhooks or event handling
 - Background jobs or workers
 - Import/export flows

@@ -75,6 +75,11 @@ ALTER TABLE "User" ALTER COLUMN "role" SET NOT NULL;
 <details>
 <summary>{{ORM}}-specific commands reference</summary>
 
+> **Note:** This `<details>` block intentionally contains Prisma-specific
+> commands as a worked example. Substitute your ORM's equivalents (the
+> `{{MIGRATION_TOOL}}` token captures the right invocation prefix for
+> your project — `npx prisma`, `alembic`, `rails db:migrate`, etc.).
+
 ```bash
 # Create migration (inside container)
 {{CONTAINER_RUNTIME}} compose exec api npx prisma migrate dev --name <name>

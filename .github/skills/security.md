@@ -16,7 +16,7 @@ description: 'Security patterns for input validation, auth handling, rate limits
 5. Keep secrets in environment variables only.
 6. Ensure logs are sanitized.
 7. Persist only the minimum result data needed for the product experience, and scope access to the owning user.
-8. Use OAuth code flow with PKCE for provider integrations.
+8. Use OAuth code flow with PKCE for provider integrations (e.g., `{{AUTH_PROVIDER}}`).
 9. Validate provider scopes at setup and fail closed when required scopes are missing.
 10. Expire and validate OAuth state values; use short-lived state windows.
 11. Rotate refresh tokens safely and record failures without leaking credential material.

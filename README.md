@@ -17,6 +17,8 @@ All technology-specific values are replaced with `{{TOKEN}}` placeholders so the
 ### 1. Copy into your project
 ```bash
 cp -r agentic-dev-framework/.github /path/to/your-project/
+cp agentic-dev-framework/BOOTSTRAP.prompt.md /path/to/your-project/
+cp agentic-dev-framework/TOKENS.md /path/to/your-project/
 ```
 
 ### 2. Bootstrap your project

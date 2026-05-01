@@ -1,5 +1,5 @@
 ---
-applyTo: "{{CONTAINER_COMPOSE_FILE}},**/Dockerfile,**/Dockerfile.*,{{REVERSE_PROXY}}/**/*,{{SCRIPTS_DIR}}/*.sh"
+applyTo: "{{CONTAINER_COMPOSE_FILE}},**/Dockerfile,**/Dockerfile.*,{{REVERSE_PROXY}}/**/*,{{SCRIPTS_DIR}}/**/*"
 ---
 
 # Container & Infrastructure Instructions
