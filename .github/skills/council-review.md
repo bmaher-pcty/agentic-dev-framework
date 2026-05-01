@@ -72,6 +72,7 @@ Speaks last. Challenges the frame of the problem itself.
 ## Procedure
 
 0. **Triage** — Classify the task using `#task-triage`. Document the classification in the council output header. If Trivial, proceed with Micro Council (4 perspectives). If Standard or High-Stakes, proceed with full 7-perspective council.
+0.5. **Read Project Intelligence** — Before scoping the review, read `docs/project-intelligence.md`. Note any known anti-patterns, locked architectural decisions, or open Innovator experiments relevant to the files under review. Where a current finding matches a known anti-pattern entry, reference the entry by name in the finding. Where a finding would resolve an open Innovator experiment, update its status in the Project Intelligence Update output.
 1. **Scope Definition** — Identify what is being reviewed (files, feature, full codebase).
 2. **Advocate First** — Start with strengths to establish baseline quality and patterns worth keeping.
 3. **Parallel Perspectives** — Run Skeptic, Guardian, Craftsperson, and User Champion analyses.
@@ -123,6 +124,7 @@ These examples illustrate what distinguishes a valid Innovator finding from a re
 ## Checklist
 
 - [ ] Scope is clearly defined before review begins.
+- [ ] `docs/project-intelligence.md` was read before scoping (Step 0.5) and referenced in findings where applicable.
 - [ ] Advocate has identified at least 3 strengths.
 - [ ] Skeptic has examined failure modes and edge cases.
 - [ ] Guardian has reviewed auth, validation, secrets, and logging.
