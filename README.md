@@ -6,7 +6,7 @@ A portable, technology-agnostic Copilot configuration framework for agent-guided
 
 A complete set of `.github/` configuration files that give GitHub Copilot:
 - **11 specialized agents** — each with a defined scope, constraints, and decision pattern.
-- **22 domain skills** — procedural guidance for common engineering tasks.
+- **23 domain skills** — procedural guidance for common engineering tasks.
 - **Path-scoped instructions** — security, testing, branching, and review rules that activate by file pattern.
 - **Reusable prompts** — council review, codebase audit, PR readiness, security review, smoke verification.
 
@@ -49,7 +49,7 @@ After bootstrapping, confirm:
     performance.agent.md
     innovator.agent.md         # Creative problem-reframer and council voice
   skills/
-    # 22 skill files covering backend, frontend, infra, innovation, and cross-functional concerns
+    # 23 skill files covering backend, frontend, infra, innovation, and cross-functional concerns
   instructions/
     testing.instructions.md    # Verification gates (path-scoped)
     security.instructions.md   # Auth, secrets, infrastructure (path-scoped)
@@ -110,7 +110,7 @@ When a new version of `agentic-dev-framework` is released:
 
 > **Principle:** Upgrading adds framework improvements. It never removes your project-specific configuration.
 
-## The 22 Skills
+## Skills
 
 | Skill | Category | Purpose |
 |-------|----------|---------|
@@ -133,6 +133,7 @@ When a new version of `agentic-dev-framework` is released:
 | `#internet-research` | Cross-functional | Evidence gathering with calibrated confidence |
 | `#pull-request-readiness` | Cross-functional | Pre-PR quality gates |
 | `#council-review` | Cross-functional | Seven-perspective review methodology |
+| `#task-triage` | Cross-Functional | Risk-calibrated triage; determines Micro Council vs. full 7-perspective council depth |
 | `#creative-problem-solving` | Innovation | Five Whys, SCAMPER, 10x Thinking, Pre-Mortem |
 | `#solution-scouting` | Innovation | 4-tier research, 10x Solution Test, Scout Report |
 | `#experimental-design` | Innovation | Hypothesis-driven spikes, time-box discipline |

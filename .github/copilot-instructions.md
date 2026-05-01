@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} - Copilot Instructions
 
-Agent-guided software development framework with 11 specialized agents and 22 domain skills.
+Agent-guided software development framework with 11 specialized agents and 23 domain skills.
 
 ## Copilot Customization Layout
 
@@ -99,7 +99,7 @@ Each agent has:
 **Decision Pattern**: Applies Five Whys and constraint classification before proposing alternatives; scouts prior art using the 4-tier research methodology; designs hypothesis-driven spikes for uncertain proposals; speaks last on the Review Council and must add a genuinely new framing not raised by any other perspective
 **Tools**: Skills: #creative-problem-solving, #solution-scouting, #experimental-design, #internet-research
 
-## 22 Domain Skills
+## Domain Skills
 
 > **Note:** Skill categories reflect web application defaults. Reorganize for your project type.
 
@@ -129,11 +129,12 @@ Each agent has:
 17. **#internet-research** — External evidence gathering with skeptical validation and confidence calibrated by independent source convergence
 18. **#pull-request-readiness** — Pre-PR quality gates: latest main sync, commit/PR quality, functionality verification, and full test execution before push/opening PR
 19. **#council-review** — Seven-perspective structured review methodology, severity classification, conflict resolution
+20. **#task-triage** — Risk-calibrated review depth classification; determines whether to run Micro Council or full 7-perspective council before any review begins
 
 ### Innovation Skills
-20. **#creative-problem-solving** — Lateral thinking, problem reframing (Five Whys, Constraint Removal, SCAMPER, Pre-Mortem, 10x Thinking), cross-domain pattern recognition
-21. **#solution-scouting** — Deep research methodology with 4-tier source hierarchy, 10x Solution Test, confidence reporting (High/Medium/Low), Scout Report format
-22. **#experimental-design** — Hypothesis-driven spike design, spike types (Technology/Performance/Feasibility/Risk), time-box discipline, Spike Summary format
+21. **#creative-problem-solving** — Lateral thinking, problem reframing (Five Whys, Constraint Removal, SCAMPER, Pre-Mortem, 10x Thinking), cross-domain pattern recognition
+22. **#solution-scouting** — Deep research methodology with 4-tier source hierarchy, 10x Solution Test, confidence reporting (High/Medium/Low), Scout Report format
+23. **#experimental-design** — Hypothesis-driven spike design, spike types (Technology/Performance/Feasibility/Risk), time-box discipline, Spike Summary format
 
 ## Agent Invocation
 
