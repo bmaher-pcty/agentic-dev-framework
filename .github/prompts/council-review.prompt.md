@@ -37,6 +37,8 @@ Before convening perspectives, invoke `#task-triage` to classify the change. The
 5. UX Assessment section.
 6. Prioritized Action Items (numbered, with severity and owner).
 
+7. **Project Intelligence Update** — After all findings are synthesized, produce a Project Intelligence Update block. See `council-review.instructions.md` "Output Format Requirements" section 6 for required format. Must include: new anti-patterns, locked decisions, coverage hot spots, open Innovator experiments. If nothing new, write: "No updates — intelligence file current."
+
 ## Rules
 
 - Every finding must reference a specific file or line.
