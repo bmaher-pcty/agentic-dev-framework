@@ -111,16 +111,29 @@ jobs:
 
       - name: Check for unpinned action references in CI templates
         run: |
-          # Only check `uses:` step references — not comments, job names, or grep patterns.
-          violations=$(grep -rn 'uses:.*@\(main\|latest\|master\)' .github/workflows/ 2>/dev/null || true)
-          if [ -n "$violations" ]; then
-            echo "❌ Unpinned action references found (uses: steps pinned to @main/@latest/@master):"
-            echo "$violations"
-            echo ""
-            echo "Pin all GitHub Actions to a specific version tag (e.g., @v4, not @main)."
-            exit 1
-          fi
-          echo "✅ All action references are pinned"
+          # Use Python to check only actual YAML `uses:` step declarations for unpinned refs.
+          # A plain grep on the workflow directory matches its own echo strings and comments.
+          python3 - <<'PYEOF'
+          import re, os, sys, glob
+
+          pattern = re.compile(r'^\s+(-\s+)?uses:\s+\S+@(main|latest|master)\b', re.MULTILINE)
+          violations = []
+          for fpath in glob.glob('.github/workflows/*.yml'):
+              content = open(fpath).read()
+              for i, line in enumerate(content.splitlines(), 1):
+                  if pattern.match(line):
+                      violations.append(f'{fpath}:{i}: {line.strip()}')
+
+          if violations:
+              print('❌ Unpinned action references found (uses: steps pinned to @main/@latest/@master):')
+              for v in violations:
+                  print(v)
+              print()
+              print('Pin all GitHub Actions to a specific version tag (e.g., @v4, not @main).')
+              sys.exit(1)
+          else:
+              print('✅ All action references are pinned')
+          PYEOF
 
       - name: Check for unpinned references in skill/instruction examples
         run: |
