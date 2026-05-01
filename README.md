@@ -43,6 +43,26 @@ All profiles enforce identical quality guarantees: completion gate, security non
 
 ---
 
+## Try It in 5 Minutes
+
+No setup required. Prove the framework works before committing to full bootstrap:
+
+```bash
+# Copy just the Engineer agent into any existing project
+cp .github/agents/engineer.agent.md /path/to/your-project/.github/agents/
+```
+
+Then in GitHub Copilot Chat, type:
+```
+@engineer: Add input validation to this function [paste any function from your codebase]
+```
+
+**How you know it's working:** The response includes a `## Verification Summary` section with labels like `VERIFIED-AUTOMATED` or `ASSUMED-UNTESTED` — never just "it's done." That label is the framework's core differentiator: honest reporting of what was actually verified, not assumed.
+
+When you're ready for the full framework: follow the [Quick Start](#quick-start) below and run `BOOTSTRAP.prompt.md`.
+
+---
+
 ## Quick Start
 
 ### 1. Copy into your project
@@ -64,11 +84,18 @@ After bootstrapping, confirm:
 
 ### ✅ Success Signal
 
-Bootstrap worked if:
+**Behavioral signals — look for these in agent responses:**
+- `@engineer` responses include a `## Verification Summary` with explicit `VERIFIED-AUTOMATED` / `ASSUMED-UNTESTED` labels — never just "it's done"
+- `@review-council` output is structured into named sections: Advocate Highlights, Critical Findings, Security Assessment, UX Assessment
+- When you push back on a security finding, the Guardian restates it unchanged rather than softening it
+- `@engineer` refuses to mark work complete when the smoke command hasn't been run
+
+**Structural signal:**
 - `grep -r '{{' .github/ --include="*.md"` returns **no matches**
 - `docs/FRAMEWORK_SETUP.md` exists and shows your project name in the header
-- Your first `@engineer` invocation gets context about your actual stack, not generic token placeholders
 - Bootstrap Verification (Phase 7) reported **PASS** or **PASS WITH WARNINGS** with a clear list of any manual items
+
+→ Next: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
 
 ## Directory Layout
 
