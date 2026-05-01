@@ -90,7 +90,10 @@ jobs:
 
       - name: Check for undocumented tokens
         run: |
-          undocumented=$(comm -23 /tmp/found_tokens.txt /tmp/documented_tokens.txt)
+          # {{TOKEN}} is an intentional meta-placeholder in skill templates ("Replace {{TOKEN}} with...")
+          # It is not a real configuration token and is excluded from this check.
+          grep -v '^{{TOKEN}}$' /tmp/found_tokens.txt > /tmp/found_tokens_filtered.txt || true
+          undocumented=$(comm -23 /tmp/found_tokens_filtered.txt /tmp/documented_tokens.txt)
           if [ -n "$undocumented" ]; then
             echo "❌ Undocumented tokens found (present in framework files but missing from TOKENS.md):"
             echo "$undocumented"
@@ -108,10 +111,10 @@ jobs:
 
       - name: Check for unpinned action references in CI templates
         run: |
-          # Check for @main, @latest, @master in workflow files
-          violations=$(grep -rn '@main\|@latest\|@master' .github/workflows/ 2>/dev/null || true)
+          # Only check `uses:` step references — not comments, job names, or grep patterns.
+          violations=$(grep -rn 'uses:.*@\(main\|latest\|master\)' .github/workflows/ 2>/dev/null || true)
           if [ -n "$violations" ]; then
-            echo "❌ Unpinned action references found:"
+            echo "❌ Unpinned action references found (uses: steps pinned to @main/@latest/@master):"
             echo "$violations"
             echo ""
             echo "Pin all GitHub Actions to a specific version tag (e.g., @v4, not @main)."
@@ -167,8 +170,13 @@ jobs:
                   content = open(fpath).read()
               except:
                   continue
-              # Find references to other skills via #skill-name pattern
-              found = re.findall(r'#([a-z][a-z0-9-]+)', content)
+              # Scope to the Procedure section only — "When to Use" sections intentionally
+              # reference complementary skills for disambiguation (not invocation), which
+              # would produce false-positive cycles if scanned.
+              proc_match = re.search(r'## Procedure\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+              proc_content = proc_match.group(1) if proc_match else ''
+              # Only match backtick-wrapped invocations: `#skill-name`
+              found = re.findall(r'`#([a-z][a-z0-9-]+)`', proc_content)
               refs[fname] = list(set(found) - {fname})
 
           # Detect cycles using DFS
