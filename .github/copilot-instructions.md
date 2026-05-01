@@ -70,7 +70,7 @@ Each agent has:
 **Tools**: Documentation inventory, overlap analysis, link/reference validation
 
 ### 7. Review Council Agent
-**Scope**: Multi-perspective review of code, prompts, architecture, or UX from six specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion)
+**Scope**: Multi-perspective review of code, prompts, architecture, or UX from seven specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator)
 **Constraints**: Every finding must include a specific file/line reference; Advocate speaks first; Guardian's security findings cannot be deprioritized; never recommends weakening tests or security measures
 **Decision Pattern**: Synthesizer resolves conflicts by finding the approach that satisfies the most constraints; severity classification follows the legend in `.github/skills/council-review.md`
 **Tools**: Skills: #council-review; references `.github/instructions/council-review.instructions.md`

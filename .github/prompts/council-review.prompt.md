@@ -1,10 +1,10 @@
 ---
 name: "Council Review"
-description: "Run a multi-perspective review with six specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion) on specific code, files, or features."
+description: "Run a multi-perspective review with seven specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator) on specific code, files, or features."
 argument-hint: "Specify files, features, or a PR to review. Use 'full codebase' for a comprehensive audit."
 ---
 
-Convene the Review Council to evaluate the specified code or feature from six perspectives.
+Convene the Review Council to evaluate the specified code or feature from seven perspectives.
 
 ## Council Members
 
@@ -14,6 +14,7 @@ Convene the Review Council to evaluate the specified code or feature from six pe
 4. **The Guardian** — What are the attack vectors, secret risks, and auth gaps?
 5. **The Craftsperson** — Is this maintainable, testable, DRY, and properly typed?
 6. **The User Champion** — Can users find results, recover from errors, and navigate clearly?
+7. **The Innovator** — Reads all six perspectives first. Reframes problems, challenges shared assumptions, proposes alternatives not considered by the other six. Speaks last.
 
 ## Procedure
 
