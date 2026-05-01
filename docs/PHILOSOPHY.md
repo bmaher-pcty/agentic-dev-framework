@@ -57,9 +57,9 @@ Documentation that explains how to set up credentials, register OAuth apps, or c
 
 ---
 
-## The 6-Perspective Review Model
+## The 7-Perspective Review Model
 
-The Review Council methodology is the quality capstone of this framework. Six perspectives ensure no concern is invisible:
+The Review Council methodology is the quality capstone of this framework. Seven perspectives ensure no concern is invisible:
 
 | Perspective | Ensures |
 |-------------|---------|
@@ -69,6 +69,7 @@ The Review Council methodology is the quality capstone of this framework. Six pe
 | **Guardian** | Security vulnerabilities and secret exposure are blocked |
 | **Craftsperson** | Code quality, type safety, and test coverage are maintained |
 | **User Champion** | Users can find outputs, recover from errors, and navigate clearly |
+| **Innovator** | Reframes the problem; challenges shared assumptions; speaks last |
 
 No perspective outranks another except: the Guardian's security findings always take final priority.
 

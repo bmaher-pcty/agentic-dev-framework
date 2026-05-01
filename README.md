@@ -94,6 +94,22 @@ docs/
 5. **Security is non-negotiable** — Guardian findings cannot be downgraded.
 6. **The first viable solution is rarely the best solution** — before committing to an approach, ask what you'd build if you started fresh with current knowledge. The Innovator exists to enforce this question.
 
+## Upgrading the Framework
+
+When a new version of `agentic-dev-framework` is released:
+
+1. **Check the CHANGELOG** — Review what changed in the new version. Some changes are additive (new agents, new skills); others modify existing files.
+
+2. **Pull the new framework files** — Do NOT re-run `BOOTSTRAP.prompt.md`. Instead, diff the new framework version against your bootstrapped `.github/` directory and selectively apply changes.
+
+3. **Preserve your token values** — Your bootstrapped `.github/` files have actual values where the framework has `{{TOKENS}}`. Never replace your resolved values with tokens during an upgrade.
+
+4. **Re-run `BOOTSTRAP.prompt.md --update-only`** (if supported) — Copies new files and new sections from the framework without touching your token-resolved content.
+
+5. **Check `docs/FRAMEWORK_SETUP.md`** — Update it to reflect the new framework version after upgrading.
+
+> **Principle:** Upgrading adds framework improvements. It never removes your project-specific configuration.
+
 ## The 22 Skills
 
 | Skill | Category | Purpose |

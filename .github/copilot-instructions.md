@@ -70,7 +70,7 @@ Each agent has:
 **Tools**: Documentation inventory, overlap analysis, link/reference validation
 
 ### 7. Review Council Agent
-**Scope**: Multi-perspective review of code, prompts, architecture, or UX from six specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion)
+**Scope**: Multi-perspective review of code, prompts, architecture, or UX from seven specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator)
 **Constraints**: Every finding must include a specific file/line reference; Advocate speaks first; Guardian's security findings cannot be deprioritized; never recommends weakening tests or security measures
 **Decision Pattern**: Synthesizer resolves conflicts by finding the approach that satisfies the most constraints; severity classification follows the legend in `.github/skills/council-review.md`
 **Tools**: Skills: #council-review; references `.github/instructions/council-review.instructions.md`
@@ -290,40 +290,9 @@ Each agent has:
 
 ## Development Phase Structure
 
-> **Replace this section with your project's actual phases.**
-> The structure below describes common phase patterns for reference.
+Define your project's phases in `docs/ROADMAP.md`. A template with common phase types (Scaffolding, Core Domain, Integration, Observability, Hardening) is available at `docs/templates/ROADMAP.template.md`.
 
-### Phase 1: Scaffolding
-- Project structure and repository setup
-- Container/runtime configuration
-- CI/CD pipeline baseline
-- Core tooling (task runner, linter, formatter)
-
-### Phase 2: Core Domain
-- Primary data model and schema
-- Core business logic and API layer
-- Authentication and authorization (e.g., `{{AUTH_PROVIDER}}`)
-- Basic UI shell (if applicable)
-
-### Phase 3: Integration
-- External service integrations (e.g., `{{INTEGRATION_PLATFORM}}`)
-- Webhooks or event handling
-- Background jobs or workers
-- Import/export flows
-
-### Phase 4: Observability
-- Structured logging
-- Health checks and readiness probes
-- Error tracking integration
-- Performance baselines
-
-### Phase 5: Hardening
-- Security audit and remediation
-- Performance optimization
-- Accessibility review (if applicable)
-- Documentation finalization
-
-> Define your own phases in `docs/ROADMAP.md` and link to it here.
+Agents reference this document for roadmap context. Keep it current.
 
 ## Branching Workflow
 
@@ -343,6 +312,18 @@ test(sync): Cover partial failures
 
 - Commits must be descriptive and useful to reviewers: explain intent, scope, and impact.
 - Avoid vague commit messages that do not communicate behavior change.
+
+### Escalation Protocol
+
+When an agent cannot resolve a decision alone, it must:
+1. Write an entry to `docs/open-handoffs.md` using the SBAR format (Situation, Background, Assessment, Decision needed)
+2. Set status to `OPEN`
+3. Name the receiving agent explicitly
+4. Do NOT proceed with implementation while the escalation is unresolved
+
+The receiving agent reads `docs/open-handoffs.md` at the start of their invocation to understand context without requiring chat history.
+
+When a handoff is resolved, update the entry status to `RESOLVED` and fill in the Resolution field.
 
 ### Pull Requests
 - Merge latest `main` into your branch before opening or updating a PR.
@@ -391,7 +372,7 @@ See `.github/instructions/testing.instructions.md` for test integrity standards,
 
 ## Constraints (Non-Negotiable)
 
-1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base.
+1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base. *(Rationale: AI-generated UI bypasses the UX Designer and Accessibility agent review gates, producing components that may fail WCAG 2.1 AA before human oversight can catch them.)*
 2. **No copy-paste code** — Extract to utilities; use the DRY principle.
 3. **No abandoned PRs** — Features ship or get reverted; no "draft" PRs.
 4. **No secrets in logs** — Mask tokens/passwords; sanitize error messages.

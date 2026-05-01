@@ -37,6 +37,8 @@ _(Scanning can pre-fill 90% of tokens without asking. The AI should attempt to r
 "How many people are actively developing this? (solo / small 2-5 / medium 6-15 / large 15+)"
 _(Used to scale agent coordination language — solo projects get simplified handoffs.)_
 
+**Solo Developer Note:** If your team size is `solo`, the bootstrap will apply the Solo Profile: 5 default agents (Engineer, System Architect, Review Council, QA, Innovator) with a 4-perspective Micro Council as the default review depth. All other agents are available via explicit invocation but deactivated by default. All quality guarantees (completion gate, security non-negotiable, no false-complete) apply identically in the Solo Profile.
+
 **Question 6: Any agents to deactivate?**
 "Are there any of the 11 agents you definitely don't need? Common exclusions:
 - No UI → deactivate Bold UX Designer, Accessibility
@@ -105,6 +107,13 @@ Infer commands from task runner + stack:
 - If Python/pytest: `{{TEST_COMMAND}}` = `pytest`, `{{DEV_COMMAND}}` = `uvicorn main:app --reload` (if FastAPI)
 - If Go: `{{TEST_COMMAND}}` = `go test ./...`, `{{DEV_COMMAND}}` = `go run .`
 
+**If team size is `solo`:**
+- Apply Solo Framework Profile: activate Engineer, System Architect, Review Council, QA, Innovator
+- Deactivate by default: PM (activate when product has users), UX Designer (activate when UI work begins), Technical Writer (activate when docs become a priority), Accessibility, DevOps/Infrastructure, Performance
+- Default council depth: Micro Council (Advocate + Guardian + Craftsperson + User Champion)
+- Full 7-perspective council available via: "Run full council review on [PR/change]"
+- Note to developer: "I've applied the Solo Profile. You can activate any deactivated agent by invoking them directly. All quality guarantees remain enforced — the profile reduces coordination overhead, not quality bars."
+
 **URL inference (MEDIUM confidence — present for confirmation):**
 - TypeScript full-stack with Vite detected: `{{FRONTEND_URL}}` = `http://localhost:5173`, `{{API_URL}}` = `http://localhost:3000`
 - FastAPI: `{{API_URL}}` = `http://localhost:8000`
@@ -121,18 +130,77 @@ Infer commands from task runner + stack:
 
 ---
 
-## Phase 3: Present the Inferred Configuration
+## Phase 3: Token Resolution Review
 
-After the inference pass, produce a **token map** in this format. Mark each token with its confidence:
-- ✅ **Confirmed** — from explicit answer or scanned file
-- 🟡 **Inferred** — derived from stack conventions; likely correct but worth a glance
-- ❓ **Unknown** — could not infer; must be set manually or left as `{{TOKEN}}`
+Based on your answers and stack inference, here is your proposed token resolution. **Review each group and flag any corrections before I generate files.**
 
-Present the map as a markdown table grouped by category (Identity, Stack, Paths, Commands, URLs, etc.).
+---
 
-Then ask ONE question: **"Does anything in this map need to change? If yes, tell me which tokens and their correct values. If everything looks right, say 'approved' and I'll generate the files."**
+### Group 1 — Identity (Required: confirm these)
+*These are unique to your project. I cannot infer them.*
 
-Do NOT ask one-by-one questions about individual tokens at this stage. The developer reviews the whole map and makes corrections in one pass.
+| Token | Resolved Value | Source | Status |
+|-------|---------------|--------|--------|
+| `{{PROJECT_NAME}}` | [your answer] | You provided | ✅ |
+| `{{PROJECT_DOMAIN}}` | [your answer] | You provided | ✅ |
+| `{{PRIMARY_LANGUAGE}}` | [your answer] | You provided | ✅ |
+
+---
+
+### Group 2 — Stack (Inferred: spot-check for accuracy)
+*Inferred from your language + framework choices. Verify these are correct.*
+
+| Token | Resolved Value | Source | Status |
+|-------|---------------|--------|--------|
+| `{{SERVER_FRAMEWORK}}` | [inferred] | Inferred from language | ✅/❓ |
+| `{{DATABASE}}` | [your answer] | You provided | ✅ |
+| `{{ORM}}` | [inferred or provided] | ... | ✅/❓ |
+| `{{FRONTEND_FRAMEWORK}}` | [your answer or N/A] | You provided | ✅ |
+| `{{CSS_FRAMEWORK}}` | [inferred or N/A] | ... | ✅/❓ |
+| ... | | | |
+
+---
+
+### Group 3 — Commands (Inferred: most likely to need correction)
+*Inferred from your stack and task runner. These are where errors most commonly occur — verify carefully.*
+
+| Token | Resolved Value | Source | Status |
+|-------|---------------|--------|--------|
+| `{{SMOKE_COMMAND}}` | [inferred or your answer] | ... | ✅/❓ |
+| `{{TEST_COMMAND}}` | [inferred] | ... | ✅/❓ |
+| `{{START_COMMAND}}` | [inferred] | ... | ✅/❓ |
+| `{{SETUP_COMMAND}}` | [inferred] | ... | ✅/❓ |
+| `{{DEV_COMMAND}}` | [inferred] | ... | ✅/❓ |
+| ... | | | |
+
+---
+
+### Group 4 — Paths and URLs (Inferred: verify directory structure)
+*Inferred from your project structure answers. Confirm these match your actual directories.*
+
+| Token | Resolved Value | Source | Status |
+|-------|---------------|--------|--------|
+| `{{SERVER_SOURCE_DIR}}` | [your answer] | You provided | ✅ |
+| `{{CLIENT_SOURCE_DIR}}` | [your answer or N/A] | You provided | ✅ |
+| `{{SOURCE_CODE_PATHS}}` | [inferred glob] | Inferred from language | ✅/❓ |
+| `{{FRONTEND_URL}}` | [inferred] | ... | ✅/❓ |
+| `{{API_URL}}` | [inferred] | ... | ✅/❓ |
+| ... | | | |
+
+---
+
+### Group 5 — Optional / N/A (Pre-set: no review needed unless your project uses these)
+*These are set to N/A based on your answers. If your project does use any of these, flag them now.*
+
+| Token | Resolved Value | Reason |
+|-------|---------------|--------|
+| `{{E2E_TEST_FRAMEWORK}}` | N/A | You indicated no E2E tests |
+| `{{A11Y_TESTING_LIB}}` | N/A | You indicated no frontend |
+| ... | | |
+
+---
+
+**Any corrections?** Reply with the Group number and token to change, or type "All approved" to proceed to file generation.
 
 ---
 
@@ -156,6 +224,17 @@ With the approved map, generate the tailored `.github/` folder:
 5. For skills that are N/A for this project type (e.g., `ui-component-design.md` for a CLI project):
    - Add `status: inactive` to frontmatter and a note at the top.
 6. Resolve `applyTo` globs in `testing.instructions.md`, `security.instructions.md`, and `council-review.instructions.md` using `{{SOURCE_CODE_PATHS}}` and `{{TEST_PATHS}}` from the approved map.
+7. Generate `docs/FRAMEWORK_SETUP.md` with the following content:
+   - **Bootstrap date** — the date bootstrap was run.
+   - **Framework version** — v1.0.0 (or read from README.md if available).
+   - **Active agents** — list of N of 11 active agents.
+   - **Deactivated agents** — list with the reason each was deactivated.
+   - **Token resolution summary** — table of token → resolved value (or ❓ if not resolved), grouped by category (Identity, Stack, Commands, Paths, Optional/N/A).
+   - **Tokens requiring manual review** — list of any ❓ tokens still needing resolution.
+
+   > **Important:** `docs/FRAMEWORK_SETUP.md` must not contain secrets, credential values, or environment-specific paths. It documents which agents are active and which tokens were resolved — not the resolved values of secrets. Tokens whose values are secrets (e.g., `{{SESSION_SECRET}}`, API keys, database passwords) must appear as `[secret — set in .env, not tracked]` rather than their actual values.
+
+   `docs/FRAMEWORK_SETUP.md` is tracked in the project (not gitignored). It helps future team members understand the framework configuration without re-running bootstrap.
 
 ---
 
@@ -184,8 +263,8 @@ Produce this summary after generation:
 [list with reason]
 
 ### Next Steps
-1. Copy `.github/` into your project root
-2. Commit: `git add .github/ && git commit -m "chore: add agentic dev framework"`
+1. Copy `.github/` and `docs/FRAMEWORK_SETUP.md` into your project root
+2. Commit: `git add .github/ docs/FRAMEWORK_SETUP.md && git commit -m "chore: add agentic dev framework"`
 3. Verify smoke command: run `[SMOKE_COMMAND]` — if it fails, fix the command first
 4. First agent invocation: `@engineer: [describe your first task]`
 5. Before first PR: run `@review-council` for a full perspective review

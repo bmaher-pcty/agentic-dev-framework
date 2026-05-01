@@ -36,6 +36,19 @@ Use these instructions for all implementation, refactors, and bug fixes.
 3. If any verification step fails, Copilot must continue iterating on the fix until the application is functional again or a concrete external blocker is identified.
 4. Final status must include what was run to verify end-to-end application health, not only what code changed.
 
+## Verification Categories
+
+When reporting completion, agents must categorize each verification claim using exactly one of these labels:
+
+- **`VERIFIED-AUTOMATED`** — Test ran, passed, and is committed. The automated test validates this behavior.
+- **`VERIFIED-MANUAL`** — Agent ran a command and observed the output. Behavior was confirmed in this session.
+- **`ASSUMED-UNTESTED`** — Change was made but cannot be verified without a running environment or user-visible session. Agent believes the change is correct but did not observe confirmation.
+- **`REQUIRES-HUMAN-VERIFICATION`** — Explicit flag for developer follow-up. Do not proceed to PR without human verification of this item.
+
+**Guardian constraint:** Any `ASSUMED-UNTESTED` claim on a security-critical path (auth, authorization, input validation, secret handling) automatically becomes `REQUIRES-HUMAN-VERIFICATION` regardless of agent confidence.
+
+An honest `ASSUMED-UNTESTED` report is acceptable. A false `VERIFIED-AUTOMATED` claim is a completion gate violation.
+
 ## Preferred Commands
 
 - Full smoke: `{{SMOKE_COMMAND}}`

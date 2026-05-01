@@ -17,12 +17,7 @@ Use these instructions when the Review Council agent is invoked or when a counci
 
 ## Severity Classification
 
-1. 🔴 **Critical** — production-breaking, security, or false-complete claim.
-2. 🟠 **High** — significant defect, missing verification, or quality regression.
-3. 🟡 **Medium** — maintainability, clarity, or minor UX gap.
-4. 🔵 **Low** — polish or future enhancement.
-
-This legend mirrors the one in `.github/skills/council-review.md`; both must stay in sync.
+See `.github/skills/council-review.md` for the canonical severity classification legend. Do not duplicate the legend here — reference the skill file as the single source of truth.
 ## Conflict Resolution
 
 1. When perspectives disagree, the Synthesizer resolves by finding the approach satisfying the most constraints.
@@ -37,6 +32,12 @@ This legend mirrors the one in `.github/skills/council-review.md`; both must sta
 3. Present Critical Findings in a table: Severity | Perspective | Finding | File | Recommendation.
 4. Dedicate separate sections to Security Assessment and UX Assessment.
 5. End with numbered Prioritized Action Items (severity, perspective, specific fix).
+6. **Project Intelligence Update** — Every council review must end with a "## Project Intelligence Update" section containing:
+   - Any new anti-patterns discovered (format: pattern name, location, why it's a problem, preferred alternative)
+   - Any architectural decisions that should be locked based on this review
+   - Any coverage hot spots surfaced during review
+   - Any Innovator experiments proposed and their initial status
+   If nothing new was discovered, write: "No updates — intelligence file current."
 
 ## Integration With Existing Standards
 

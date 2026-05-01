@@ -71,6 +71,7 @@ Speaks last. Challenges the frame of the problem itself.
 
 ## Procedure
 
+0. **Triage** — Classify the task using `#task-triage`. Document the classification in the council output header. If Trivial, proceed with Micro Council (4 perspectives). If Standard or High-Stakes, proceed with full 7-perspective council.
 1. **Scope Definition** — Identify what is being reviewed (files, feature, full codebase).
 2. **Advocate First** — Start with strengths to establish baseline quality and patterns worth keeping.
 3. **Parallel Perspectives** — Run Skeptic, Guardian, Craftsperson, and User Champion analyses.
@@ -78,6 +79,7 @@ Speaks last. Challenges the frame of the problem itself.
 5. **Innovator Last** — After all other perspectives have spoken, the Innovator presents an alternative framing or cross-domain insight not raised by any other perspective. If no alternative is apparent, the Innovator documents the assumption challenged and why it held.
 6. **Severity Classification** — Rate each finding using the legend below.
 7. **Consensus Output** — Unified findings with specific file references, severity, owning perspective, and recommended fix.
+8. **Update project-intelligence.md** — After synthesis, produce a "Project Intelligence Update" block containing any new anti-patterns, locked decisions, coverage gaps, or open Innovator experiments surfaced during this review. See `docs/project-intelligence.md` for format.
 
 ## Severity Classification
 
@@ -86,7 +88,7 @@ Speaks last. Challenges the frame of the problem itself.
 - 🟡 **Medium** — maintainability, clarity, or minor UX gap.
 - 🔵 **Low** — polish or future enhancement.
 
-This legend mirrors the one in `.github/instructions/council-review.instructions.md`; both must stay in sync.
+This is the canonical severity legend for all council reviews. All other files reference this definition.
 
 ## Rules of Deliberation
 
@@ -99,6 +101,24 @@ This legend mirrors the one in `.github/instructions/council-review.instructions
 - No perspective can recommend weakening existing tests or security measures.
 - Security findings must align with the security instructions in `.github/instructions/`.
 - Testing recommendations must align with the testing instructions in `.github/instructions/`.
+
+## Innovator: Example Valid Findings
+
+These examples illustrate what distinguishes a valid Innovator finding from a restatement of concerns already raised by other perspectives.
+
+**Example 1 — Valid: Alternative Framing**
+> *Context: The Guardian flagged insufficient rate limiting on the authentication endpoint. The Craftsperson noted the implementation doesn't follow the existing middleware pattern.*
+>
+> **Innovator finding:** "Both findings assume rate limiting must be implemented at the application layer. But this codebase already has a reverse proxy (`{{REVERSE_PROXY}}`) in front of the API. Rate limiting in the proxy layer would catch all traffic — including health check abuse and bot scanning — before it reaches the application. The application-layer rate limiter would only catch authenticated traffic. Consider whether the architectural responsibility belongs in the proxy, not the route handler. If it does, the Guardian's concern is fully addressed without adding application code, and the Craftsperson's middleware pattern concern becomes irrelevant."
+>
+> *Why this is Valid:* It presents a structurally different solution layer (proxy vs. application) that neither the Guardian nor the Craftsperson considered, and it would fully resolve both concerns if correct.
+
+**Example 2 — Valid: Assumption Challenged and Held**
+> *Context: The Advocate praised the new caching strategy. The Skeptic questioned its staleness window. The Synthesizer proposed a shorter TTL.*
+>
+> **Innovator finding:** "The Skeptic and Synthesizer both assume the correct solution is to tune the cache TTL. But the underlying assumption is that users need real-time data for this feature. The product spec says this is a reporting dashboard refreshed daily. If the domain requirement is 'data current as of yesterday,' the 'staleness' concern isn't a technical problem — it's a product requirement that was never stated. Before shortening the TTL, confirm with the PM whether the user actually needs sub-minute freshness. If they don't, the cache can be left as-is and the concern is resolved at the requirements layer."
+>
+> *Why this is Valid:* It challenges the shared assumption that all six perspectives accepted (that freshness is required), and proposes resolving the concern at the requirements layer rather than the technical layer. The assumption was challenged — and the Innovator is calling for investigation before any code change.
 
 ## Checklist
 
