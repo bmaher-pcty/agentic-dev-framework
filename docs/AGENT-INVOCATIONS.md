@@ -193,13 +193,40 @@ Agents are invoked via `@<agent-name>:` in GitHub Copilot Chat.
 
 ## Researcher (`@researcher`)
 
-```
-# Council / any agent — commissioning research
-@researcher: What are the documented tradeoffs of approach X vs. Y in production at scale?
-@researcher: What does the evidence say about how teams handle problem P, and what perspectives am I missing?
-@researcher: Survey the security landscape on threat vector Z before the Guardian issues a finding.
+### When to Use Researcher
 
-# Proactive use — Researcher offers unsolicited findings
-@researcher: I noticed the discussion is missing the end-user / compliance perspective — here are findings you may not have considered.
-@researcher: Prior research exists on this topic; here is the brief before you proceed.
+Invoke `@researcher` when a decision requires evidence beyond what the current agent knows from context — especially when the council risks confirming a shared assumption rather than challenging it, when multiple viable approaches exist and the team needs comparative evidence, or when a compliance or security finding needs industry grounding before the team commits to a mitigation path.
+
+The Researcher never makes the final decision. It commissions on behalf of other agents and always defers the decision to whoever commissioned it.
+
 ```
+# Before architectural commitment — evidence before opinions
+@researcher: What are the documented production tradeoffs of event sourcing vs. CRUD for a system
+  at our scale? Gather perspectives from teams that chose each approach and found it wrong.
+
+# When the council is missing a perspective
+@researcher: The council is debating JWT vs. opaque tokens. Survey what the security community says
+  about the actual attack surface difference at our threat model, not theoretical ideal security.
+
+# Technology evaluation with specific constraints
+@researcher: We're choosing between GraphQL and REST for our public API. Our constraints are:
+  mobile-first clients, rate-limited third-party consumers, and a small backend team. What does
+  the evidence say for teams with exactly these constraints — not general comparisons?
+
+# Before committing to a vendor or library
+@researcher: Before we adopt [library X], what do teams report after 12+ months in production?
+  I need the failure modes and regrets, not just the adoption success stories.
+
+# Compliance and regulatory context
+@researcher: What does the industry evidence say about audit trail requirements for AI-assisted
+  code review in SOC 2 Type II regulated environments? Include what auditors actually ask for.
+
+# When the PM wants to add a feature the team hasn't seen work before
+@researcher: The PM wants to add real-time collaborative editing to our dashboard. What do teams
+  building this feature report about the implementation complexity vs. actual user adoption?
+  Include teams that built it and later removed it.
+```
+
+---
+
+

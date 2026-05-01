@@ -23,6 +23,8 @@ Read [`docs/PHILOSOPHY.md`](PHILOSOPHY.md) for the 5 core tenets that govern all
 
 The framework ships with `{{TOKEN}}` placeholders. Before using it, tailor it to your project.
 
+**First: choose your deployment profile.** See the [Deployment Profiles](../README.md#deployment-profiles) section in README.md. Decide whether you are bootstrapping for Solo, Small Team, or Enterprise — this affects which agents are active by default and how deep the Review Council runs. Tell the bootstrap wizard your choice when it asks Question 5.
+
 **Run BOOTSTRAP.prompt.md in your AI assistant:**
 
 ```
