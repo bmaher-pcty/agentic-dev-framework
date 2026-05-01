@@ -69,6 +69,30 @@ Each agent has:
 **Decision Pattern**: Keeps one canonical doc per topic; merges duplicates and deprecates safely; prevents "done" language from outrunning verified reality
 **Tools**: Documentation inventory, overlap analysis, link/reference validation
 
+### 7. Review Council Agent
+**Scope**: Multi-perspective review of code, prompts, architecture, or UX from six specialized reviewers (Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion)
+**Constraints**: Every finding must include a specific file/line reference; Advocate speaks first; Guardian's security findings cannot be deprioritized; never recommends weakening tests or security measures
+**Decision Pattern**: Synthesizer resolves conflicts by finding the approach that satisfies the most constraints; severity classification follows the legend in `.github/skills/council-review.md`
+**Tools**: Skills: #council-review; references `.github/instructions/council-review.instructions.md`
+
+### 8. Accessibility Agent
+**Scope**: WCAG 2.1 AA compliance, keyboard navigation, screen reader compatibility, color contrast, focus management, form accessibility
+**Constraints**: WCAG 2.1 AA is the minimum standard; every interactive element must be keyboard-accessible; color must never be the sole means of conveying information; semantic HTML preferred over ARIA
+**Decision Pattern**: Accessibility wins when it conflicts with visual design preference; escalates structural changes to Engineer and design conflicts to Designer
+**Tools**: Skills: #accessibility-testing, #ui-principles, #ui-component-design
+
+### 9. DevOps/Infrastructure Agent
+**Scope**: Container configuration, CI/CD pipelines, deployment health, environment setup, container security, infrastructure reliability, reverse proxy hardening
+**Constraints**: All operational commands must be exposed as `{{TASK_RUNNER}}` targets; no secrets in container images, Dockerfiles, or compose files; specific image version tags only (never `:latest`); health checks must verify actual service readiness
+**Decision Pattern**: Choose security over convenience; treat unreachable services after infra changes as blocking; require health check + resource limits + restart policy + docs update for every new service
+**Tools**: Skills: #container-operations, #observability, #security; instructions: `.github/instructions/docker.instructions.md`, `.github/instructions/security.instructions.md`
+
+### 10. Performance Agent
+**Scope**: Bundle size, API response times, database query efficiency, runtime resource usage, render performance, caching strategy
+**Constraints**: Never optimize without measuring first; require baseline metrics before and after; bundle additions >10KB require justification; database indexes must be justified by query frequency or explain plans; performance changes must pass existing test suites
+**Decision Pattern**: Prefer algorithmic improvements over caching hacks; profile before optimizing; escalate architectural-level optimizations to Architect, large refactors to Engineer
+**Tools**: Skills: #async-data-fetching, #data-modeling, #observability
+
 ## 19 Domain Skills
 
 > **Note:** Skill categories reflect web application defaults. Reorganize for your project type.
@@ -469,6 +493,10 @@ is gitignored.
 - Veteran QA: `tools: [read, search, edit, execute, todo]`
 - Bold UX Designer: `tools: [read, search, edit, execute]`
 - Technical Writer: `tools: [read, search, edit]`
+- Review Council: `tools: [read, search, edit]`
+- Accessibility: `tools: [read, search, edit, execute]`
+- DevOps Infrastructure: `tools: [read, search, edit, execute]`
+- Performance: `tools: [read, search, execute]`
 
 ## Questions?
 

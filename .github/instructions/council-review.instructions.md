@@ -1,5 +1,5 @@
 ---
-applyTo: "{{SERVER_SOURCE_DIR}}/**/*.ts,{{SERVER_SOURCE_DIR}}/**/*.js,{{CLIENT_SOURCE_DIR}}/src/**/*.ts,{{CLIENT_SOURCE_DIR}}/src/**/*.tsx,{{CLIENT_SOURCE_DIR}}/integration_tests/**/*.ts,.github/agents/**/*.md,.github/skills/**/*.md,.github/prompts/**/*.md"
+applyTo: "{{SOURCE_CODE_PATHS}},{{TEST_PATHS}},.github/agents/**/*.md,.github/skills/**/*.md,.github/prompts/**/*.md"
 ---
 
 # Council Review Instructions
