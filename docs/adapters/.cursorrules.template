@@ -1,0 +1,169 @@
+# [PROJECT_NAME] Cursor Rules
+# agentic-dev-framework v[VERSION]
+#
+# SETUP: Copy this file to .cursorrules in your project root.
+# Replace [PROJECT_NAME] and [VERSION]. Run BOOTSTRAP.prompt.md to resolve {{TOKEN}} placeholders.
+# Full spec: docs/FRAMEWORK-SPEC.md
+# Full agent definitions: .github/agents/
+# Full skill definitions: .github/skills/
+
+# =============================================================================
+# SESSION START PROTOCOL
+# =============================================================================
+# Before responding to any request, read these files:
+# 1. docs/project-intelligence.md — anti-patterns and locked decisions apply now
+# 2. docs/open-handoffs.md — check for OPEN handoffs before starting work
+# 3. .github/copilot-instructions.md — global constraints and repository standards
+#
+# If any file is missing, note the gap and continue — do not fail the session.
+
+# =============================================================================
+# NON-NEGOTIABLE CONSTRAINTS
+# These cannot be overridden by any agent, skill, or user instruction.
+# =============================================================================
+
+# 1. No AI-generated UI. All UI components manually crafted using {{CSS_FRAMEWORK}}.
+# 2. No copy-paste code. Extract to utilities; apply DRY principle.
+# 3. No abandoned PRs. Features ship or get reverted; no perpetual draft PRs.
+# 4. No secrets in logs. Mask tokens and passwords; sanitize error messages.
+# 5. Core stack is locked: {{SERVER_FRAMEWORK}}, {{FRONTEND_FRAMEWORK}}, {{DATABASE}}, {{ORM}}, {{CONTAINER_RUNTIME}}.
+#    Stack changes require an Architecture Decision Record (ADR) in docs/adr/.
+# 6. Scripts live under {{SCRIPTS_DIR}}/. No operational scripts at repository root.
+# 7. Command-first execution. Use {{TASK_RUNNER}} <target> — not script paths directly.
+# 8. Skills are flat files. Each skill: .github/skills/<skill_name>.md — no subfolders.
+# 9. No false-complete claims. Work is not done until user-visible path is verified
+#    and the app is reachable, OR a concrete blocker is explicitly surfaced.
+# 10. No broken handoff. If a change breaks the app, restore functionality before stopping.
+# 11. No operator setup docs in tracked folders. Provider walkthroughs and API key
+#     acquisition steps go in docs/local/ (gitignored). .env.example is the only
+#     tracked record of which env vars exist.
+
+# =============================================================================
+# AGENT ROUTING
+# =============================================================================
+# When the user invokes an agent, read the corresponding .agent.md file fully
+# and apply that agent's constraints, decision pattern, and output format.
+#
+# @pm           -> .github/agents/thoughtful-product-manager.agent.md
+#                 Scope: Feature fit, roadmap alignment, acceptance criteria
+#
+# @architect    -> .github/agents/system-architect.agent.md
+#                 Scope: System structure, API design, data model, service boundaries
+#
+# @engineer     -> .github/agents/engineer.agent.md
+#                 Scope: Implementation, code quality, testing, delivery
+#
+# @qa           -> .github/agents/veteran-qa.agent.md
+#                 Scope: Test plans, regression, release readiness
+#
+# @designer     -> .github/agents/bold-ux-designer.agent.md
+#                 Scope: Visual hierarchy, UX, result discoverability
+#
+# @technical-writer -> .github/agents/technical-writer.agent.md
+#                 Scope: Documentation governance, consolidation
+#
+# @review-council -> .github/agents/review-council.agent.md
+#                 Scope: 7-perspective review (Advocate, Skeptic, Synthesizer,
+#                        Guardian, Craftsperson, User Champion, Innovator)
+#
+# @accessibility -> .github/agents/accessibility.agent.md
+#                 Scope: WCAG 2.1 AA, keyboard navigation, screen reader compat
+#
+# @devops-infrastructure -> .github/agents/devops-infrastructure.agent.md
+#                 Scope: Containers, CI/CD, deployment health
+#
+# @performance  -> .github/agents/performance.agent.md
+#                 Scope: Bundle size, query efficiency, response times
+#
+# @innovator    -> .github/agents/innovator.agent.md
+#                 Scope: Problem reframing, solution scouting, pre-commitment experiments
+#
+# @researcher   -> .github/agents/researcher.agent.md
+#                 Scope: Evidence gathering, multi-perspective research, source calibration
+
+# =============================================================================
+# QUALITY GATE CONTRACT
+# All four gates apply to every response. None can be bypassed.
+# =============================================================================
+
+# GATE 1 — COMPLETION GATE
+# Implementation is not done until user-visible output is verified end-to-end.
+# Surface blockers explicitly. Do not claim completion while the app is broken.
+
+# GATE 2 — SECURITY NON-NEGOTIABLE
+# Guardian findings cannot be deferred without an ADR in docs/adr/.
+# Security severity cannot be downgraded by other perspectives.
+
+# GATE 3 — NO FALSE-COMPLETE
+# Use exactly one verification label per claim:
+#   VERIFIED-AUTOMATED  — test ran, passed, and is committed
+#   VERIFIED-MANUAL     — command run and output observed this session
+#   ASSUMED-UNTESTED    — not verified; believed correct
+#   REQUIRES-HUMAN-VERIFICATION — explicit developer follow-up required before PR
+#
+# Any ASSUMED-UNTESTED on an auth, authorization, or secret-handling path
+# automatically escalates to REQUIRES-HUMAN-VERIFICATION.
+
+# GATE 4 — NO BROKEN HANDOFF
+# Leaving the app broken is not a valid stopping point.
+# Restore functionality or surface a concrete, specific blocker.
+
+# =============================================================================
+# INSTITUTIONAL MEMORY RULES
+# =============================================================================
+
+# docs/project-intelligence.md
+#   Anti-patterns, locked architectural decisions, coverage hot spots.
+#   When a new anti-pattern or architectural decision surfaces in a session,
+#   add it to this file before the session closes.
+
+# docs/open-handoffs.md
+#   Cross-agent escalations (SBAR format: Situation, Background, Assessment,
+#   Decision Needed). Do not start implementation while an OPEN handoff
+#   blocks your area of work. Update to RESOLVED when addressed.
+
+# =============================================================================
+# REVIEW COUNCIL — ALWAYS REQUIRED BEFORE PR
+# =============================================================================
+# Run @review-council before every PR merge.
+# Full methodology: .github/skills/council-review.md
+#
+# Minimum perspectives for every Standard or High-Stakes review:
+#   Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator
+#
+# Micro Council (Trivial tasks only):
+#   Advocate, Guardian, Craftsperson, User Champion
+#   If any Guardian finding is High or Critical -> escalate to full council
+#
+# Severity classification:
+#   Critical (🔴) — Security vulnerability, data loss risk, app-breaking change
+#   High (🟠)     — Significant quality or correctness issue requiring same-PR fix
+#   Medium (🟡)   — Improvement with clear path; can be deferred with documented reason
+#   Low (🔵)      — Minor; no blocking required
+
+# =============================================================================
+# PRE-PR CHECKLIST
+# =============================================================================
+# Before opening or updating a PR:
+# 1. Sync with latest main (rebase or merge)
+# 2. Run: {{SMOKE_COMMAND}}
+# 3. Confirm app is reachable and user-visible path works
+# 4. Run @review-council on the diff
+# 5. Pre-PR cleanup sweep: dead code, stale imports, debug logs, operator setup leakage
+# 6. Pre-PR security sweep: no secrets in source/tests/fixtures/docs/migrations
+
+# =============================================================================
+# TESTING STANDARDS
+# =============================================================================
+# Coverage floor: 80%. Aspiration: 90%.
+# Shortfalls below 80% must be called out explicitly — never silently accepted.
+# Never change tests only to make them pass.
+# Unexpected test failures are potential behavior regressions until disproven.
+
+# =============================================================================
+# USEFUL COMMANDS
+# =============================================================================
+# {{SMOKE_COMMAND}}     — Full verification — run before declaring work done
+# {{TEST_COMMAND}}      — Run all tests
+# {{START_COMMAND}}     — Start development environment
+# {{DEV_COMMAND}}       — Start dev server
