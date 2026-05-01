@@ -31,29 +31,17 @@ jobs:
           echo "count=$count" >> "$GITHUB_OUTPUT"
           echo "Skill files found: $count"
 
-      - name: Verify agent count in copilot-instructions.md
+      - name: Verify agent count claims in README.md
         run: |
-          declared=$(grep -o '[0-9]* specialized agents' .github/copilot-instructions.md | grep -o '^[0-9]*')
+          declared=$(grep -o '[0-9]* specialized agents' README.md | head -1 | grep -o '^[0-9]*')
           actual="${{ steps.agents.outputs.count }}"
           echo "Declared: $declared | Actual: $actual"
           if [ "$declared" != "$actual" ]; then
-            echo "❌ Agent count mismatch: copilot-instructions.md declares $declared but found $actual .agent.md files"
-            echo "Update the tagline in copilot-instructions.md to match the actual file count."
+            echo "❌ Agent count mismatch: README.md declares $declared but found $actual .agent.md files"
+            echo "Update the tagline in README.md to match the actual file count."
             exit 1
           fi
           echo "✅ Agent count consistent: $actual"
-
-      - name: Verify skill count in copilot-instructions.md
-        run: |
-          declared=$(grep -o '[0-9]* domain skills' .github/copilot-instructions.md | head -1 | grep -o '^[0-9]*')
-          actual="${{ steps.skills.outputs.count }}"
-          echo "Declared: $declared | Actual: $actual"
-          if [ "$declared" != "$actual" ]; then
-            echo "❌ Skill count mismatch: copilot-instructions.md declares $declared but found $actual .md files in .github/skills/"
-            echo "Update the tagline and Domain Skills section in copilot-instructions.md."
-            exit 1
-          fi
-          echo "✅ Skill count consistent: $actual"
 
       - name: Verify skill count in README.md
         run: |
@@ -66,6 +54,119 @@ jobs:
             exit 1
           fi
           echo "✅ README.md skill count consistent: $actual"
+
+      - name: Count instruction files
+        id: instructions
+        run: |
+          count=$(ls .github/instructions/*.md 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Instruction files found: $count"
+
+      - name: Count prompt files
+        id: prompts
+        run: |
+          count=$(ls .github/prompts/*.md 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Prompt files found: $count"
+
+      - name: Verify counts and version are consistent across all framework docs
+        run: |
+          # Single source of truth: filesystem counts + framework-manifest.json version.
+          # Any markdown doc that quotes a count or version must agree.
+          # Phase-1 honesty gate: framework that bans false-completes cannot ship false counts.
+          python3 - <<'PYEOF'
+          import json, re, sys, os, glob, subprocess
+
+          actual = {
+              'agent':       int("${{ steps.agents.outputs.count }}"),
+              'skill':       int("${{ steps.skills.outputs.count }}"),
+              'instruction': int("${{ steps.instructions.outputs.count }}"),
+              'prompt':      int("${{ steps.prompts.outputs.count }}"),
+          }
+          with open('framework-manifest.json') as f:
+              manifest = json.load(f)
+          version = manifest['frameworkVersion']  # e.g. "1.1.0"
+          v_tag   = f"v{version}"                 # e.g. "v1.1.0"
+
+          # Files that may quote counts or version. Add new docs here as the project grows.
+          docs = [
+              'README.md',
+              'BOOTSTRAP.prompt.md',
+              'TOKENS.md',
+              'docs/GETTING_STARTED.md',
+              'docs/FRAMEWORK-SPEC.md',
+              'docs/FRAMEWORK_PROFILE.md',
+              'docs/PHILOSOPHY.md',
+              'docs/project-intelligence.md',
+              'upgrade.prompt.md',
+          ]
+          # Singular -> plural patterns the docs use ("12 agents", "29 skills", etc.)
+          unit_words = {
+              'agent':       r'\b([0-9]+)\s+(?:specialized\s+)?agents?\b',
+              'skill':       r'\b([0-9]+)\s+(?:domain\s+)?skills?\b',
+              'instruction': r'\b([0-9]+)\s+instruction(?:\s+file)?s?\b',
+              'prompt':      r'\b([0-9]+)\s+prompts?\b',
+          }
+          # Numbers that look like counts but aren't (team-size, percentages, etc.)
+          # We accept any docline whose number matches OR is in this allow-list per unit.
+          allow = {
+              'agent':       set(),
+              'skill':       set(),
+              'instruction': set(),
+              'prompt':      set(),
+          }
+          # Pattern that matches an OLDER framework version other than the current one
+          stale_version = re.compile(r'\bv?([01])\.([0-9]+)\.([0-9]+)\b')
+
+          failures = []
+          for path in docs:
+              if not os.path.exists(path):
+                  continue
+              text = open(path).read()
+              for unit, pat in unit_words.items():
+                  for m in re.finditer(pat, text, flags=re.IGNORECASE):
+                      n = int(m.group(1))
+                      if n != actual[unit] and n not in allow[unit]:
+                          # Skip plausibly-unrelated numbers like "2-10" team-size matches by
+                          # requiring the unit pattern; the regex already enforces that.
+                          line_no = text[:m.start()].count('\n') + 1
+                          failures.append(
+                              f"{path}:{line_no}: claims '{m.group(0)}' but actual {unit} count is {actual[unit]}"
+                          )
+              # Version drift: any vX.Y.Z that is not the current version is a finding,
+              # except inside lines that intentionally describe an upgrade (current -> target).
+              for m in stale_version.finditer(text):
+                  found = f"v{m.group(1)}.{m.group(2)}.{m.group(3)}"
+                  if found == v_tag:
+                      continue
+                  line_start = text.rfind('\n', 0, m.start()) + 1
+                  line_end = text.find('\n', m.end())
+                  line = text[line_start:line_end if line_end != -1 else len(text)]
+                  # Heuristic: skip lines that are upgrade examples or changelog history.
+                  if any(tok in line.lower() for tok in (
+                      'upgrade', 'migrat', 'previous', 'older', 'changelog',
+                      '->', '→', 'from v', 'to v', 'e.g.,', 'example',
+                  )):
+                      continue
+                  line_no = text[:m.start()].count('\n') + 1
+                  failures.append(
+                      f"{path}:{line_no}: stale version '{found}' (current is {v_tag})"
+                  )
+
+          if failures:
+              print('❌ Count/version drift detected. The framework cannot ship false counts.')
+              for f in failures:
+                  print('  - ' + f)
+              print()
+              print('Single source of truth:')
+              print(f'  agents={actual["agent"]} skills={actual["skill"]} '
+                    f'instructions={actual["instruction"]} prompts={actual["prompt"]}')
+              print(f'  version={v_tag} (from framework-manifest.json)')
+              sys.exit(1)
+          print('✅ All count/version claims consistent across docs')
+          print(f'   agents={actual["agent"]} skills={actual["skill"]} '
+                f'instructions={actual["instruction"]} prompts={actual["prompt"]} version={v_tag}')
+          PYEOF
 
   token-completeness:
     name: Token Completeness

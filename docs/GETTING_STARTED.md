@@ -10,7 +10,7 @@ The agentic-dev-framework is a set of configuration files for GitHub Copilot (an
 
 **What you get:**
 - **12 specialized agents** — each with a defined scope, constraints, and escalation protocol
-- **25 domain skills** — procedural guidance agents invoke for specific tasks
+- **29 domain skills** — procedural guidance agents invoke for specific tasks
 - **5 path-scoped instructions** — automatically apply to matching files
 - **6 reusable prompts** — for council reviews, audits, security review, and more
 - **A 7-perspective Review Council** — Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, and Innovator

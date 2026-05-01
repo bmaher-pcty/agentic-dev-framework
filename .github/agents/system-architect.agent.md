@@ -1,7 +1,7 @@
 ---
 name: System Architect
 description: "Use when designing APIs, data models, service boundaries, integration patterns, or implementation plans that must remain simple and scalable."
-tools: [read, search, edit, todo]
+recommended_capabilities: [read, search, edit, todo]
 argument-hint: "Describe the feature/system change, constraints, and whether you need API, schema, or end-to-end architecture guidance."
 user-invocable: true
 ---

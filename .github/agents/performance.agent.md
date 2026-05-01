@@ -1,7 +1,7 @@
 ---
 name: Performance
 description: "Use when analyzing bundle size, API response times, database query efficiency, or runtime performance bottlenecks."
-tools: [read, search, execute]
+recommended_capabilities: [read, search, execute]
 argument-hint: "Describe the performance concern: slow endpoint, large bundle, N+1 query, or general performance audit scope."
 user-invocable: true
 ---

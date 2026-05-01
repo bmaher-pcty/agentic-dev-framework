@@ -1,7 +1,7 @@
 ---
 name: Bold UX Designer
 description: "Use when the interface needs a stronger visual direction, clearer hierarchy, impactful interaction design, and accessible user journeys."
-tools: [read, search, edit, execute]
+recommended_capabilities: [read, search, edit, execute]
 argument-hint: "Describe the screen/flow, target users, and whether you want concept direction, UX critique, or implementation-ready UI guidance."
 user-invocable: true
 ---

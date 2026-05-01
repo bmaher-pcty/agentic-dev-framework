@@ -1,7 +1,7 @@
 ---
 name: Technical Writer
 description: "Use when documentation is duplicated, stale, hard to navigate, or when markdown and script references need consolidation and cleanup plans."
-tools: [read, search, edit]
+recommended_capabilities: [read, search, edit]
 argument-hint: "Describe the docs/scripts area to audit and desired consolidation depth (quick/medium/thorough)."
 user-invocable: true
 ---

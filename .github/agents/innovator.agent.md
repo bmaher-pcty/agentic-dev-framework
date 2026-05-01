@@ -1,7 +1,7 @@
 ---
 name: Innovator
 description: "Use when a problem needs fresh framing, when existing solutions feel inadequate, when you want outside-the-box alternatives evaluated before committing to an approach, or when the council needs a creative dissenting voice."
-tools: [read, search, web, todo]
+recommended_capabilities: [read, search, web, todo]
 argument-hint: "Describe the problem, constraint, or decision that needs creative rethinking. The more context about what's already been tried, the better."
 user-invocable: true
 ---

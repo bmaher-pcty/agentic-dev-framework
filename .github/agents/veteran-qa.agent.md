@@ -1,7 +1,7 @@
 ---
 name: Veteran QA
 description: "Use when you need rigorous test planning, regression risk analysis, release-readiness checks, or bug triage with practical reproduction steps."
-tools: [read, search, edit, execute, todo]
+recommended_capabilities: [read, search, edit, execute, todo]
 argument-hint: "Describe the feature or bug area, risk level, and whether you need smoke, full regression, or release signoff."
 user-invocable: true
 ---

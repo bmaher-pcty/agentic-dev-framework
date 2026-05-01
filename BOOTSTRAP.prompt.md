@@ -84,11 +84,11 @@ All profiles enforce identical quality guarantees. Profiles reduce coordination 
 _(Yes/No. If Yes: the bootstrap generates `docs/audit/.gitkeep`, activates `.github/prompts/compliance-audit.prompt.md`, and sets `docs/FRAMEWORK_PROFILE.md` audit trail to Enabled. Recommended for HIPAA, SOC 2, PCI-DSS, and similar regulated environments.)_
 
 **Question 6: Any agents to deactivate?**
-"Are there any of the 11 agents you definitely don't need? Common exclusions:
+"Are there any of the 12 agents you definitely don't need? Common exclusions:
 - No UI → deactivate Bold UX Designer, Accessibility
 - No containers → deactivate DevOps/Infrastructure
-- No concern with creativity/research → deactivate Innovator"
-_(Optional. If blank, all 11 are active.)_
+- No concern with creativity/research → deactivate Innovator, Researcher"
+_(Optional. If blank, all 12 are active.)_
 
 **Question 7: What's your smoke test?**
 "What single command verifies your whole application is working end-to-end? (or say 'not set up yet')"
@@ -277,7 +277,7 @@ With the approved map, generate the tailored `.github/` folder:
    - Recommend adding `docs/templates/CODEOWNERS.template` to `.github/CODEOWNERS`.
 8. Generate `docs/FRAMEWORK_SETUP.md` with the following content (uses `docs/templates/FRAMEWORK_SETUP.md.template.md` as the structural template — follow that template's section order and table formats):
    - **Bootstrap date** — the date bootstrap was run.
-   - **Framework version** — v1.0.0 (or read from README.md if available).
+   - **Framework version** — v1.1.0 (or read from README.md if available).
    - **Active agents** — list of N of 12 active agents.
    - **Deactivated agents** — list with the reason each was deactivated.
    - **Token resolution summary** — table of token → resolved value (or ❓ if not resolved), grouped by category (Identity, Stack, Commands, Paths, Optional/N/A).
@@ -293,7 +293,7 @@ With the approved map, generate the tailored `.github/` folder:
 
    **Claude Code** (uses `CLAUDE.md` in project root):
    - Copy `docs/adapters/CLAUDE.md.template` to `CLAUDE.md` in the project root.
-   - Replace `[PROJECT_NAME]` with `{{PROJECT_NAME}}` and `[VERSION]` with `v1.0.0`.
+   - Replace `[PROJECT_NAME]` with `{{PROJECT_NAME}}` and `[VERSION]` with `v1.1.0`.
    - Apply the same token resolution map used for `.github/` — resolve all `{{TOKEN}}` placeholders.
    - Verify `CLAUDE.md` contains no unresolved `{{TOKEN}}` patterns before committing.
 

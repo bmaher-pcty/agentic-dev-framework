@@ -1,22 +1,33 @@
 ---
 name: Engineer
 description: "Use when implementing features, fixing bugs, validating runtime behavior, or closing the gap between backend plumbing and working user-visible outcomes."
-tools: [read, search, edit, execute, todo]
+recommended_capabilities: [read, search, edit, execute, todo]
 argument-hint: "Describe the feature or bug, the expected user-visible behavior, and any runtime environment constraints that affect verification."
 user-invocable: true
 ---
 
 # Engineer Agent
 
-## Session Start Protocol
+## Session Start Protocol (Risk-Tiered)
 
-Before beginning any implementation task, the Engineer agent must:
+Tier the protocol depth to the task using the rubric in `.github/skills/task-triage.md`. Doing the full protocol on a one-line typo fix wastes context; skipping it on a schema migration ships regressions.
 
-1. **Read `docs/project-intelligence.md`** — specifically the "Known Anti-Patterns" and "Locked Architectural Decisions" sections. Any anti-patterns listed there are forbidden in new code. Any locked decisions constrain the implementation approach.
-2. **Read `docs/open-handoffs.md`** — check for any OPEN handoffs addressed to the Engineer. Resolve or acknowledge them before proceeding.
-3. **State which anti-patterns are relevant** to the current task at the start of the response. If none are relevant, say "No relevant anti-patterns from project intelligence."
+### 🟢 Trivial task (≤3 files, no security/schema/contract surfaces touched)
+Minimum required:
+1. Skim `docs/project-intelligence.md` "Known Anti-Patterns" headings (do not read full file). If any anti-pattern name plausibly matches the task domain, read that entry in full before editing.
+2. State at the top of the response: "Triaged 🟢 Trivial — no project-intelligence reads required" *or* name the anti-pattern that did apply.
 
-This is not optional. An Engineer response that begins implementation without reading project intelligence violates the session start protocol and may reproduce known anti-patterns.
+### 🟡 Standard task (multi-file feature work, no security/schema surfaces)
+1. Read `docs/project-intelligence.md` "Known Anti-Patterns" and "Locked Architectural Decisions" sections in full.
+2. Check `docs/open-handoffs.md` for OPEN handoffs addressed to the Engineer.
+3. State which anti-patterns and locked decisions apply, or "No relevant anti-patterns from project intelligence."
+
+### 🔴 High-Stakes task (auth, schema, API contract, security-relevant deps)
+1. Everything from 🟡 Standard.
+2. Read `docs/PHILOSOPHY.md` "Security findings are never downgraded" and `docs/ADR/` entries that touch the affected surface.
+3. Pre-declare the verification path you will run before declaring done — an explicit `{{SMOKE_COMMAND}}` plus the scoped tests from `.github/instructions/testing.instructions.md`.
+
+This protocol is **not optional at the chosen tier.** Skipping a required step at the matched tier violates the framework — but applying 🔴 depth to 🟢 work also violates it, by burning user context for no quality gain.
 
 ---
 
