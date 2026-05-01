@@ -144,4 +144,4 @@ All `{{TOKEN}}` placeholders must be replaced before the framework is useful.
 See `TOKENS.md` for the full token reference (with Category and Source columns) and run `BOOTSTRAP.prompt.md` to automate replacement via the 7-question smart wizard.
 
 ## Framework Version
-agentic-dev-framework v1.0.0
+agentic-dev-framework v1.1.0
