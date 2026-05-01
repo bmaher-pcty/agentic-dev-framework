@@ -21,9 +21,9 @@ description: 'UI component design patterns for small APIs, composition, and acce
 ## Component Categories
 | Type | Rule |
 |---|---|
-| **Page** | Thin  fetches data, composes 80 lines. |sections. orchestrator 
+| **Page** | Thin orchestrator — fetches data, composes sections. ≤80 lines. |
 | **Feature** | Owns a user-facing workflow. Connects to stores/queries. |
-| **UI** | Pure  no data fetching, no store access. Reusable. |presentation 
+| **UI** | Pure presentation — no data fetching, no store access. Reusable. |
 | **Layout** | Structure only (grid, flex, spacing). No business logic. |
 
 ## Prop API Pattern (pseudocode)
@@ -59,13 +59,13 @@ interface ButtonProps {
 
 ## Visual State Checklist
 Every interactive component must define:
-- [ ] ** resting state.Default** 
-- [ ] ** cursor affordance.Hover** 
-- [ ] ** keyboard visibility (use `{{CSS_FRAMEWORK}}` focus-visible utilities or equivalent).Focus** 
-- [ ] ** opacity + cursor change, `disabled` or `aria-disabled`.Disabled** 
-- [ ] ** spinner or skeleton, prevent double-submit.Loading** 
-- [ ] ** clear message, associated with field via `aria-describedby`.Error** 
-- [ ] ** meaningful empty state, not a blank void.Empty** 
+- [ ] **Default** — resting state.
+- [ ] **Hover** — cursor affordance.
+- [ ] **Focus** — keyboard visibility (use `{{CSS_FRAMEWORK}}` focus-visible utilities or equivalent).
+- [ ] **Disabled** — opacity + cursor change, `disabled` or `aria-disabled`.
+- [ ] **Loading** — spinner or skeleton, prevent double-submit.
+- [ ] **Error** — clear message, associated with field via `aria-describedby`.
+- [ ] **Empty** — meaningful empty state, not a blank void.
 
 ## Composition Example (pseudocode)
 ```
@@ -99,10 +99,10 @@ Every interactive component must define:
 - [ ] Component exposes style extension mechanism.
 - [ ] All visual states are handled.
 - [ ] Markup uses semantic elements (`button`, `nav`, `main`, `article`).
-- [ ] No data fetching in UI  pass data as props.components 
+- [ ] No data fetching in UI components — pass data as props.
 
 ## Anti-Patterns
-- Components >200  decompose into sub-components.lines 
-- Prop drilling >2 levels  consider context or co-location.deep 
-- Using `div` + `onClick` instead of ` loses keyboard and semantics.button` 
-- Forgetting the empty  shows broken/confusing UI when data is absent.state 
+- Components >200 lines — decompose into sub-components.
+- Prop drilling >2 levels deep — consider context or co-location.
+- Using `div` + `onClick` instead of `button` — loses keyboard and semantics.
+- Forgetting the empty state — shows broken/confusing UI when data is absent.

@@ -76,20 +76,20 @@ function getById<T extends { id: string }>(items: T[], id: string): T | undefine
 </details>
 
 ## Unknown vs Any
-- Use `unknown` when type is genuinely  forces explicit narrowing before use.unknown 
-- Never use `any` (or equivalent unsafe type  it silently disables all type checking.escape) 
-- Use type assertions only when the type system cannot infer but you are  document why.certain 
+- Use `unknown` when type is genuinely unknown — forces explicit narrowing before use.
+- Never use `any` (or equivalent unsafe type escape) — it silently disables all type checking.
+- Use type assertions only when the type system cannot infer but you are certain — document why.
 
 ## Checklist
 - [ ] No unsafe type escapes (`any`, unconstrained casts) in production code.
 - [ ] Union types preferred over free-text string fields.
 - [ ] Discriminated unions used for branching on variant data shapes.
-- [ ] Type errors caught at compile  static type check passes with `--strict` or equivalent.time 
+- [ ] Type errors caught at compile time — static type check passes with `--strict` or equivalent.
 - [ ] Public interfaces documented with comments where intent is not obvious from types.
 - [ ] External inputs handled as unknown type, narrowed before first use.
 
 ## Anti-Patterns
-- Unsafe cast to silence a type  hides real bugs.error 
-- `// @ts-ignore` or equivalent without an explanation  creates invisible technical debt.comment 
-- `interface Foo { data:  defeats the purpose of the interface.any }` 
-- Non-discriminated union: `type Status =  use `'active' | 'inactive' | 'pending'`.string` 
+- Unsafe cast to silence a type error — hides real bugs.
+- `// @ts-ignore` or equivalent without an explanation comment — creates invisible technical debt.
+- `interface Foo { data: any }` — defeats the purpose of the interface.
+- Non-discriminated union: `type Status = string` — use `'active' | 'inactive' | 'pending'`.

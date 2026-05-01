@@ -1,0 +1,8 @@
+# Local-only working files (improvement plans, review notes, drafts).
+# Never published.
+.work/
+docs/local/
+.env
+.env.*
+!.env.example
+.DS_Store

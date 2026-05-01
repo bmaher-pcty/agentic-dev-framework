@@ -14,8 +14,8 @@ description: 'E2E testing patterns for deterministic workflow testing, robust se
 1. Arrange preconditions (auth/navigation) in test setup or fixtures.
 2. Execute one clear user action flow per test.
 3. Assert UI, URL, and data outcomes explicitly.
-4. Use semantic  never CSS class selectors or positional selectors.selectors 
-5. Use explicit wait  never arbitrary timeouts.conditions 
+4. Use semantic selectors — never CSS class selectors or positional selectors.
+5. Use explicit wait conditions — never arbitrary timeouts.
 6. Isolate test data so tests don't depend on each other's state.
 
 ## Selector Priority
@@ -98,16 +98,16 @@ expect(response.status()).toBe(200);
 </details>
 
 ## Checklist
-- [ ] Tests avoid arbitrary  use explicit wait conditions or assertions.sleeps 
-- [ ] Selectors use role, label, or test  never positional or class-based.ID 
+- [ ] Tests avoid arbitrary sleeps — use explicit wait conditions or assertions.
+- [ ] Selectors use role, label, or test ID — never positional or class-based.
 - [ ] Each test has isolated preconditions (no shared mutable state between tests).
-- [ ] Failure messages are  the selector name explains what failed.actionable 
+- [ ] Failure messages are actionable — the selector name explains what failed.
 - [ ] Critical paths (login, primary workflows) are covered in CI.
 - [ ] Network requests are intercepted or verified for correctness, not assumed.
 
 ## Anti-Patterns
-- Arbitrary sleep/timeout  flaky, hides real wait condition.waits 
-- Positional or class-based  breaks on any layout change.selectors 
-- Sharing test state via global  causes test order dependencies.variables 
-- Asserting only on element presence, not  misses wrong data bugs.content 
-- Skipping the empty/error state in E2E  these are the most user-visible failures.tests 
+- Arbitrary sleep/timeout waits — flaky, hides real wait condition.
+- Positional or class-based selectors — breaks on any layout change.
+- Sharing test state via global variables — causes test order dependencies.
+- Asserting only on element presence, not content — misses wrong data bugs.
+- Skipping the empty/error state in E2E tests — these are the most user-visible failures.

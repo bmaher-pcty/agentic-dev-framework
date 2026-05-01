@@ -63,9 +63,9 @@ interface PaginatedResponse<T> {
 |---|---|
 | Success | 200 OK |
 | Created resource | 201 Created |
-| Not found | 404 Not Found |
+| Not found / not owned (private) | 404 Not Found |
 | Unauthorized | 401 Unauthorized |
-| Forbidden / not owned | 403 Forbidden |
+| Forbidden (publicly visible ownership) | 403 Forbidden |
 | Validation failure | 422 Unprocessable Entity |
 | Server error | 500 Internal Server Error |
 
@@ -77,7 +77,13 @@ interface PaginatedResponse<T> {
 - [ ] Status codes match the situation table above.
 - [ ] Contract covered by integration tests.
 
+> **Note on 403 vs 404:** Use `403 Forbidden` only when the existence of the
+> resource is publicly visible (and the user simply lacks access). For
+> private resources where ownership is not publicly visible, return
+> `404 Not Found` for both "does not exist" and "exists but not owned" to
+> prevent enumeration. See `security.md`.
+
 ## Anti-Patterns
-- Returning 200 with `{ success: false }`  use appropriate 4xx/5xx status.body 
-- Different error shapes across  makes client-side handling inconsistent.endpoints 
-- Unversioned  breaks clients when the contract changes.routes 
+- Returning 200 with `{ success: false }` body — use appropriate 4xx/5xx status.
+- Different error shapes across endpoints — makes client-side handling inconsistent.
+- Unversioned routes — breaks clients when the contract changes.

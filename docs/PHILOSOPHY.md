@@ -9,7 +9,7 @@ AI coding assistants are powerful, but unconstrained they drift toward:
 - Missing security, accessibility, and quality concerns.
 - Breaking the app and stopping at "implemented."
 
-This framework solves those problems by encoding **engineering judgment** directly into the agent configuration. Agents don't guess what "done"  it's defined for them.means 
+This framework solves those problems by encoding **engineering judgment** directly into the agent configuration. Agents don't guess what "done" means — it's defined for them.
 
 ---
 
@@ -77,9 +77,9 @@ No perspective outranks another except: the Guardian's security findings always 
 ## Token-Based Abstraction
 
 The framework uses `{{TOKEN}}` placeholders instead of hardcoded technology names. This makes it:
-- ** use it with any language, framework, or toolchain.Portable** 
-- ** instructions explicitly state what technology they assume.Honest** 
-- ** when you change your stack, update one token and all instructions stay consistent.Upgradeable** 
+- **Portable** — use it with any language, framework, or toolchain.
+- **Honest** — instructions explicitly state what technology they assume.
+- **Upgradeable** — when you change your stack, update one token and all instructions stay consistent.
 
 Run `BOOTSTRAP.prompt.md` to replace tokens with your project's actual values.
 
@@ -87,10 +87,10 @@ Run `BOOTSTRAP.prompt.md` to replace tokens with your project's actual values.
 
 ## What This Framework Is Not
 
-- **Not a code  agents guide and verify; they don't generate production code on autopilot.generator** 
-- **Not a process enforcement  this is guidance, not a CI gate. Teams adopt it because it makes work better, not because they're forced to.tool** 
-- **Not a substitute for  agents escalate when they're uncertain. Human judgment resolves ambiguity that agents cannot.judgment** 
-- **Not prescriptive about  the framework works with any stack. Token replacement is the mechanism for making it your own.technology** 
+- **Not a code generator** — agents guide and verify; they don't generate production code on autopilot.
+- **Not a process enforcement tool** — this is guidance, not a CI gate. Teams adopt it because it makes work better, not because they're forced to.
+- **Not a substitute for judgment** — agents escalate when they're uncertain. Human judgment resolves ambiguity that agents cannot.
+- **Not prescriptive about technology** — the framework works with any stack. Token replacement is the mechanism for making it your own.
 
 ---
 

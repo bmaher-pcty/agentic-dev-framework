@@ -12,7 +12,7 @@ description: 'Container Compose patterns for container security, health checks, 
 - Reviewing infrastructure security before a PR merge.
 
 ## Procedure
-1. Use specific image version  never `:latest` in committed configuration.tags 
+1. Use specific image version tags — never `:latest` in committed configuration.
 2. Define health checks for every service that other services depend on.
 3. Set resource limits (memory, CPU) for all services.
 4. Run containers as non-root users where possible.
@@ -33,7 +33,7 @@ healthcheck:
 ## Service Template
 ```yaml
 service-name:
-  image: {{BASE_IMAGE}}         #  never :latestPinned 
+  image: {{BASE_IMAGE}}         # Pinned — never :latest
   restart: unless-stopped
   user: "1000:1000"             # Non-root
   depends_on:
@@ -79,5 +79,5 @@ service-name:
 - Hardcoding database passwords in compose files instead of `.env`.
 - Using `volumes: [".:/app"]` without `.dockerignore` (leaks `.env` into container).
 - Missing `start_period` in health checks causing false-negative failures during slow startup.
-- Exposing database port to  bypasses application auth.host 
-- Using `:latest`  non-deterministic builds that break without warning.tags 
+- Exposing database port to host — bypasses application auth.
+- Using `:latest` tags — non-deterministic builds that break without warning.

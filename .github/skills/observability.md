@@ -28,7 +28,7 @@ LogEntry {
   level       : 'error' | 'warn' | 'info' | 'debug'
   message     : string
   requestId?  : string        // Correlation ID
-  userId?     : string        // Auth user ID  never PII beyond thatonly 
+  userId?     : string        // Auth user ID only — never PII beyond that
   service     : string        // e.g. 'api' | 'worker' | 'scheduler'
   duration_ms?: number        // For timed operations
   error?      : { code, stack? }
@@ -59,12 +59,12 @@ interface LogEntry {
 
 ## Health Check Pattern
 ```
-// GET / basic livenesshealth 
+// GET /health — basic liveness
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: now() })
 })
 
-// GET /health/ readiness with dependency checksready 
+// GET /health/ready — readiness with dependency checks
 app.get('/health/ready', async (req, res) => {
   checks = { database: await checkDatabase() }
   healthy = all checks status == 'ok'
@@ -94,9 +94,9 @@ app.use((req, res, next) => {
 - [ ] Critical errors include enough context for reproduction without the original request.
 
 ## Anti-Patterns
-- Logging `req.headers.authorization` or `req.body. leaks credentials.password` 
-- Health check that returns 200 without verifying  hides outages.dependencies 
-- Using `console.log` instead of structured  loses queryability.logger 
-- Logging every request body in  performance and privacy risk.production 
-- Missing request  makes correlating distributed logs impossible.ID 
-- Using `error.message` from external APIs without  may leak internal URLs.sanitization 
+- Logging `req.headers.authorization` or `req.body.password` — leaks credentials.
+- Health check that returns 200 without verifying dependencies — hides outages.
+- Using `console.log` instead of structured logger — loses queryability.
+- Logging every request body in production — performance and privacy risk.
+- Missing request ID — makes correlating distributed logs impossible.
+- Using `error.message` from external APIs without sanitization — may leak internal URLs.

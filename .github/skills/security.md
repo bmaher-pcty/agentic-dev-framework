@@ -11,20 +11,22 @@ description: 'Security patterns for input validation, auth handling, rate limits
 ## Procedure
 1. Validate all user input with schemas (for example `{{VALIDATION_LIBRARY}}`).
 2. Enforce auth middleware on protected routes.
-3. Apply rate limits to sensitive endpoints.
-4. Keep secrets in environment variables only.
-5. Ensure logs are sanitized.
-6. Persist only the minimum result data needed for the product experience, and scope access to the owning user.
-7. Use OAuth code flow with PKCE for provider integrations.
-8. Validate provider scopes at setup and fail closed when required scopes are missing.
-9. Expire and validate OAuth state values; use short-lived state windows.
-10. Rotate refresh tokens safely and record failures without leaking credential material.
+3. Apply rate limits to sensitive endpoints, including login, register, token refresh, OAuth callback, and password-reset routes.
+4. Apply CSRF protection to cookie-authenticated state-changing routes (POST/PUT/PATCH/DELETE).
+5. Keep secrets in environment variables only.
+6. Ensure logs are sanitized.
+7. Persist only the minimum result data needed for the product experience, and scope access to the owning user.
+8. Use OAuth code flow with PKCE for provider integrations (e.g., `{{AUTH_PROVIDER}}`).
+9. Validate provider scopes at setup and fail closed when required scopes are missing.
+10. Expire and validate OAuth state values; use short-lived state windows.
+11. Rotate refresh tokens safely and record failures without leaking credential material.
 
 ## Checklist
 - [ ] Inputs validated before use (schema validation at route layer).
 - [ ] Auth tokens verified and expired safely on all protected routes.
-- [ ] Rate limiting enabled for login, register, and token refresh routes.
-- [ ] No hardcoded  all credentials in environment variables.secrets 
+- [ ] Rate limiting enabled for login, register, token refresh, OAuth callback, and password-reset routes.
+- [ ] CSRF protection enabled for cookie-authenticated state-changing routes.
+- [ ] No hardcoded secrets — all credentials in environment variables.
 - [ ] No secret/token/password fields in logs or error messages.
 - [ ] Debugging artifacts and runtime traces do not expose credential-bearing data.
 - [ ] Stored feature results are access-controlled and scoped to owning user.
@@ -46,8 +48,8 @@ router.get('/resource/:id', authenticateToken, async (req, res) => {
 ```
 
 ## Anti-Patterns
-- Using `findUnique({ where: { id } })` without `userId`  exposes all users' data.scope 
-- Returning 403 for non-owned  reveals the resource exists (enumeration).resources 
-- Logging `req.headers. exposes Bearer tokens.authorization` 
-- Using unsafe types as JWT  loses type safety on `req.user`.payload 
-- Returning raw {{ORM}}/database error  leaks schema details to the client.messages 
+- Using `findUnique({ where: { id } })` without `userId` scope — exposes all users' data.
+- Returning 403 for non-owned resources — reveals the resource exists (enumeration).
+- Logging `req.headers.authorization` — exposes Bearer tokens.
+- Using unsafe types as JWT payload — loses type safety on `req.user`.
+- Returning raw {{ORM}}/database error messages — leaks schema details to the client.

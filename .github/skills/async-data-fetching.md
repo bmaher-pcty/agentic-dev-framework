@@ -41,7 +41,7 @@ queryKeys = {
 <summary>{{DATA_FETCHING_LIB}} implementation reference</summary>
 
 ```typescript
-// keys. central query key factoryts 
+// keys.ts — central query key factory
 export const queryKeys = {
   users: {
     all: ['users'] as const,
@@ -112,8 +112,8 @@ const mutation = useMutation({
 - [ ] Error boundaries catch and display query failures gracefully.
 
 ## Anti-Patterns
-- Using string query keys  causes typo bugs and makes invalidation unreliable.inline 
-- Setting infinite stale time for data that  shows stale data indefinitely.changes 
-- Forgetting error rollback in optimistic  leaves UI in inconsistent state.updates 
-- Invalidating queries with overly broad  causes unnecessary refetches.keys 
-- Not handling the loading  shows empty/broken UI during fetches.state 
+- Using string query keys inline — causes typo bugs and makes invalidation unreliable.
+- Setting infinite stale time for data that changes — shows stale data indefinitely.
+- Forgetting error rollback in optimistic updates — leaves UI in inconsistent state.
+- Invalidating queries with overly broad keys — causes unnecessary refetches.
+- Not handling the loading state — shows empty/broken UI during fetches.

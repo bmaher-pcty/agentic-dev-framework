@@ -62,23 +62,32 @@ Assesses the experience from the user's perspective.
 
 ## Procedure
 
-1. **Scope  Identify what is being reviewed (files, feature, full codebase).Definition** 
-2. **Advocate  Start with strengths to establish baseline quality and patterns worth keeping.First** 
-3. **Parallel  Run Skeptic, Guardian, Craftsperson, and User Champion analyses.Perspectives** 
-4. **Synthesizer  Compare findings across perspectives, resolve conflicts, identify cross-cutting themes.Pass** 
-5. **Severity Classification:**
-6. **Consensus  Unified findings with specific file references, severity, owning perspective, and recommended fix.Output**    -    -    -    - 
+1. **Scope Definition** — Identify what is being reviewed (files, feature, full codebase).
+2. **Advocate First** — Start with strengths to establish baseline quality and patterns worth keeping.
+3. **Parallel Perspectives** — Run Skeptic, Guardian, Craftsperson, and User Champion analyses.
+4. **Synthesizer Pass** — Compare findings across perspectives, resolve conflicts, identify cross-cutting themes.
+5. **Severity Classification** — Rate each finding using the legend below.
+6. **Consensus Output** — Unified findings with specific file references, severity, owning perspective, and recommended fix.
+
+## Severity Classification
+
+- 🔴 **Critical** — production-breaking, security, or false-complete claim.
+- 🟠 **High** — significant defect, missing verification, or quality regression.
+- 🟡 **Medium** — maintainability, clarity, or minor UX gap.
+- 🔵 **Low** — polish or future enhancement.
+
+This legend mirrors the one in `.github/instructions/council-review.instructions.md`; both must stay in sync.
 
 ## Rules of Deliberation
 
 - The Advocate always speaks first. No review starts with criticism.
-- The Guardian has veto power on  security findings cannot be deprioritized below their assigned severity.security 
+- The Guardian has veto power on security — security findings cannot be deprioritized below their assigned severity.
 - The Synthesizer resolves disagreements by finding the approach that satisfies the most constraints.
-- Every finding must be  "improve X" is not acceptable; "change Y in file Z at line N" is.actionable 
+- Every finding must be actionable — "improve X" is not acceptable; "change Y in file Z at line N" is.
 - The User Champion's findings on result visibility carry the same weight as functional bugs.
 - No perspective can recommend weakening existing tests or security measures.
-- Security findings must align with the security instructions in `.github/instructions/`
-- Testing recommendations must align with the testing instructions in `.github/instructions/`
+- Security findings must align with the security instructions in `.github/instructions/`.
+- Testing recommendations must align with the testing instructions in `.github/instructions/`.
 
 ## Checklist
 

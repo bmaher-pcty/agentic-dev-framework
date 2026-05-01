@@ -1,5 +1,5 @@
 ---
-applyTo: "{{SERVER_SOURCE_DIR}}/**/*.ts,{{SERVER_SOURCE_DIR}}/**/*.js,{{CLIENT_SOURCE_DIR}}/src/**/*.ts,{{CLIENT_SOURCE_DIR}}/src/**/*.tsx,{{CLIENT_SOURCE_DIR}}/integration_tests/**/*.ts,.github/agents/**/*.md,.github/skills/**/*.md,.github/prompts/**/*.md"
+applyTo: "{{SOURCE_CODE_PATHS}},{{TEST_PATHS}},.github/agents/**/*.md,.github/skills/**/*.md,.github/prompts/**/*.md"
 ---
 
 # Council Review Instructions
@@ -16,7 +16,12 @@ Use these instructions when the Review Council agent is invoked or when a counci
 
 ## Severity Classification
 
-4. 3. 2. 1. 
+1. 🔴 **Critical** — production-breaking, security, or false-complete claim.
+2. 🟠 **High** — significant defect, missing verification, or quality regression.
+3. 🟡 **Medium** — maintainability, clarity, or minor UX gap.
+4. 🔵 **Low** — polish or future enhancement.
+
+This legend mirrors the one in `.github/skills/council-review.md`; both must stay in sync.
 ## Conflict Resolution
 
 1. When perspectives disagree, the Synthesizer resolves by finding the approach satisfying the most constraints.

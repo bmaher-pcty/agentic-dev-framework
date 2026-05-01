@@ -5,10 +5,10 @@ A portable, technology-agnostic Copilot configuration framework for agent-guided
 ## What This Is
 
 A complete set of `.github/` configuration files that give GitHub Copilot:
-- **10 specialized  each with a defined scope, constraints, and decision patternagents** 
-- **19 domain  procedural guidance for common engineering tasksskills** 
-- **Path-scoped  security, testing, branching, and review rules that activate by file patterninstructions** 
-- **Reusable  council review, codebase audit, PR readiness, security review, smoke verificationprompts** 
+- **10 specialized agents** — each with a defined scope, constraints, and decision pattern.
+- **19 domain skills** — procedural guidance for common engineering tasks.
+- **Path-scoped instructions** — security, testing, branching, and review rules that activate by file pattern.
+- **Reusable prompts** — council review, codebase audit, PR readiness, security review, smoke verification.
 
 All technology-specific values are replaced with `{{TOKEN}}` placeholders so the framework works for any project: web apps, CLIs, data pipelines, microservices.
 
@@ -17,6 +17,8 @@ All technology-specific values are replaced with `{{TOKEN}}` placeholders so the
 ### 1. Copy into your project
 ```bash
 cp -r agentic-dev-framework/.github /path/to/your-project/
+cp agentic-dev-framework/BOOTSTRAP.prompt.md /path/to/your-project/
+cp agentic-dev-framework/TOKENS.md /path/to/your-project/
 ```
 
 ### 2. Bootstrap your project
@@ -83,12 +85,12 @@ docs/
 
 ## Key Principles
 
-1. **User-visible verification is  work is not done until the user can see the outcome.mandatory** 
-2. **No broken  if a change breaks the app, continue until it works or a blocker is proven.handoff** 
-3. **90%+ test coverage  shortfalls must be called out explicitly.target** 
-4. **No false-complete  " "done" if the feature isn't working end-to-end.implemented" claims** 
-5. **Security is non- Guardian findings cannot be downgraded.negotiable** 
-6. **Scripts live under `{{SCRIPTS_ no operational scripts at repository root.DIR}}/`** 
+1. **User-visible verification is mandatory** — work is not done until the user can see the outcome.
+2. **No broken handoff** — if a change breaks the app, continue until it works or a blocker is proven.
+3. **90%+ test coverage target** — shortfalls must be called out explicitly.
+4. **No false-complete claims** — never say "done" or "implemented" if the feature isn't working end-to-end.
+5. **Security is non-negotiable** — Guardian findings cannot be downgraded.
+6. **Scripts live under `{{SCRIPTS_DIR}}/`** — no operational scripts at repository root.
 
 ## Token Replacement
 

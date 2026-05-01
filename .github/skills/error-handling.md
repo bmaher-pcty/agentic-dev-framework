@@ -59,17 +59,17 @@ function handleServiceError(err: unknown, req: Request, res: Response, next: Nex
 </details>
 
 ## Error Code Convention
-Format: `DOMAIN_NOUN_ e.g., `AUTH_TOKEN_EXPIRED`, `PROJECT_NOT_FOUND`, `USER_EMAIL_DUPLICATE`VERB` 
+Format: `DOMAIN_NOUN_VERB` — e.g., `AUTH_TOKEN_EXPIRED`, `PROJECT_NOT_FOUND`, `USER_EMAIL_DUPLICATE`.
 
 ## Checklist
 - [ ] Known failures use typed application errors with stable code strings.
 - [ ] Middleware returns consistent error payloads with `error` and `code` fields.
 - [ ] Unexpected failures logged once with context (requestId, userId) and stack trace.
 - [ ] No secrets, tokens, or credentials appear in error messages or logs.
-- [ ] 4xx errors are not logged as  log at `warn` level for client mistakes.errors 
+- [ ] 4xx errors are not logged as errors — log at `warn` level for client mistakes.
 
 ## Anti-Patterns
-- Swallowing errors with empty `catch`  failures become invisible.blocks 
-- Different error shapes on different  forces per-route client handling.routes 
-- Logging `error.stack` in production for every  noisy and potentially revealing.4xx 
-- Returning raw {{ORM}}/database error  leaks schema details to the client.messages 
+- Swallowing errors with empty `catch` blocks — failures become invisible.
+- Different error shapes on different routes — forces per-route client handling.
+- Logging `error.stack` in production for every 4xx — noisy and potentially revealing.
+- Returning raw {{ORM}}/database error messages — leaks schema details to the client.

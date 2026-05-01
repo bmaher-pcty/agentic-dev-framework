@@ -20,9 +20,9 @@ description: 'Client-side state management guidance for separating app state fro
 
 ## Procedure
 1. Keep app/global UI state in a dedicated state store.
-2. Keep server-sourced state in your data fetching  do not copy API responses into app state.library 
+2. Keep server-sourced state in your data fetching library — do not copy API responses into app state.
 3. Define stable, hierarchical query keys for all data fetching.
-4. Set appropriate stale/cache times per data  never rely on a default of 0.type 
+4. Set appropriate stale/cache times per data type — never rely on a default of 0.
 5. Persist only required state (auth) and clear all session state on logout.
 6. Invalidate related server caches after mutations.
 
@@ -98,7 +98,7 @@ const logout = () => {
 - [ ] Stale/cache times are explicitly set on all queries.
 
 ## Anti-Patterns
-- Copying data-fetching library data into app  creates stale data and synchronization bugs.state 
-- Using app state for server  misses automatic refetching, error handling, caching.state 
-- Not clearing data cache on  shows previous user's data to next user.logout 
-- Using one giant app state  creates unnecessary re-renders and poor maintainability.store 
+- Copying data-fetching library data into app state — creates stale data and synchronization bugs.
+- Using app state for server state — misses automatic refetching, error handling, caching.
+- Not clearing data cache on logout — shows previous user's data to next user.
+- Using one giant app state store — creates unnecessary re-renders and poor maintainability.
