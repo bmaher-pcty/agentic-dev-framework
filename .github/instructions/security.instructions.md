@@ -20,6 +20,8 @@ Use these instructions for authentication, authorization, OAuth integration, tok
 2. Validate provider scopes at setup and fail closed when required scopes are missing.
 3. Rotate refresh tokens safely and record refresh failures without leaking credential material.
 4. Use short-lived state values for OAuth callbacks and enforce expiration.
+5. Apply rate limiting to OAuth callback and token-refresh endpoints to prevent code/state replay abuse.
+6. Apply CSRF protection to cookie-authenticated state-changing routes.
 
 ## Secret Management Rules
 
