@@ -86,7 +86,7 @@ Speaks last. Challenges the frame of the problem itself.
 - 🟡 **Medium** — maintainability, clarity, or minor UX gap.
 - 🔵 **Low** — polish or future enhancement.
 
-This legend mirrors the one in `.github/instructions/council-review.instructions.md`; both must stay in sync.
+This is the canonical severity legend for all council reviews. All other files reference this definition.
 
 ## Rules of Deliberation
 
