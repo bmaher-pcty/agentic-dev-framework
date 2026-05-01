@@ -94,4 +94,4 @@ These tokens apply only when the project uses a monorepo layout. Set them when b
 6. After generation, delete `TOKENS.md` and `BOOTSTRAP.prompt.md` from your project.
 
 ## Framework Version
-agentic-dev-framework v1.1.0
+agentic-dev-framework v2.0.0

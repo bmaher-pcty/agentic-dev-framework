@@ -1,6 +1,6 @@
 # agentic-dev-framework
 
-A lean, technology-agnostic Copilot configuration framework. Drop in `AGENTS.md` and start getting better AI responses in under 5 minutes.
+A lean, technology-agnostic Copilot framework with 5 specialized agents and 8 domain skills.
 
 ## Why This Exists
 
@@ -111,6 +111,7 @@ TOKENS.md                          # Token reference
     pr-readiness.prompt.md
     security-review.prompt.md
     smoke-verification.prompt.md
+    repo-cleanup.prompt.md
 docs/
   templates/
     ADR.template.md
