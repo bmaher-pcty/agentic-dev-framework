@@ -9,8 +9,8 @@
 The agentic-dev-framework is a set of configuration files for GitHub Copilot (and compatible AI assistants) that encode engineering judgment as agent definitions, skills, and quality constraints.
 
 **What you get:**
-- **11 specialized agents** — each with a defined scope, constraints, and escalation protocol
-- **23 domain skills** — procedural guidance agents invoke for specific tasks
+- **12 specialized agents** — each with a defined scope, constraints, and escalation protocol
+- **25 domain skills** — procedural guidance agents invoke for specific tasks
 - **5 path-scoped instructions** — automatically apply to matching files
 - **6 reusable prompts** — for council reviews, audits, security review, and more
 - **A 7-perspective Review Council** — Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, and Innovator
@@ -37,7 +37,7 @@ See [`BOOTSTRAP.prompt.md`](../BOOTSTRAP.prompt.md) for the full wizard.
 
 **What bootstrap produces:**
 - `.github/copilot-instructions.md` with your actual stack
-- All 11 agents configured for your project type
+- All 12 agents configured for your project type
 - Instruction files with your actual glob patterns
 - `docs/FRAMEWORK_SETUP.md` — a persistent record of your configuration
 

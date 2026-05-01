@@ -5,8 +5,8 @@ A portable, technology-agnostic Copilot configuration framework for agent-guided
 ## What This Is
 
 A complete set of `.github/` configuration files that give GitHub Copilot:
-- **11 specialized agents** — each with a defined scope, constraints, and decision pattern.
-- **23 domain skills** — procedural guidance for common engineering tasks.
+- **12 specialized agents** — each with a defined scope, constraints, and decision pattern.
+- **25 domain skills** — procedural guidance for common engineering tasks.
 - **Path-scoped instructions** — security, testing, branching, and review rules that activate by file pattern.
 - **Reusable prompts** — council review, codebase audit, PR readiness, security review, smoke verification.
 
@@ -48,8 +48,9 @@ After bootstrapping, confirm:
     devops-infrastructure.agent.md
     performance.agent.md
     innovator.agent.md         # Creative problem-reframer and council voice
+    researcher.agent.md        # Evidence-based multi-perspective research
   skills/
-    # 23 skill files covering backend, frontend, infra, innovation, and cross-functional concerns
+    # 25 skill files covering backend, frontend, infra, research, innovation, and cross-functional concerns
   instructions/
     testing.instructions.md    # Verification gates (path-scoped)
     security.instructions.md   # Auth, secrets, infrastructure (path-scoped)
@@ -69,7 +70,7 @@ docs/
   PHILOSOPHY.md    # Framework design philosophy
 ```
 
-## The 11 Agents
+## The 12 Agents
 
 | Agent | When to Use | Invocation |
 |-------|------------|------------|
@@ -84,6 +85,7 @@ docs/
 | **DevOps/Infrastructure** | Container config, CI/CD, health checks | `@devops-infrastructure` |
 | **Performance** | Bundle size, query efficiency, response time | `@performance` |
 | **Innovator** | Reframes problems, scouts solutions, designs experiments | `@innovator` |
+| **Researcher** | Evidence-based multi-perspective research for agent decisions | `@researcher` |
 
 ## Key Principles
 
@@ -137,6 +139,8 @@ When a new version of `agentic-dev-framework` is released:
 | `#creative-problem-solving` | Innovation | Five Whys, SCAMPER, 10x Thinking, Pre-Mortem |
 | `#solution-scouting` | Innovation | 4-tier research, 10x Solution Test, Scout Report |
 | `#experimental-design` | Innovation | Hypothesis-driven spikes, time-box discipline |
+| `#research-methodology` | Research | Structured research process: question scoping, source discovery, evidence collection |
+| `#evidence-synthesis` | Research | Combining disparate sources into calibrated, impartial Research Briefs |
 
 ## Token Replacement
 

@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} - Copilot Instructions
 
-Agent-guided software development framework with 12 specialized agents and 26 domain skills.
+Agent-guided software development framework with 12 specialized agents and 25 domain skills.
 
 ## Copilot Customization Layout
 
