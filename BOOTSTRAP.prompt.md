@@ -11,6 +11,35 @@ argument-hint: "Describe your project or answer the 7 setup questions interactiv
 
 ---
 
+## Privacy Advisory
+
+> **Before proceeding, review this advisory if you are working in a corporate or regulated environment.**
+>
+> This bootstrap wizard may scan the following files in your project to auto-detect your technology stack:
+> - `package.json` / `package-lock.json`
+> - `pyproject.toml` / `requirements.txt` / `Pipfile`
+> - `go.mod` / `go.sum`
+> - `Cargo.toml`
+> - `Gemfile` / `Gemfile.lock`
+> - `pom.xml` / `build.gradle`
+>
+> **What these files may contain:**
+> - Dependency names and versions (generally non-sensitive)
+> - Internal package names that may reveal internal tooling or project structure
+> - Internal registry URLs (e.g., private npm, PyPI, or Maven registries)
+>
+> **What this wizard does NOT scan:**
+> - `.env` files or any file matching `.env*`
+> - `secrets/`, `certs/`, `keys/`, or any directory commonly used for credentials
+> - Any file with "secret", "credential", "key", or "token" in the filename
+> - Source code files (only manifest/config files are scanned for stack detection)
+>
+> **AI model data governance:** The contents of scanned files are sent to your configured AI assistant (GitHub Copilot, Claude, Cursor, etc.). Ensure this complies with your organization's AI usage policy before proceeding.
+>
+> **Manual mode:** If your organization restricts what may be sent to AI models, type **"manual mode"** at the start of the session to disable all file scanning. The wizard will ask all 7 questions interactively without reading any project files. You lose the auto-detect convenience but maintain full control over what is shared.
+
+---
+
 ## Phase 1: Smart Intake (7 Questions)
 
 Ask the developer these seven questions. Present them as a numbered list. Do not ask more than these seven unless a follow-up is needed to resolve genuine ambiguity. Let the answers unlock the rest.
@@ -33,9 +62,20 @@ _(Free-form. E.g., "React frontend, FastAPI backend, PostgreSQL, Docker". The AI
 If yes: "Great — I'll scan your project's `package.json`, `pyproject.toml`, `go.mod`, or equivalent to auto-detect the rest of the stack."
 _(Scanning can pre-fill 90% of tokens without asking. The AI should attempt to read these files from the current working directory.)_
 
-**Question 5: Team size**
-"How many people are actively developing this? (solo / small 2-5 / medium 6-15 / large 15+)"
-_(Used to scale agent coordination language — solo projects get simplified handoffs.)_
+**Question 5: Team size and deployment profile**
+"How many people are actively developing this? (solo / small 2–5 / medium 6–15 / large 15+)"
+"And which deployment profile fits best? (Solo / Small Team / Enterprise)"
+_(Used to scale agent coordination language and select the right profile.)_
+
+**Deployment Profile Reference:**
+
+| Profile | Team Size | Default Agents | Council Depth |
+|---------|-----------|----------------|---------------|
+| **Solo** | 1 developer | Engineer, Architect, Review Council, QA, Innovator | 4-perspective Micro Council |
+| **Small Team** | 2–10 | All 12 agents active | Full 7-perspective Council |
+| **Enterprise** | 10+ / regulated | All 12 agents + compliance gates | Full council + audit trail |
+
+All profiles enforce identical quality guarantees. Profiles reduce coordination overhead — not quality bars.
 
 **Solo Developer Note:** If your team size is `solo`, the bootstrap will apply the Solo Profile: 5 default agents (Engineer, System Architect, Review Council, QA, Innovator) with a 4-perspective Micro Council as the default review depth. All other agents are available via explicit invocation but deactivated by default. All quality guarantees (completion gate, security non-negotiable, no false-complete) apply identically in the Solo Profile.
 
@@ -270,6 +310,56 @@ Produce this summary after generation:
 5. Before first PR: run `@review-council` for a full perspective review
 6. Innovator tip: `@innovator: [describe any design decision you're unsure about]` to get a creative second opinion before committing
 ```
+
+---
+
+## Phase 7: Bootstrap Verification
+
+After generating files, execute these four self-checks before presenting the summary. Report the result of each check in the Bootstrap Complete output.
+
+### Check 1: Token Scan
+
+Run: `grep -r '{{[A-Z_]*}}' .github/ --include="*.md" --include="*.yml"`
+
+Expected result: Zero matches.
+
+If tokens remain: List each unresolved token, its file, and line number in the "Manual Review Required" section. Do not claim bootstrap is complete while unresolved tokens exist.
+
+### Check 2: Agent Count Match
+
+Run: `ls .github/agents/*.agent.md | wc -l`
+
+Expected result: The count must match the "Active Agents" number in the generated summary (active agents + stub agents = total agent files).
+
+If mismatch: List which agent files are present vs. expected and identify any missing stubs.
+
+### Check 3: Smoke Command Resolved
+
+Confirm the resolved `{{SMOKE_COMMAND}}` value does not contain the literal string `{{` — it must be a real command or a concrete placeholder like `npm test` or `pytest`.
+
+If it still contains `{{`: Flag as `REQUIRES-HUMAN-VERIFICATION` with note: "Smoke command was not resolved. Set it manually in `docs/FRAMEWORK_SETUP.md` and `.github/instructions/testing.instructions.md`."
+
+### Check 4: FRAMEWORK_SETUP.md Generated
+
+Confirm `docs/FRAMEWORK_SETUP.md` was generated and contains no unreplaced `{{TOKEN}}` patterns.
+
+If missing or contains tokens: Flag as a generation failure and list the unresolved items.
+
+### Verification Report
+
+Add this block to the Bootstrap Complete summary:
+
+```
+### Bootstrap Verification
+- ✅/❌ Token scan: [0 unresolved tokens / N tokens need manual review]
+- ✅/❌ Agent count: [N agent files match summary / mismatch: list]
+- ✅/❌ Smoke command resolved: [resolved to: <command> / REQUIRES-HUMAN-VERIFICATION]
+- ✅/❌ FRAMEWORK_SETUP.md generated: [generated, no tokens / N tokens unresolved]
+
+**Overall: [PASS / PASS WITH WARNINGS / FAIL]**
+```
+
+If FAIL: Do not commit `.github/` until the issues above are resolved.
 
 ---
 

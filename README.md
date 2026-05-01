@@ -14,6 +14,20 @@ A complete set of `.github/` configuration files that give GitHub Copilot:
 
 All technology-specific values are replaced with `{{TOKEN}}` placeholders so the framework works for any project: web apps, CLIs, data pipelines, microservices.
 
+## Deployment Profiles
+
+Choose a profile before running bootstrap. Profiles reduce coordination overhead — not quality bars.
+
+| Profile | Team Size | Default Agents | Council Depth |
+|---------|-----------|----------------|---------------|
+| **Solo** | 1 developer | Engineer, Architect, Review Council, QA, Innovator | 4-perspective Micro Council |
+| **Small Team** | 2–10 developers | All 12 agents active | Full 7-perspective Council |
+| **Enterprise** | 10+ / regulated | All 12 agents + compliance gates | Full council + audit trail |
+
+All profiles enforce identical quality guarantees: completion gate, security non-negotiable, no false-complete claims. To apply a profile, answer Question 5 during bootstrap ("solo" / "small team" / "enterprise").
+
+---
+
 ## Quick Start
 
 ### 1. Copy into your project
@@ -32,6 +46,14 @@ After bootstrapping, confirm:
 - `.github/copilot-instructions.md` has no `{{TOKEN}}` placeholders remaining
 - Agent files reference your actual framework/library names
 - `applyTo` patterns in instructions files match your directory structure
+
+### ✅ Success Signal
+
+Bootstrap worked if:
+- `grep -r '{{' .github/ --include="*.md"` returns **no matches**
+- `docs/FRAMEWORK_SETUP.md` exists and shows your project name in the header
+- Your first `@engineer` invocation gets context about your actual stack, not generic token placeholders
+- Bootstrap Verification (Phase 7) reported **PASS** or **PASS WITH WARNINGS** with a clear list of any manual items
 
 ## Directory Layout
 
@@ -100,18 +122,15 @@ docs/
 
 ## Upgrading the Framework
 
-When a new version of `agentic-dev-framework` is released:
+Run `upgrade.prompt.md` in your AI assistant with your project open. Provide your current and target framework versions. The upgrade wizard:
+1. Reads the CHANGELOG to classify what changed (additive, modifying, breaking, structural)
+2. Produces a token-aware diff for each modified file — showing framework improvements alongside your resolved values
+3. Applies additive changes automatically
+4. Presents breaking and structural changes for your explicit approval before applying
+5. Verifies the upgrade applied correctly and reports any regressions
 
-1. **Check the CHANGELOG** — Review what changed in the new version. Some changes are additive (new agents, new skills); others modify existing files.
-
-2. **Pull the new framework files** — Do NOT re-run `BOOTSTRAP.prompt.md`. Instead, diff the new framework version against your bootstrapped `.github/` directory and selectively apply changes.
-
-3. **Preserve your token values** — Your bootstrapped `.github/` files have actual values where the framework has `{{TOKENS}}`. Never replace your resolved values with tokens during an upgrade.
-
-4. **Re-run `BOOTSTRAP.prompt.md --update-only`** (if supported) — Copies new files and new sections from the framework without touching your token-resolved content.
-
-5. **Check `docs/FRAMEWORK_SETUP.md`** — Update it to reflect the new framework version after upgrading.
-
+> ⚠️ **Never re-run `BOOTSTRAP.prompt.md` to upgrade.** Bootstrap is for initial setup only. Re-running it will overwrite your resolved token values with generic `{{TOKEN}}` placeholders, reverting your project-specific configuration.
+>
 > **Principle:** Upgrading adds framework improvements. It never removes your project-specific configuration.
 
 ## Skills
