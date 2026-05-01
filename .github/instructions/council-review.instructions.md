@@ -14,6 +14,7 @@ Use these instructions when the Review Council agent is invoked or when a counci
 4. Each perspective section must contain at least two concrete findings with file references.
 5. The Guardian and User Champion sections must always appear as dedicated sections in the output, never folded into other perspectives.
 6. Findings without specific file paths, line numbers, or concrete examples are not valid findings.
+7. High-Stakes reviews that result in a significant architectural decision (new integration pattern, security approach change, data model revision) should produce an ADR using `docs/templates/ADR.template.md`, filed as `docs/adr/ADR-[N]-[title].md`. An ADR is required when a Guardian finding is deferred — per `docs/PHILOSOPHY.md`, deferring a security finding requires documented justification.
 
 ## Severity Classification
 
