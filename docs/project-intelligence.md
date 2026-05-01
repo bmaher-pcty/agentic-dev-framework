@@ -1,6 +1,20 @@
+---
+framework_version: "v1.0.0"
+last_updated: ""
+last_updated_by: ""
+anti_pattern_count: 0
+locked_decision_count: 0
+open_experiment_count: 0
+coverage_hotspot_count: 0
+---
+
 # Project Intelligence
 
-> Updated after each council review. Agents read this file at the start of council reviews.
+> Updated after each council review. Agents read this file at the start of every session.
+> **Agents: Read the front-matter counts to assess whether this file has been populated.**
+> If all counts are zero, this file has not been populated — run a council review first.
+>
+> **Anti-pattern count must match the number of entries in the Known Anti-Patterns section.**
 > Keep entries specific to *this codebase* — not generic best practices.
 
 ---

@@ -139,7 +139,38 @@ jobs:
           fi
           echo "✅ Open handoffs within acceptable range."
 
-  # Gate 5: Framework Integrity Check
+  # Gate 5: Project Intelligence Health Check
+  # Warns when docs/project-intelligence.md has not been updated after a council review.
+  # Detects placeholder content that means the file was never populated.
+  project-intelligence-health:
+    name: Project Intelligence Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check project-intelligence.md is populated
+        run: |
+          if [ ! -f "docs/project-intelligence.md" ]; then
+            echo "⚠️  docs/project-intelligence.md not found."
+            echo "   Create it after your first council review (copy docs/templates or run @review-council)."
+            exit 0  # Warning only — new projects may not have run a council review yet.
+          fi
+          # Detect placeholder content that indicates the file was never populated.
+          if grep -q "No patterns documented yet" docs/project-intelligence.md; then
+            echo "⚠️  docs/project-intelligence.md still contains placeholder content."
+            echo "   Run @review-council to populate it with real findings."
+            echo "   On the Enterprise profile, change 'exit 0' to 'exit 1' to make this blocking."
+            exit 0  # Warning only by default. Promote to exit 1 for stricter enforcement.
+          fi
+          # Detect front-matter with all counts at zero (populated template but never updated).
+          if grep -qE "^anti_pattern_count: 0$" docs/project-intelligence.md && \
+             grep -qE "^locked_decision_count: 0$" docs/project-intelligence.md; then
+            echo "⚠️  project-intelligence.md front-matter shows zero anti-patterns and zero locked decisions."
+            echo "   Either this project has run no council reviews, or the file was not updated after review."
+            exit 0  # Warning only.
+          fi
+          echo "✅ project-intelligence.md has been updated with real content."
+
+  # Gate 6: Framework Integrity Check
   # Asserts that agent and skill directory counts match the documented counts.
   # When adding or removing agents/skills, update EXPECTED_AGENTS/EXPECTED_SKILLS
   # here AND update README.md, copilot-instructions.md, and docs/GETTING_STARTED.md.
