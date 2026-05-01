@@ -84,14 +84,5 @@ These tokens apply only when the project uses a monorepo layout. Set them when b
 | `{{SHARED_LIB_DIR}}` | Monorepo | Optional (N/A if not monorepo) | Shared library directory consumed by multiple services | `shared`, `packages/common`, `libs/shared` |
 | `{{SERVICE_MANIFEST}}` | Monorepo | Optional (N/A if not monorepo) | Inline markdown table of services — see `monorepo.instructions.md` for format | *(table rows)* |
 
-## Bootstrap Process
-
-1. Copy this framework into your project's `.github/` directory.
-2. Open `BOOTSTRAP.prompt.md` in your AI editor.
-3. Answer the 7 smart intake questions — the AI infers the rest from your stack.
-4. Review the complete token map and approve or correct it in a single pass.
-5. The bootstrap generates tailored files with all tokens replaced.
-6. After generation, delete `TOKENS.md` and `BOOTSTRAP.prompt.md` from your project.
-
 ## Framework Version
 agentic-dev-framework v2.0.0

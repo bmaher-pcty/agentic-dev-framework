@@ -49,43 +49,9 @@ Common variables for auth/OAuth features:
 
 When introducing new auth providers or secrets, add a placeholder to `.env.example` in the same change.
 
-## SAST and Framework Security Coordination
+## SAST Coordination
 
-This framework's security rules operate **alongside** your SAST tooling — they address different layers and must never be traded against each other.
-
-### What SAST Does
-
-Static Analysis Security Testing tools (Snyk, Semgrep, Veracode, Checkmarx, SonarQube, GitLab SAST, CodeQL) find:
-- Known vulnerability patterns in code (SQL injection, XSS, insecure deserialization, etc.)
-- Dependency CVEs and outdated packages with known exploits
-- Misconfigured security settings in infrastructure-as-code
-- Some categories of hardcoded secrets (coverage varies by tool and ruleset)
-
-### What This Framework Does
-
-The framework's security rules enforce:
-- Architectural decisions that prevent entire classes of vulnerabilities (OAuth PKCE, HTTP-only cookies, input validation at every layer)
-- Code review gates that catch insecure patterns before SAST runs (Guardian perspective in council reviews)
-- Operational hygiene that SAST cannot verify (secrets in environment variables only, no credentials in logs, health check endpoint design)
-- Agent behavior constraints that prevent AI-assisted code from bypassing security controls
-
-### The Coordination Rule
-
-**SAST must never be disabled to adopt this framework.**
-
-These are additive controls. If your CI pipeline includes a SAST tool, keep it running. Add the framework's CI quality gates alongside it — do not replace one with the other. Specifically:
-
-1. The secret-scan gate (TruffleHog) in `docs/templates/ci/` is complementary to SAST secret detection, not a replacement. If your SAST tool already covers hardcoded secret detection with HIGH/CRITICAL findings, you may substitute the TruffleHog gate with a gate that asserts your SAST run completed with zero HIGH/CRITICAL secret findings — but you must keep one of the two gates.
-2. SAST findings at HIGH or CRITICAL severity are treated as Guardian-level findings in council reviews — they cannot be downgraded in severity by other council perspectives.
-3. If a SAST tool is intentionally disabled or excluded from a path (e.g., a legacy file excluded by configuration), that exclusion must be documented in `docs/adr/` with rationale and a compensating control.
-4. When AI-generated code is introduced, run SAST on the diff before merging — AI assistants can produce code that passes human review but fails static analysis.
-
-### When SAST and Framework Rules Conflict
-
-They should not conflict — but if a SAST tool flags code that this framework's rules permit, or vice versa:
-- The stricter control wins. Never relax either to satisfy the other.
-- If the conflict reflects a genuine ambiguity, create an ADR documenting the decision.
-- Surface the conflict to the Guardian perspective in the next council review.
+These rules are **additive** to SAST tooling (Snyk, Semgrep, CodeQL, etc.) — not a replacement. Never disable existing SAST to adopt this framework. SAST findings at HIGH or CRITICAL severity are treated as Guardian-level findings in council reviews and cannot be downgraded by other perspectives.
 
 ## Client-Side Security Rules
 

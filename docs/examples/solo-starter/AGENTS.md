@@ -12,7 +12,7 @@
 
 *Use when implementing features, fixing bugs, or validating runtime behavior.*
 
-**Before starting:** Skim `docs/project-intelligence.md` for known anti-patterns that match the task domain. If the file is absent or placeholder-only, skip and note it. For High-Stakes tasks (auth, schema, security): say "This touches [surface]. I will run full verification before declaring done. Guardian findings require an ADR to dismiss — confirm before we proceed."
+**Before starting:** For High-Stakes tasks (auth, schema, security): say "This touches [surface]. I will run full verification before declaring done. Guardian findings require an ADR to dismiss — confirm before we proceed."
 
 **Constraints:**
 - Do not declare done until the implemented behavior is verified in the real user path, or the blocker is explicitly stated.
@@ -29,7 +29,7 @@
 
 *Use when designing APIs, data models, service boundaries, or integration patterns.*
 
-**Before starting:** Check `docs/open-handoffs.md` for OPEN architectural escalations. Read `docs/project-intelligence.md` "Locked Architectural Decisions" before proposing structural changes.
+**Before starting:** Review `docs/adr/` for relevant locked architectural decisions before proposing structural changes.
 
 **Constraints:**
 - Reuse established patterns before introducing new abstractions.
@@ -45,7 +45,7 @@
 
 *Use before PR merge, after feature completion, or when you want multi-perspective quality review.*
 
-> **Honest Disclosure:** This council is simulated by a single model playing multiple roles. Perspectives share the same model weights and are not truly independent. For 🔴 High-Stakes security/auth changes, consider the multi-model workflow in `.github/prompts/multi-model-council.prompt.md`.
+> **Honest Disclosure:** This council is simulated by a single model playing multiple roles. Perspectives share the same model weights and are not truly independent. For 🔴 High-Stakes security/auth changes, run the same council prompts in two different AI assistants and compare findings.
 
 **Seven perspectives:** Advocate (strengths) → Skeptic (failure modes) → Guardian (security) → Craftsperson (code quality) → User Champion (UX/accessibility) → Synthesizer (cross-cutting) → Innovator (alternative framing, speaks last).
 
@@ -56,7 +56,7 @@
 
 **For solo use — Sequential Blinding Mode:** For High-Stakes reviews, write Guardian first, then Skeptic, then the rest — each without reading prior perspectives. More divergent findings.
 
-**Output:** Council Summary → Advocate Highlights → Critical Findings table → Security Assessment → UX Assessment → Prioritized Action Items → Post-Session Capture prompt (run `.github/prompts/post-mortem.prompt.md`).
+**Output:** Council Summary → Advocate Highlights → Critical Findings table → Security Assessment → UX Assessment → Prioritized Action Items.
 
 ---
 
@@ -99,5 +99,5 @@ In solo mode, you are all five agents. Use these rules to avoid coordination ove
 - **When starting a task:** Triage it (🟢/🟡/🔴) and apply the matching Engineer protocol.
 - **When architecture is uncertain:** Switch to Architect mode, document the decision, then return to Engineer.
 - **Before every PR:** Run a 4-perspective Micro Council (Advocate + Guardian + Craftsperson + User Champion). Full 7-perspective for High-Stakes changes.
-- **After any failure:** Run `.github/prompts/post-mortem.prompt.md` to capture findings into `docs/project-intelligence.md`.
+- **After any failure:** Review what went wrong. If architecture changed, update or create an ADR.
 - **When something feels off:** Before re-implementing, invoke the Innovator and challenge the current framing.

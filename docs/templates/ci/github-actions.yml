@@ -120,62 +120,10 @@ jobs:
             echo "✅ No unreplaced tokens found in source files."
           fi
 
-  # Gate 4: Open Handoffs Check
-  # Warns if there are more than 5 OPEN agent escalations that haven't been resolved.
-  handoff-check:
-    name: Open Handoffs Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check open handoffs count
-        run: |
-          if [ -f "docs/open-handoffs.md" ]; then
-            OPEN_COUNT=$(grep -c "\[OPEN\]" docs/open-handoffs.md || true)
-            echo "Open handoffs: $OPEN_COUNT"
-            if [ "$OPEN_COUNT" -gt 5 ]; then
-              echo "⚠️  WARNING: $OPEN_COUNT open agent handoffs in docs/open-handoffs.md"
-              echo "   Consider resolving some before merging."
-              # This is a warning, not a failure. Remove 'exit 0' to make it blocking.
-              exit 0
-            fi
-          fi
-          echo "✅ Open handoffs within acceptable range."
-
-  # Gate 5: Project Intelligence Health Check
-  # Warns when docs/project-intelligence.md has not been updated after a council review.
-  # Detects placeholder content that means the file was never populated.
-  project-intelligence-health:
-    name: Project Intelligence Health Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check project-intelligence.md is populated
-        run: |
-          if [ ! -f "docs/project-intelligence.md" ]; then
-            echo "⚠️  docs/project-intelligence.md not found."
-            echo "   Create it after your first council review (copy docs/templates or run @review-council)."
-            exit 0  # Warning only — new projects may not have run a council review yet.
-          fi
-          # Detect placeholder content that indicates the file was never populated.
-          if grep -q "No patterns documented yet" docs/project-intelligence.md; then
-            echo "⚠️  docs/project-intelligence.md still contains placeholder content."
-            echo "   Run @review-council to populate it with real findings."
-            echo "   On the Enterprise profile, change 'exit 0' to 'exit 1' to make this blocking."
-            exit 0  # Warning only by default. Promote to exit 1 for stricter enforcement.
-          fi
-          # Detect front-matter with all counts at zero (populated template but never updated).
-          if grep -qE "^anti_pattern_count: 0$" docs/project-intelligence.md && \
-             grep -qE "^locked_decision_count: 0$" docs/project-intelligence.md; then
-            echo "⚠️  project-intelligence.md front-matter shows zero anti-patterns and zero locked decisions."
-            echo "   Either this project has run no council reviews, or the file was not updated after review."
-            exit 0  # Warning only.
-          fi
-          echo "✅ project-intelligence.md has been updated with real content."
-
-  # Gate 6: Framework Integrity Check
+  # Gate 4: Framework Integrity Check
   # Asserts that agent and skill directory counts match the documented counts.
   # When adding or removing agents/skills, update EXPECTED_AGENTS/EXPECTED_SKILLS
-  # here AND update README.md, copilot-instructions.md, and docs/GETTING_STARTED.md.
+  # here AND update README.md and .github/copilot-instructions.md.
   framework-integrity:
     name: Framework Integrity Check
     runs-on: ubuntu-latest
@@ -187,16 +135,16 @@ jobs:
           SKILL_COUNT=$(find .github/skills -name "*.md" | wc -l | tr -d ' ')
 
           # Update these when adding or removing agents/skills.
-          # Then update README.md, .github/copilot-instructions.md, and docs/GETTING_STARTED.md.
-          EXPECTED_AGENTS=12
-          EXPECTED_SKILLS=25
+          # Then update README.md, .github/copilot-instructions.md, and README.md.
+          EXPECTED_AGENTS=5
+          EXPECTED_SKILLS=8
 
           FAILED=0
 
           if [ "$AGENT_COUNT" -ne "$EXPECTED_AGENTS" ]; then
             echo "❌ Agent count mismatch: found $AGENT_COUNT, expected $EXPECTED_AGENTS"
             echo "   Add/remove agent files OR update EXPECTED_AGENTS in this job."
-            echo "   Also update: README.md, .github/copilot-instructions.md, docs/GETTING_STARTED.md"
+            echo "   Also update: README.md, .github/copilot-instructions.md, README.md"
             FAILED=1
           else
             echo "✅ Agent count: $AGENT_COUNT (expected $EXPECTED_AGENTS)"
@@ -205,7 +153,7 @@ jobs:
           if [ "$SKILL_COUNT" -ne "$EXPECTED_SKILLS" ]; then
             echo "❌ Skill count mismatch: found $SKILL_COUNT, expected $EXPECTED_SKILLS"
             echo "   Add/remove skill files OR update EXPECTED_SKILLS in this job."
-            echo "   Also update: README.md, .github/copilot-instructions.md, docs/GETTING_STARTED.md"
+            echo "   Also update: README.md, .github/copilot-instructions.md, README.md"
             FAILED=1
           else
             echo "✅ Skill count: $SKILL_COUNT (expected $EXPECTED_SKILLS)"

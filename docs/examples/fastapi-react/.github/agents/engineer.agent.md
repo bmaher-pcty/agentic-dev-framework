@@ -11,19 +11,13 @@ user-invocable: true
 ## Session Start Protocol (Risk-Tiered)
 
 ### 🟢 Trivial task (≤3 files, no security/schema/contract surfaces)
-1. Skim `docs/project-intelligence.md` "Known Anti-Patterns" headings. If absent or placeholder-only, skip and note: "project-intelligence.md not yet populated."
-2. State: "Triaged 🟢 Trivial — no project-intelligence reads required" *or* name the anti-pattern that did apply.
+State: "Triaged 🟢 Trivial" and proceed.
 
 ### 🟡 Standard task (multi-file feature work, no security/schema surfaces)
-1. Read `docs/project-intelligence.md` "Known Anti-Patterns" and "Locked Architectural Decisions" sections. If absent/placeholder-only, skip and note: "project-intelligence.md not yet populated — run `.github/prompts/post-mortem.prompt.md` after this session to start capturing."
-2. Check `docs/open-handoffs.md` for OPEN handoffs addressed to the Engineer.
-3. State which anti-patterns and locked decisions apply.
+Check `docs/adr/` for relevant locked architectural decisions and state which apply.
 
 ### 🔴 High-Stakes task (auth, schema, API contract, security-relevant deps)
-0. **Pre-commitment:** "This touches [auth/schema/security]. I will run full verification before declaring done. Guardian findings cannot be dismissed without a documented ADR — please confirm before we proceed."
-1. Everything from 🟡 Standard.
-2. Read `docs/PHILOSOPHY.md` "Security findings are never downgraded" section.
-3. Pre-declare the verification path: `make smoke` plus scoped pytest and Playwright tests.
+State: "This touches [auth/schema/security]. I will run full verification before declaring done. Guardian findings cannot be dismissed without a documented ADR — please confirm before we proceed." Then check `docs/adr/` for locked decisions.
 
 ---
 

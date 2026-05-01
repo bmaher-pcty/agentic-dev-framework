@@ -93,12 +93,6 @@ jobs:
               'README.md',
               'BOOTSTRAP.prompt.md',
               'TOKENS.md',
-              'docs/GETTING_STARTED.md',
-              'docs/FRAMEWORK-SPEC.md',
-              'docs/FRAMEWORK_PROFILE.md',
-              'docs/PHILOSOPHY.md',
-              'docs/project-intelligence.md',
-              'upgrade.prompt.md',
           ]
           # Singular -> plural patterns the docs use ("12 agents", "29 skills", etc.)
           unit_words = {
