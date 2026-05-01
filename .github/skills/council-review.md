@@ -100,6 +100,24 @@ This is the canonical severity legend for all council reviews. All other files r
 - Security findings must align with the security instructions in `.github/instructions/`.
 - Testing recommendations must align with the testing instructions in `.github/instructions/`.
 
+## Innovator: Example Valid Findings
+
+These examples illustrate what distinguishes a valid Innovator finding from a restatement of concerns already raised by other perspectives.
+
+**Example 1 — Valid: Alternative Framing**
+> *Context: The Guardian flagged insufficient rate limiting on the authentication endpoint. The Craftsperson noted the implementation doesn't follow the existing middleware pattern.*
+>
+> **Innovator finding:** "Both findings assume rate limiting must be implemented at the application layer. But this codebase already has a reverse proxy (`{{REVERSE_PROXY}}`) in front of the API. Rate limiting in the proxy layer would catch all traffic — including health check abuse and bot scanning — before it reaches the application. The application-layer rate limiter would only catch authenticated traffic. Consider whether the architectural responsibility belongs in the proxy, not the route handler. If it does, the Guardian's concern is fully addressed without adding application code, and the Craftsperson's middleware pattern concern becomes irrelevant."
+>
+> *Why this is Valid:* It presents a structurally different solution layer (proxy vs. application) that neither the Guardian nor the Craftsperson considered, and it would fully resolve both concerns if correct.
+
+**Example 2 — Valid: Assumption Challenged and Held**
+> *Context: The Advocate praised the new caching strategy. The Skeptic questioned its staleness window. The Synthesizer proposed a shorter TTL.*
+>
+> **Innovator finding:** "The Skeptic and Synthesizer both assume the correct solution is to tune the cache TTL. But the underlying assumption is that users need real-time data for this feature. The product spec says this is a reporting dashboard refreshed daily. If the domain requirement is 'data current as of yesterday,' the 'staleness' concern isn't a technical problem — it's a product requirement that was never stated. Before shortening the TTL, confirm with the PM whether the user actually needs sub-minute freshness. If they don't, the cache can be left as-is and the concern is resolved at the requirements layer."
+>
+> *Why this is Valid:* It challenges the shared assumption that all six perspectives accepted (that freshness is required), and proposes resolving the concern at the requirements layer rather than the technical layer. The assumption was challenged — and the Innovator is calling for investigation before any code change.
+
 ## Checklist
 
 - [ ] Scope is clearly defined before review begins.
