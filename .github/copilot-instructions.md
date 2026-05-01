@@ -391,7 +391,7 @@ See `.github/instructions/testing.instructions.md` for test integrity standards,
 
 ## Constraints (Non-Negotiable)
 
-1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base.
+1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base. *(Rationale: AI-generated UI bypasses the UX Designer and Accessibility agent review gates, producing components that may fail WCAG 2.1 AA before human oversight can catch them.)*
 2. **No copy-paste code** — Extract to utilities; use the DRY principle.
 3. **No abandoned PRs** — Features ship or get reverted; no "draft" PRs.
 4. **No secrets in logs** — Mask tokens/passwords; sanitize error messages.
