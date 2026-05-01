@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} - Copilot Instructions
 
-Agent-guided software development framework with 10 specialized agents and 19 domain skills.
+Agent-guided software development framework with 11 specialized agents and 22 domain skills.
 
 ## Copilot Customization Layout
 
@@ -25,7 +25,7 @@ If a path-scoped instruction contradicts this file, the path-scoped instruction 
 
 ---
 
-## 10 Agents (Roles)
+## 11 Agents (Roles)
 
 Each agent has:
 - **Scope**: What they decide/design
@@ -93,7 +93,13 @@ Each agent has:
 **Decision Pattern**: Prefer algorithmic improvements over caching hacks; profile before optimizing; escalate architectural-level optimizations to Architect, large refactors to Engineer
 **Tools**: Skills: #async-data-fetching, #data-modeling, #observability
 
-## 19 Domain Skills
+### 11. Innovator Agent
+**Scope**: Problem reframing, cross-domain solution scouting, hypothesis-driven experimentation, creative alternatives before architectural commitment, seventh council perspective
+**Constraints**: Creative proposals must have a plausible implementation path — pure speculation is not a deliverable; research must cite sources and confidence levels; experiments must be timeboxed with a defined success criterion before they start; does not override security constraints; does not ship experimental code to production without Engineer sign-off and test coverage; does not block the team indefinitely — if no better approach surfaces in the time-box, the current approach proceeds
+**Decision Pattern**: Applies Five Whys and constraint classification before proposing alternatives; scouts prior art using the 4-tier research methodology; designs hypothesis-driven spikes for uncertain proposals; speaks last on the Review Council and must add a genuinely new framing not raised by any other perspective
+**Tools**: Skills: #creative-problem-solving, #solution-scouting, #experimental-design, #internet-research
+
+## 22 Domain Skills
 
 > **Note:** Skill categories reflect web application defaults. Reorganize for your project type.
 
@@ -122,7 +128,12 @@ Each agent has:
 ### Cross-Functional Skills
 17. **#internet-research** — External evidence gathering with skeptical validation and confidence calibrated by independent source convergence
 18. **#pull-request-readiness** — Pre-PR quality gates: latest main sync, commit/PR quality, functionality verification, and full test execution before push/opening PR
-19. **#council-review** — Six-perspective structured review methodology, severity classification, conflict resolution
+19. **#council-review** — Seven-perspective structured review methodology, severity classification, conflict resolution
+
+### Innovation Skills
+20. **#creative-problem-solving** — Lateral thinking, problem reframing (Five Whys, Constraint Removal, SCAMPER, Pre-Mortem, 10x Thinking), cross-domain pattern recognition
+21. **#solution-scouting** — Deep research methodology with 4-tier source hierarchy, 10x Solution Test, confidence reporting (High/Medium/Low), Scout Report format
+22. **#experimental-design** — Hypothesis-driven spike design, spike types (Technology/Performance/Feasibility/Risk), time-box discipline, Spike Summary format
 
 ## Agent Invocation
 
@@ -259,6 +270,22 @@ Each agent has:
 @review-council: Full code review before PR merge
 @review-council: Audit this prompt for quality and completeness
 @review-council: Review the auth middleware changes
+```
+
+### When to Use Innovator
+```
+# Web app
+@innovator: We keep adding caching layers to the API — are we solving the wrong problem?
+@innovator: Three different teams have proposed three different session management approaches. What would a 10x better design look like?
+@innovator: Before we commit to this real-time sync architecture, what alternatives exist?
+
+# CLI/service
+@innovator: The plugin system design feels accidental — is there a better structural model?
+@innovator: We've tried two config file formats and neither feels right. What does prior art suggest?
+
+# Data pipeline
+@innovator: Our ETL pipeline is getting complex. Are we solving the right problem, or is the data model the issue?
+@innovator: Before we build a custom scheduler, what approaches exist for this class of problem?
 ```
 
 ## Development Phase Structure
@@ -484,6 +511,7 @@ is gitignored.
 - [agents/accessibility.agent.md](agents/accessibility.agent.md) — WCAG 2.1 AA accessibility agent
 - [agents/devops-infrastructure.agent.md](agents/devops-infrastructure.agent.md) — Container, CI/CD, and runtime infrastructure agent
 - [agents/performance.agent.md](agents/performance.agent.md) — Performance profiling and optimization agent
+- [agents/innovator.agent.md](agents/innovator.agent.md) — Creative problem-reframer, solution scout, and experimentalist agent
 
 ## Custom Agent Tool Profiles
 
@@ -497,6 +525,7 @@ is gitignored.
 - Accessibility: `tools: [read, search, edit, execute]`
 - DevOps Infrastructure: `tools: [read, search, edit, execute]`
 - Performance: `tools: [read, search, execute]`
+- Innovator: `tools: [read, search, web, todo]`
 
 ## Questions?
 
@@ -506,6 +535,7 @@ Consult the relevant agent for decisions:
 - @engineer: Engineer
 - @qa: QA
 - @designer: Designer
+- @innovator: Innovator (creative challenge, alternative framing, pre-commitment research)
 
 See [agents/technical-writer.agent.md](agents/technical-writer.agent.md) for documentation cleanup workflow and [skills/](skills/) for skill definitions.
 
