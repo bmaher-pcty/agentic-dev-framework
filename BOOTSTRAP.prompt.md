@@ -224,7 +224,7 @@ With the approved map, generate the tailored `.github/` folder:
 5. For skills that are N/A for this project type (e.g., `ui-component-design.md` for a CLI project):
    - Add `status: inactive` to frontmatter and a note at the top.
 6. Resolve `applyTo` globs in `testing.instructions.md`, `security.instructions.md`, and `council-review.instructions.md` using `{{SOURCE_CODE_PATHS}}` and `{{TEST_PATHS}}` from the approved map.
-7. Generate `docs/FRAMEWORK_SETUP.md` with the following content:
+7. Generate `docs/FRAMEWORK_SETUP.md` with the following content (uses `docs/templates/FRAMEWORK_SETUP.md.template.md` as the structural template — follow that template's section order and table formats):
    - **Bootstrap date** — the date bootstrap was run.
    - **Framework version** — v1.0.0 (or read from README.md if available).
    - **Active agents** — list of N of 11 active agents.
