@@ -8,7 +8,7 @@ A portable, technology-agnostic Copilot configuration framework for agent-guided
 
 A complete set of `.github/` configuration files that give GitHub Copilot:
 - **12 specialized agents** — each with a defined scope, constraints, and decision pattern.
-- **25 domain skills** — procedural guidance for common engineering tasks.
+- **29 domain skills** — procedural guidance for common engineering tasks.
 - **Path-scoped instructions** — security, testing, branching, and review rules that activate by file pattern.
 - **Reusable prompts** — council review, codebase audit, PR readiness, security review, smoke verification.
 
@@ -74,7 +74,7 @@ Bootstrap worked if:
     innovator.agent.md         # Creative problem-reframer and council voice
     researcher.agent.md        # Evidence-based multi-perspective research
   skills/
-    # 25 skill files covering backend, frontend, infra, research, innovation, and cross-functional concerns
+    # 29 skill files covering backend, frontend, infra, operations, research, innovation, and cross-functional concerns
   instructions/
     testing.instructions.md    # Verification gates (path-scoped)
     security.instructions.md   # Auth, secrets, infrastructure (path-scoped)
@@ -153,6 +153,10 @@ Run `upgrade.prompt.md` in your AI assistant with your project open. Provide you
 | `#log-analysis-and-triage` | Frontend | Post-smoke log triage, release-gate policy |
 | `#accessibility-testing` | Frontend | axe-core integration, keyboard nav, WCAG 2.1 AA |
 | `#container-operations` | Infrastructure | Container security, health checks, compose |
+| `#deployment` | Operations | Deployment verification, rollback procedure, blue-green/canary |
+| `#secrets-rotation` | Operations | Rotation triggers, zero-downtime rotation, rotation verification |
+| `#api-deprecation` | Operations | Deprecation notices, sunset headers, migration guides |
+| `#db-backup-recovery` | Operations | Backup verification, PITR, RTO testing, backup storage security |
 | `#internet-research` | Cross-functional | Evidence gathering with calibrated confidence |
 | `#pull-request-readiness` | Cross-functional | Pre-PR quality gates |
 | `#council-review` | Cross-functional | Seven-perspective review methodology |

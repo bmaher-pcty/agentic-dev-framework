@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} - Copilot Instructions
 
-Agent-guided software development framework with 12 specialized agents and 25 domain skills.
+Agent-guided software development framework with 12 specialized agents and 29 domain skills.
 
 ## Copilot Customization Layout
 
@@ -46,7 +46,13 @@ Full agent definitions, constraints, and decision patterns are in `.github/agent
 
 ## Domain Skills
 
-25 skills across 6 categories — Backend, Frontend, Infrastructure, Cross-Functional, Innovation, Research. Invoke via `#skill-name` in any agent session. Full documentation in `.github/skills/`.
+29 skills across 7 categories — Backend, Frontend, Infrastructure, Operations, Cross-Functional, Innovation, Research. Invoke via `#skill-name` in any agent session. Full documentation in `.github/skills/`.
+
+**Operations Skills**
+- `#deployment` — deployment verification protocol, rollback procedure, blue-green/canary patterns
+- `#secrets-rotation` — rotation triggers, zero-downtime rotation, rotation verification
+- `#api-deprecation` — deprecation notices, sunset headers, migration guides, breaking change policy
+- `#db-backup-recovery` — backup verification (not just creation), PITR, RTO testing, backup storage security
 
 ## Agent Invocation
 
