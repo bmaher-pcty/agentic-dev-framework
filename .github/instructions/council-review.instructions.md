@@ -32,6 +32,12 @@ See `.github/skills/council-review.md` for the canonical severity classification
 3. Present Critical Findings in a table: Severity | Perspective | Finding | File | Recommendation.
 4. Dedicate separate sections to Security Assessment and UX Assessment.
 5. End with numbered Prioritized Action Items (severity, perspective, specific fix).
+6. **Project Intelligence Update** — Every council review must end with a "## Project Intelligence Update" section containing:
+   - Any new anti-patterns discovered (format: pattern name, location, why it's a problem, preferred alternative)
+   - Any architectural decisions that should be locked based on this review
+   - Any coverage hot spots surfaced during review
+   - Any Innovator experiments proposed and their initial status
+   If nothing new was discovered, write: "No updates — intelligence file current."
 
 ## Integration With Existing Standards
 

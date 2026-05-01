@@ -18,6 +18,9 @@ Convene the Review Council to evaluate the specified code or feature from seven 
 
 ## Procedure
 
+**Step 0: Task Triage**
+Before convening perspectives, invoke `#task-triage` to classify the change. The classification determines which perspectives are activated. Document the classification in the council output header: "Triage: [Trivial | Standard | High-Stakes] — [brief reason]"
+
 1. Identify the review scope from the user's input (files, feature area, or full codebase).
 2. Read the relevant code, tests, and configuration.
 3. Run each perspective analysis in the order above.

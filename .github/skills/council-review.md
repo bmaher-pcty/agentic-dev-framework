@@ -71,6 +71,7 @@ Speaks last. Challenges the frame of the problem itself.
 
 ## Procedure
 
+0. **Triage** — Classify the task using `#task-triage`. Document the classification in the council output header. If Trivial, proceed with Micro Council (4 perspectives). If Standard or High-Stakes, proceed with full 7-perspective council.
 1. **Scope Definition** — Identify what is being reviewed (files, feature, full codebase).
 2. **Advocate First** — Start with strengths to establish baseline quality and patterns worth keeping.
 3. **Parallel Perspectives** — Run Skeptic, Guardian, Craftsperson, and User Champion analyses.
@@ -78,6 +79,7 @@ Speaks last. Challenges the frame of the problem itself.
 5. **Innovator Last** — After all other perspectives have spoken, the Innovator presents an alternative framing or cross-domain insight not raised by any other perspective. If no alternative is apparent, the Innovator documents the assumption challenged and why it held.
 6. **Severity Classification** — Rate each finding using the legend below.
 7. **Consensus Output** — Unified findings with specific file references, severity, owning perspective, and recommended fix.
+8. **Update project-intelligence.md** — After synthesis, produce a "Project Intelligence Update" block containing any new anti-patterns, locked decisions, coverage gaps, or open Innovator experiments surfaced during this review. See `docs/project-intelligence.md` for format.
 
 ## Severity Classification
 
