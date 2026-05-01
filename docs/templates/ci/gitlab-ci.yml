@@ -1,0 +1,156 @@
+# GitLab CI Quality Gates — agentic-dev-framework
+#
+# ============================================================
+# QUARTERLY REVIEW — PINNED IMAGE VERSIONS
+# ============================================================
+# Pinned versions must be reviewed quarterly to pick up security patches.
+# Last reviewed: (update this date each quarter)
+# Next review due: (update this date each quarter)
+#
+# Pinned versions in this file:
+#   trufflesecurity/trufflehog: 3.95.2
+#     Latest: https://hub.docker.com/r/trufflesecurity/trufflehog/tags
+#   python: 3.12-alpine
+#     Latest: https://hub.docker.com/_/python/tags
+#
+# To update a pinned version:
+#   1. Check the release notes for breaking changes
+#   2. Update the image tag below (never use :latest)
+#   3. Update the "Last reviewed" date above
+#   4. Commit: "chore(ci): update pinned image versions (quarterly)"
+# ============================================================
+#
+# This template encodes the framework's four quality gates in GitLab CI syntax.
+# Merge the relevant jobs into your existing .gitlab-ci.yml.
+#
+# Replace {{COVERAGE_THRESHOLD}}, {{TEST_COMMAND}}, {{SOURCE_PATHS}} with your values
+# (or run BOOTSTRAP.prompt.md to configure automatically).
+#
+# SAST COORDINATION:
+# If your organization already runs a SAST tool (Semgrep, Snyk, Veracode, etc.) via
+# GitLab SAST templates, the secret-scan job below is complementary — TruffleHog
+# specializes in hardcoded secret detection, which differs from vulnerability pattern
+# detection. Do NOT remove your existing SAST include in favor of this job.
+# See docs/templates/ci/README.md for coordination guidance.
+
+stages:
+  - quality-gates
+
+variables:
+  # Set these in your project's CI/CD variables or in .gitlab-ci.yml variables block
+  COVERAGE_THRESHOLD: "80"        # Replace with your threshold (integer, percentage)
+  TEST_COMMAND: "{{TEST_COMMAND}}"  # Replace with your test command, e.g. "npm test" or "pytest"
+
+# ---------------------------------------------------------------------------
+# Gate 1: Secret Scanning
+# Never allow secrets, tokens, or credentials to reach version control.
+# TruffleHog scans the diff between base and HEAD — fast on incremental runs.
+# ---------------------------------------------------------------------------
+secret-scan:
+  stage: quality-gates
+  image: trufflesecurity/trufflehog:3.95.2
+  script:
+    - trufflehog git file://. --since-commit $CI_MERGE_REQUEST_DIFF_BASE_SHA --fail
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+  allow_failure: false
+
+# ---------------------------------------------------------------------------
+# Gate 2: Test Coverage Threshold
+# Prevents coverage regression. Global floor: 80%. Aspiration: 90%+.
+# Per-type targets: Services >80%, Utilities >90%, API handlers >60% + integration tests.
+# ---------------------------------------------------------------------------
+coverage-check:
+  stage: quality-gates
+  # Replace this image with your project's runtime image (pinned version)
+  image: python:3.12-alpine   # Example — replace with your runtime (node, go, jvm, etc.)
+  script:
+    # Replace the following with your test runner's coverage command.
+    # Examples:
+    #   Node/Jest:   npm test -- --coverage --coverageThreshold='{"global":{"lines":80}}'
+    #   Python:      pytest --cov=src --cov-fail-under=$COVERAGE_THRESHOLD
+    #   Go:          go test ./... -coverprofile=coverage.out && go tool cover -func=coverage.out
+    - echo "Configure coverage command for your stack — see comments above"
+    - echo "Minimum threshold is $COVERAGE_THRESHOLD% (see testing.md for per-type targets)"
+    - exit 1  # Remove this line once you have configured the coverage command
+  coverage: '/^TOTAL\s+\d+\s+\d+\s+(\d+)%/'  # Adjust regex for your coverage output format
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+  allow_failure: false
+
+# ---------------------------------------------------------------------------
+# Gate 3: Unreplaced Token Detection
+# Two-step scan: framework files (.github/), then application source files.
+# Catches {{TOKEN}} placeholders not resolved during bootstrap.
+# ---------------------------------------------------------------------------
+token-detection:
+  stage: quality-gates
+  image: alpine:3.21
+  script:
+    # Step 1 — Check .github/ framework files
+    - |
+      echo "=== Step 1: Scanning .github/ for unreplaced framework tokens ==="
+      if find .github/ -name "*.md" -o -name "*.yml" -o -name "*.yaml" | \
+           xargs grep -l '{{[A-Z_][A-Z_0-9]*}}' 2>/dev/null | \
+           grep -v "TOKENS.md" | grep -v "BOOTSTRAP.prompt.md" | grep -q .; then
+        echo "ERROR: Unreplaced {{TOKEN}} patterns found in .github/ framework files."
+        find .github/ -name "*.md" -o -name "*.yml" -o -name "*.yaml" | \
+          xargs grep -n '{{[A-Z_][A-Z_0-9]*}}' 2>/dev/null | \
+          grep -v "TOKENS.md" | grep -v "BOOTSTRAP.prompt.md"
+        echo "Run BOOTSTRAP.prompt.md to resolve all tokens before deploying."
+        exit 1
+      else
+        echo "OK: No unreplaced tokens in .github/ framework files."
+      fi
+    # Step 2 — Check application source files
+    - |
+      echo "=== Step 2: Scanning source files for leaked tokens ==="
+      if find . \( -name "*.ts" -o -name "*.tsx" -o -name "*.py" -o -name "*.go" -o -name "*.java" \) \
+           -not -path "./.git/*" | \
+           xargs grep -l '{{[A-Z_][A-Z_0-9]*}}' 2>/dev/null | \
+           grep -v "TOKENS.md" | grep -v "BOOTSTRAP.prompt.md" | grep -q .; then
+        echo "ERROR: Unreplaced {{TOKEN}} patterns found in source files."
+        exit 1
+      else
+        echo "OK: No unreplaced tokens in source files."
+      fi
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+  allow_failure: false
+
+# ---------------------------------------------------------------------------
+# Gate 4: Open Handoffs Check
+# Warns if more than 5 OPEN agent escalations remain unresolved.
+# Change 'allow_failure: true' to 'allow_failure: false' to make it blocking.
+# ---------------------------------------------------------------------------
+handoff-check:
+  stage: quality-gates
+  image: alpine:3.21
+  script:
+    - |
+      if [ -f "docs/open-handoffs.md" ]; then
+        OPEN_COUNT=$(grep -c "\[OPEN\]" docs/open-handoffs.md || true)
+        echo "Open handoffs: $OPEN_COUNT"
+        if [ "$OPEN_COUNT" -gt 5 ]; then
+          echo "WARNING: $OPEN_COUNT open agent handoffs in docs/open-handoffs.md"
+          echo "Consider resolving some before merging."
+          # Change exit code to 1 to make this gate blocking.
+          exit 0
+        fi
+      fi
+      echo "OK: Open handoffs within acceptable range."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+  allow_failure: true  # Warning only. Set to false to make this gate blocking.
