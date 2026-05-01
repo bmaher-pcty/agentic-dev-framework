@@ -24,10 +24,21 @@ That difference — **honest labeling of what was actually verified** — is the
 Copy `AGENTS.md` from this repo into your project root. Open GitHub Copilot Chat and type:
 
 ```
-@engineer: Add input validation to this endpoint [paste your code]
+@engineer: Add rate limiting to the login endpoint
 ```
 
-**You know it's working** when the response includes a `## Verification Summary` with explicit `VERIFIED-AUTOMATED` / `ASSUMED-UNTESTED` labels — never just "it's done."
+**What you get:**
+
+```
+## Verification Summary
+- src/routes/auth.ts: VERIFIED-AUTOMATED (test: auth.test.ts — rate limit returns 429 after 5 attempts)
+- src/middleware/rateLimit.ts: VERIFIED-MANUAL (ran: npm test, observed: 23/23 tests green)
+- integration flow: REQUIRES-HUMAN-VERIFICATION (needs running Redis instance to verify limit persistence)
+```
+
+That's the difference. The model can't just say "done" — it must label what it actually verified and flag what it didn't.
+
+**Solo developer?** See [`docs/examples/solo-starter/AGENTS.md`](docs/examples/solo-starter/AGENTS.md) for the lightweight single-file version.
 
 ---
 

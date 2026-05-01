@@ -34,7 +34,7 @@ enum Role:
 ```
 
 <details>
-<summary>{{ORM}} schema implementation reference</summary>
+<summary>Prisma schema implementation reference</summary>
 
 ```prisma
 model User {
@@ -96,3 +96,4 @@ users = db.user.findMany({
 - Missing `updatedAt` tracking on mutable models — makes auditing impossible.
 - Deeply nested eager-load chains — use multiple targeted queries instead.
 - Schema changes without a migration file — leaves database out of sync.
+- Raw ORM/database error messages returned to the client — leaks schema details.

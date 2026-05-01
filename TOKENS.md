@@ -16,6 +16,22 @@ Tokens use the format `{{TOKEN_NAME}}`. They appear in:
 
 When you bootstrap a new project, the smart bootstrap wizard infers most tokens automatically from your language, project type, and stack. You answer 7 questions; the AI fills in the rest and presents a reviewable token map for approval.
 
+## Critical Tokens (Set These First)
+
+These 5 tokens break the framework if left unset. Bootstrap resolves them in Phase 1.
+
+| Token | Why it matters |
+|-------|----------------|
+| `{{PROJECT_NAME}}` | Used in the global instructions header — identifies the project to the model |
+| `{{SMOKE_COMMAND}}` | The single most important token — every completion gate and verification step runs this command |
+| `{{SERVER_FRAMEWORK}}` | Locked in constraints — wrong value silently allows stack drift |
+| `{{DATABASE}}` | Locked in constraints — wrong value silently allows stack drift |
+| `{{FRONTEND_FRAMEWORK}}` | Locked in constraints — set to `N/A` for backend-only or CLI projects |
+
+Everything else is inferred or optional. If something feels off after bootstrap, check these five first.
+
+---
+
 ## Source Classification
 
 - **Required** — Must be confirmed by a human. Cannot be safely inferred; wrong values break the framework.

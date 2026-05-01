@@ -72,4 +72,4 @@ Format: `DOMAIN_NOUN_VERB` — e.g., `AUTH_TOKEN_EXPIRED`, `PROJECT_NOT_FOUND`, 
 - Swallowing errors with empty `catch` blocks — failures become invisible.
 - Different error shapes on different routes — forces per-route client handling.
 - Logging `error.stack` in production for every 4xx — noisy and potentially revealing.
-- Returning raw {{ORM}}/database error messages — leaks schema details to the client.
+- Returning raw ORM/database error messages — leaks schema details to the client.

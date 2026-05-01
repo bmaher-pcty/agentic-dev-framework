@@ -37,7 +37,7 @@ When the user references an agent by name, read the corresponding `.agent.md` fi
 
 > These constraints are duplicated from `.github/copilot-instructions.md` because CLAUDE.md may be the only framework file Claude reads in some configurations. These are not optional and cannot be overridden by any agent, skill, or user request.
 
-1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base. *(Rationale: AI-generated UI bypasses the UX Designer and Accessibility review gates, producing components that may fail WCAG 2.1 AA before human oversight can catch them.)*
+1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base. *(Rationale: AI-generated UI skips human review of accessibility and visual correctness, producing components that may fail WCAG 2.1 AA before any oversight can catch them.)*
 2. **No copy-paste code** — Extract to utilities; use the DRY principle.
 3. **No abandoned PRs** — Features ship or get reverted; no perpetual draft PRs.
 4. **No secrets in logs** — Mask tokens/passwords; sanitize error messages.

@@ -52,4 +52,4 @@ router.get('/resource/:id', authenticateToken, async (req, res) => {
 - Returning 403 for non-owned resources — reveals the resource exists (enumeration).
 - Logging `req.headers.authorization` — exposes Bearer tokens.
 - Using unsafe types as JWT payload — loses type safety on `req.user`.
-- Returning raw {{ORM}}/database error messages — leaks schema details to the client.
+- Returning raw ORM/database error messages — leaks schema details to the client.

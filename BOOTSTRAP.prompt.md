@@ -139,6 +139,7 @@ With the approved token map:
 3. Verify: run [SMOKE_COMMAND]
 4. First use: @engineer: [describe your first task]
 5. Before first PR: @review-council on your changes
+6. Set up CI: see `docs/templates/ci/` for GitHub Actions, GitLab CI, and Azure DevOps templates
 ```
 
 ---
