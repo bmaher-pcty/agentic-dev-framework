@@ -51,24 +51,6 @@ Before convening perspectives, invoke `#task-triage` to classify the change. The
 5. UX Assessment section.
 6. Prioritized Action Items (numbered, with severity and owner).
 
-7. **Project Intelligence Update** — After all findings are synthesized, produce a Project Intelligence Update block. See `council-review.instructions.md` "Output Format Requirements" section 6 for required format. Must include: new anti-patterns, locked decisions, coverage hot spots, open Innovator experiments. If nothing new, write: "No updates — intelligence file current."
-
-## Mandatory Post-Review Actions
-
-After delivering the full council review output, the Review Council agent must execute these five steps in order:
-
-1. **Update `docs/project-intelligence.md`**: Add all new anti-patterns, locked decisions, and coverage hotspots surfaced in this review. Increment the front-matter count fields (`anti_pattern_count`, `locked_decision_count`, etc.) to match. Set `last_updated` to today's date and `last_updated_by` to "Review Council".
-
-2. **Check for recurrences**: Compare findings in this review against existing entries in `docs/project-intelligence.md`. If a known anti-pattern has recurred, escalate its record in the intelligence file: append "(RECURRING — [date])" to the pattern name and note the recurrence date.
-
-3. **File ADRs for High-Stakes decisions**: If any finding requires an architectural decision (new integration pattern, security approach change, data model revision), create `docs/adr/ADR-[N]-[title].md` using `docs/templates/ADR.template.md`. Reference the ADR in the intelligence file's Locked Architectural Decisions section.
-
-4. **Update open handoffs**: Check `docs/open-handoffs.md` for any OPEN handoffs that this review resolves. Update their status to `RESOLVED` and fill in the Resolution field with a one-line summary.
-
-5. **Deliver the Intelligence Update summary** as the final block of the review output, formatted for copy-paste into `docs/project-intelligence.md` if the agent cannot directly edit files. Use the header `## Project Intelligence Update — [date]` so the recipient can locate and paste it precisely.
-
-> If the agent cannot write files in this session, every step above must still be reported as a formatted, copy-pasteable block in the review output. The human reviewer is responsible for applying them before the PR merges.
-
 ## Rules
 
 - Every finding must reference a specific file or line.

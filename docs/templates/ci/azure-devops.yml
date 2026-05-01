@@ -150,27 +150,3 @@ stages:
                 echo "OK: No unreplaced tokens in source files."
               fi
             displayName: Check for unreplaced tokens
-
-      # -----------------------------------------------------------------------
-      # Gate 4: Open Handoffs Check
-      # Warns if more than 5 OPEN agent escalations remain unresolved.
-      # Change continueOnError: true to continueOnError: false to make blocking.
-      # -----------------------------------------------------------------------
-      - job: HandoffCheck
-        displayName: Open Handoffs Check
-        continueOnError: true  # Warning only. Set to false to make blocking.
-        steps:
-          - checkout: self
-
-          - script: |
-              if [ -f "docs/open-handoffs.md" ]; then
-                OPEN_COUNT=$(grep -c "\[OPEN\]" docs/open-handoffs.md || true)
-                echo "Open handoffs: $OPEN_COUNT"
-                if [ "$OPEN_COUNT" -gt 5 ]; then
-                  echo "##[warning]$OPEN_COUNT open agent handoffs in docs/open-handoffs.md"
-                  echo "Consider resolving some before merging."
-                  exit 0
-                fi
-              fi
-              echo "OK: Open handoffs within acceptable range."
-            displayName: Check open handoffs count
