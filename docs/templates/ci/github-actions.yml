@@ -1,0 +1,231 @@
+# GitHub Actions Quality Gates — agentic-dev-framework
+# Deploy: Copy to .github/workflows/quality-gates.yml in your project.
+# See docs/templates/ci/README.md for platform selection and SAST coordination guidance.
+#
+# ============================================================
+# QUARTERLY REVIEW — PINNED ACTION VERSIONS
+# ============================================================
+# Pinned versions must be reviewed quarterly to pick up security patches.
+# Last reviewed: (update this date each quarter)
+# Next review due: (update this date each quarter)
+#
+# Pinned versions in this file:
+#   actions/checkout: v4
+#     Latest: https://github.com/actions/checkout/releases
+#   trufflesecurity/trufflehog: v3.95.2
+#     Latest: https://github.com/trufflesecurity/trufflehog/releases
+#
+# To update a pinned version:
+#   1. Check the release notes for breaking changes
+#   2. Update the version tag below (never use @main or @master)
+#   3. Update the "Last reviewed" date above
+#   4. Commit: "chore(ci): update pinned action versions (quarterly)"
+# ============================================================
+#
+# This template encodes the framework's four most critical non-negotiable quality gates.
+# Copy to .github/workflows/quality-gates.yml in your project and configure the thresholds.
+#
+# Replace {{COVERAGE_THRESHOLD}}, {{TEST_COMMAND}}, {{SOURCE_PATHS}} with your values
+# (or run BOOTSTRAP.prompt.md to configure automatically).
+
+name: Quality Gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  # Gate 1: Secret Scanning
+  # Never allow secrets, tokens, or credentials to be committed to source control.
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@v3.95.2
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  # Gate 2: Test Coverage Threshold
+  # Prevents coverage regression. Global floor: 80%. Aspiration: 90%+.
+  # Per-type targets: Services >80%, Utilities >90%, API handlers >60% + integration tests.
+  # See .github/skills/testing.md for the full breakdown.
+  coverage-check:
+    name: Coverage Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests with coverage
+        run: {{TEST_COMMAND}} --coverage
+        # Add your test command here (e.g., npm test -- --coverage, pytest --cov)
+      - name: Check coverage threshold
+        run: |
+          # Replace with your coverage tool's threshold check
+          # Example for Jest: npx jest --coverage --coverageThreshold='{"global":{"lines":80}}'
+          echo "Configure coverage threshold check for your test framework"
+          # Minimum: 80%. Aspiration: 90%+. Set threshold to your current floor and raise incrementally.
+          # See .github/skills/testing.md for per-type targets.
+
+  # Gate 3: Unreplaced Token Detection
+  # Two-step scan: first .github/ framework files, then application source files.
+  # Catches {{TOKEN}} placeholders that were not resolved during bootstrap.
+  token-detection:
+    name: Unreplaced Token Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Step 1 — Check .github/ for unreplaced framework tokens
+        run: |
+          # Scans agent, skill, and instruction files for {{TOKEN}} patterns.
+          # In a bootstrapped project, all tokens must be resolved.
+          # Carve-outs: TOKENS.md and BOOTSTRAP.prompt.md are intentional token reference files.
+          if grep -rn '{{[A-Z_][A-Z_0-9]*}}' \
+            --include="*.md" \
+            --include="*.yaml" \
+            --include="*.yml" \
+            --exclude="TOKENS.md" \
+            --exclude="BOOTSTRAP.prompt.md" \
+            .github/; then
+            echo "❌ Unreplaced {{TOKEN}} patterns found in .github/ framework files."
+            echo "   Run BOOTSTRAP.prompt.md to resolve all tokens before deploying."
+            exit 1
+          else
+            echo "✅ No unreplaced tokens in .github/ framework files."
+          fi
+
+      - name: Step 2 — Check source files for leaked tokens
+        run: |
+          # Scans application source files for {{TOKEN}} patterns that should not
+          # appear in compiled or executed code.
+          if grep -rn '{{[A-Z_][A-Z_0-9]*}}' \
+            --include="*.ts" \
+            --include="*.tsx" \
+            --include="*.py" \
+            --include="*.go" \
+            --include="*.java" \
+            --exclude="TOKENS.md" \
+            --exclude="BOOTSTRAP.prompt.md" \
+            .; then
+            echo "❌ Unreplaced {{TOKEN}} patterns found in source files. Run BOOTSTRAP.prompt.md."
+            exit 1
+          else
+            echo "✅ No unreplaced tokens found in source files."
+          fi
+
+  # Gate 4: Open Handoffs Check
+  # Warns if there are more than 5 OPEN agent escalations that haven't been resolved.
+  handoff-check:
+    name: Open Handoffs Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check open handoffs count
+        run: |
+          if [ -f "docs/open-handoffs.md" ]; then
+            OPEN_COUNT=$(grep -c "\[OPEN\]" docs/open-handoffs.md || true)
+            echo "Open handoffs: $OPEN_COUNT"
+            if [ "$OPEN_COUNT" -gt 5 ]; then
+              echo "⚠️  WARNING: $OPEN_COUNT open agent handoffs in docs/open-handoffs.md"
+              echo "   Consider resolving some before merging."
+              # This is a warning, not a failure. Remove 'exit 0' to make it blocking.
+              exit 0
+            fi
+          fi
+          echo "✅ Open handoffs within acceptable range."
+
+  # Gate 5: Project Intelligence Health Check
+  # Warns when docs/project-intelligence.md has not been updated after a council review.
+  # Detects placeholder content that means the file was never populated.
+  project-intelligence-health:
+    name: Project Intelligence Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check project-intelligence.md is populated
+        run: |
+          if [ ! -f "docs/project-intelligence.md" ]; then
+            echo "⚠️  docs/project-intelligence.md not found."
+            echo "   Create it after your first council review (copy docs/templates or run @review-council)."
+            exit 0  # Warning only — new projects may not have run a council review yet.
+          fi
+          # Detect placeholder content that indicates the file was never populated.
+          if grep -q "No patterns documented yet" docs/project-intelligence.md; then
+            echo "⚠️  docs/project-intelligence.md still contains placeholder content."
+            echo "   Run @review-council to populate it with real findings."
+            echo "   On the Enterprise profile, change 'exit 0' to 'exit 1' to make this blocking."
+            exit 0  # Warning only by default. Promote to exit 1 for stricter enforcement.
+          fi
+          # Detect front-matter with all counts at zero (populated template but never updated).
+          if grep -qE "^anti_pattern_count: 0$" docs/project-intelligence.md && \
+             grep -qE "^locked_decision_count: 0$" docs/project-intelligence.md; then
+            echo "⚠️  project-intelligence.md front-matter shows zero anti-patterns and zero locked decisions."
+            echo "   Either this project has run no council reviews, or the file was not updated after review."
+            exit 0  # Warning only.
+          fi
+          echo "✅ project-intelligence.md has been updated with real content."
+
+  # Gate 6: Framework Integrity Check
+  # Asserts that agent and skill directory counts match the documented counts.
+  # When adding or removing agents/skills, update EXPECTED_AGENTS/EXPECTED_SKILLS
+  # here AND update README.md, copilot-instructions.md, and docs/GETTING_STARTED.md.
+  framework-integrity:
+    name: Framework Integrity Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert agent and skill directory counts match documented counts
+        run: |
+          AGENT_COUNT=$(find .github/agents -name "*.agent.md" | wc -l | tr -d ' ')
+          SKILL_COUNT=$(find .github/skills -name "*.md" | wc -l | tr -d ' ')
+
+          # Update these when adding or removing agents/skills.
+          # Then update README.md, .github/copilot-instructions.md, and docs/GETTING_STARTED.md.
+          EXPECTED_AGENTS=12
+          EXPECTED_SKILLS=25
+
+          FAILED=0
+
+          if [ "$AGENT_COUNT" -ne "$EXPECTED_AGENTS" ]; then
+            echo "❌ Agent count mismatch: found $AGENT_COUNT, expected $EXPECTED_AGENTS"
+            echo "   Add/remove agent files OR update EXPECTED_AGENTS in this job."
+            echo "   Also update: README.md, .github/copilot-instructions.md, docs/GETTING_STARTED.md"
+            FAILED=1
+          else
+            echo "✅ Agent count: $AGENT_COUNT (expected $EXPECTED_AGENTS)"
+          fi
+
+          if [ "$SKILL_COUNT" -ne "$EXPECTED_SKILLS" ]; then
+            echo "❌ Skill count mismatch: found $SKILL_COUNT, expected $EXPECTED_SKILLS"
+            echo "   Add/remove skill files OR update EXPECTED_SKILLS in this job."
+            echo "   Also update: README.md, .github/copilot-instructions.md, docs/GETTING_STARTED.md"
+            FAILED=1
+          else
+            echo "✅ Skill count: $SKILL_COUNT (expected $EXPECTED_SKILLS)"
+          fi
+
+          if [ "$FAILED" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Assert verification label definitions are in exactly one file
+        run: |
+          # The ## Verification Categories section must be defined in exactly one .github/ file.
+          # Canonical location: .github/instructions/testing.instructions.md
+          DEF_COUNT=$(grep -rl '## Verification Categories' .github/ | wc -l | tr -d ' ')
+          if [ "$DEF_COUNT" -gt 1 ]; then
+            echo "❌ ## Verification Categories defined in $DEF_COUNT .github/ files — must be exactly 1."
+            echo "   Canonical location: .github/instructions/testing.instructions.md"
+            echo "   Remove duplicate definitions and replace with a reference to testing.instructions.md."
+            grep -rl '## Verification Categories' .github/
+            exit 1
+          else
+            echo "✅ Verification Categories defined in exactly one place."
+          fi

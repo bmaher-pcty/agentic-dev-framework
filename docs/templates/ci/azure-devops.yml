@@ -1,0 +1,176 @@
+# Azure Pipelines Quality Gates — agentic-dev-framework
+#
+# ============================================================
+# QUARTERLY REVIEW — PINNED TOOL VERSIONS
+# ============================================================
+# Pinned versions must be reviewed quarterly to pick up security patches.
+# Last reviewed: (update this date each quarter)
+# Next review due: (update this date each quarter)
+#
+# Pinned versions in this file:
+#   TruffleHog Docker image: 3.95.2
+#     Latest: https://hub.docker.com/r/trufflesecurity/trufflehog/tags
+#
+# To update a pinned version:
+#   1. Check the release notes for breaking changes
+#   2. Update the image reference below (never use :latest)
+#   3. Update the "Last reviewed" date above
+#   4. Commit: "chore(ci): update pinned tool versions (quarterly)"
+# ============================================================
+#
+# This template encodes the framework's four quality gates in Azure Pipelines syntax.
+# Copy to azure-pipelines.yml or merge the individual jobs into your existing pipeline.
+#
+# Replace {{COVERAGE_THRESHOLD}}, {{TEST_COMMAND}}, {{SOURCE_PATHS}} with your values
+# (or run BOOTSTRAP.prompt.md to configure automatically).
+#
+# SAST COORDINATION:
+# If your organization already runs Azure DevOps SAST tasks (WhiteSource Bolt, Checkmarx,
+# Veracode, or Microsoft Security DevOps), the secret-scan job is complementary.
+# TruffleHog specializes in hardcoded secret detection; do NOT remove existing SAST tasks
+# in favor of this template. See docs/templates/ci/README.md for coordination guidance.
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  COVERAGE_THRESHOLD: 80    # Replace with your threshold (integer, percentage)
+  TEST_COMMAND: "{{TEST_COMMAND}}"  # Replace with your test command
+
+stages:
+  - stage: QualityGates
+    displayName: Quality Gates
+    jobs:
+
+      # -----------------------------------------------------------------------
+      # Gate 1: Secret Scanning
+      # Uses TruffleHog in a Docker container step to scan for hardcoded secrets.
+      # Requires Docker to be available on the agent (standard on ubuntu-latest hosted agents).
+      # -----------------------------------------------------------------------
+      - job: SecretScan
+        displayName: Secret Scan
+        steps:
+          - checkout: self
+            fetchDepth: 0  # Full history required for incremental diff scanning
+
+          - script: |
+              docker run --rm \
+                -v $(Build.SourcesDirectory):/repo \
+                trufflesecurity/trufflehog:3.95.2 \
+                git file:///repo \
+                --since-commit $(System.PullRequest.TargetBranch) \
+                --fail
+            displayName: Scan for secrets (TruffleHog)
+            condition: eq(variables['Build.Reason'], 'PullRequest')
+
+          - script: |
+              docker run --rm \
+                -v $(Build.SourcesDirectory):/repo \
+                trufflesecurity/trufflehog:3.95.2 \
+                git file:///repo \
+                --branch $(Build.SourceBranch) \
+                --fail
+            displayName: Scan for secrets — push to main (TruffleHog)
+            condition: ne(variables['Build.Reason'], 'PullRequest')
+
+      # -----------------------------------------------------------------------
+      # Gate 2: Test Coverage Threshold
+      # Global floor: 80%. Aspiration: 90%+.
+      # Per-type: Services >80%, Utilities >90%, API handlers >60% + integration.
+      # -----------------------------------------------------------------------
+      - job: CoverageCheck
+        displayName: Coverage Check
+        steps:
+          - checkout: self
+
+          # Replace this task with the appropriate setup for your runtime.
+          # Examples:
+          #   Node.js: use NodeTool@0 and run npm test -- --coverage
+          #   Python:  use UsePythonVersion@0 and run pytest --cov=src --cov-fail-under=$(COVERAGE_THRESHOLD)
+          #   .NET:    use DotNetCoreCLI@2 with test and coverlet
+
+          - script: |
+              # TODO: Configure your runtime and test command here.
+              # Example for Node.js:
+              #   npm ci
+              #   npm test -- --coverage --coverageThreshold='{"global":{"lines":$(COVERAGE_THRESHOLD)}}'
+              echo "Configure coverage command for your stack — see comments in azure-devops.yml"
+              echo "Minimum threshold: $(COVERAGE_THRESHOLD)%"
+              exit 1  # Remove this line after configuration
+            displayName: Run tests with coverage check
+
+          - task: PublishCodeCoverageResults@2
+            displayName: Publish coverage results
+            inputs:
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage.xml"  # Adjust for your format
+            condition: succeededOrFailed()
+
+      # -----------------------------------------------------------------------
+      # Gate 3: Unreplaced Token Detection
+      # Two-step scan: .github/ framework files, then application source files.
+      # -----------------------------------------------------------------------
+      - job: TokenDetection
+        displayName: Unreplaced Token Check
+        steps:
+          - checkout: self
+
+          - script: |
+              echo "=== Step 1: Scanning .github/ for unreplaced framework tokens ==="
+              if find .github/ -name "*.md" -o -name "*.yml" -o -name "*.yaml" | \
+                   xargs grep -l '{{[A-Z_][A-Z_0-9]*}}' 2>/dev/null | \
+                   grep -v "TOKENS.md" | grep -v "BOOTSTRAP.prompt.md" | grep -q .; then
+                echo "##[error]Unreplaced {{TOKEN}} patterns found in .github/ framework files."
+                find .github/ \( -name "*.md" -o -name "*.yml" -o -name "*.yaml" \) | \
+                  xargs grep -n '{{[A-Z_][A-Z_0-9]*}}' 2>/dev/null | \
+                  grep -v "TOKENS.md" | grep -v "BOOTSTRAP.prompt.md"
+                echo "Run BOOTSTRAP.prompt.md to resolve all tokens before deploying."
+                exit 1
+              else
+                echo "OK: No unreplaced tokens in .github/ framework files."
+              fi
+
+              echo "=== Step 2: Scanning source files for leaked tokens ==="
+              if find . \( -name "*.ts" -o -name "*.tsx" -o -name "*.py" -o -name "*.go" -o -name "*.java" \) \
+                   -not -path "./.git/*" | \
+                   xargs grep -l '{{[A-Z_][A-Z_0-9]*}}' 2>/dev/null | \
+                   grep -v "TOKENS.md" | grep -v "BOOTSTRAP.prompt.md" | grep -q .; then
+                echo "##[error]Unreplaced {{TOKEN}} patterns found in source files."
+                exit 1
+              else
+                echo "OK: No unreplaced tokens in source files."
+              fi
+            displayName: Check for unreplaced tokens
+
+      # -----------------------------------------------------------------------
+      # Gate 4: Open Handoffs Check
+      # Warns if more than 5 OPEN agent escalations remain unresolved.
+      # Change continueOnError: true to continueOnError: false to make blocking.
+      # -----------------------------------------------------------------------
+      - job: HandoffCheck
+        displayName: Open Handoffs Check
+        continueOnError: true  # Warning only. Set to false to make blocking.
+        steps:
+          - checkout: self
+
+          - script: |
+              if [ -f "docs/open-handoffs.md" ]; then
+                OPEN_COUNT=$(grep -c "\[OPEN\]" docs/open-handoffs.md || true)
+                echo "Open handoffs: $OPEN_COUNT"
+                if [ "$OPEN_COUNT" -gt 5 ]; then
+                  echo "##[warning]$OPEN_COUNT open agent handoffs in docs/open-handoffs.md"
+                  echo "Consider resolving some before merging."
+                  exit 0
+                fi
+              fi
+              echo "OK: Open handoffs within acceptable range."
+            displayName: Check open handoffs count

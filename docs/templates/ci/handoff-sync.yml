@@ -1,0 +1,194 @@
+# GitHub Actions: Handoff Sync Workflow
+#
+# Parses docs/open-handoffs.md on push to main and creates/closes GitHub Issues
+# for OPEN and RESOLVED agent escalation entries.
+#
+# Prerequisites:
+#   - The workflow must have 'issues: write' permission (configured below).
+#   - docs/open-handoffs.md must follow the SBAR format with [OPEN] / [RESOLVED] status markers.
+#   - The repository must have a label named 'agent-handoff' (created automatically on first run).
+#
+# Deploy: Copy this file to .github/workflows/handoff-sync.yml in your project.
+#
+# ============================================================
+# QUARTERLY REVIEW — PINNED ACTION VERSIONS
+# ============================================================
+# Last reviewed: (update this date each quarter)
+# Next review due: (update this date each quarter)
+#
+# Pinned versions in this file:
+#   actions/checkout: v4
+#     Latest: https://github.com/actions/checkout/releases
+#   actions/github-script: v7
+#     Latest: https://github.com/actions/github-script/releases
+# ============================================================
+
+name: Handoff Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/open-handoffs.md"
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  sync-handoffs:
+    name: Sync Open Handoffs to GitHub Issues
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need previous commit to detect new/changed entries
+
+      - name: Ensure agent-handoff label exists
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'agent-handoff',
+              });
+            } catch (e) {
+              if (e.status === 404) {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'agent-handoff',
+                  color: 'e4b429',
+                  description: 'Agent escalation requiring human or cross-agent resolution',
+                });
+                console.log('Created label: agent-handoff');
+              } else {
+                throw e;
+              }
+            }
+
+      - name: Parse handoffs and sync issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const handoffsPath = 'docs/open-handoffs.md';
+
+            if (!fs.existsSync(handoffsPath)) {
+              console.log('docs/open-handoffs.md not found — nothing to sync.');
+              return;
+            }
+
+            const content = fs.readFileSync(handoffsPath, 'utf8');
+
+            // Parse handoff entries. Expected format:
+            //   ## Handoff: <Title>
+            //   **Status:** [OPEN] or [RESOLVED]
+            //   **From:** <agent>
+            //   **To:** <agent>
+            //   **Situation:** <text>
+            //   **Background:** <text>
+            //   **Assessment:** <text>
+            //   **Decision Needed:** <text>
+            //   **Resolution:** <text> (only for RESOLVED)
+            const handoffBlocks = content.split(/^## Handoff:/m).slice(1);
+
+            for (const block of handoffBlocks) {
+              const lines = block.trim().split('\n');
+              const title = lines[0].trim();
+              const statusMatch = block.match(/\*\*Status:\*\*\s*\[(\w+)\]/);
+              const status = statusMatch ? statusMatch[1].toUpperCase() : null;
+
+              if (!status || !['OPEN', 'RESOLVED'].includes(status)) {
+                console.log(`Skipping entry "${title}" — no valid status found.`);
+                continue;
+              }
+
+              // Build issue body from SBAR fields
+              const extract = (field) => {
+                const match = block.match(new RegExp(`\\*\\*${field}:\\*\\*\\s*([^\\n*]+)`));
+                return match ? match[1].trim() : '_Not specified_';
+              };
+
+              const issueBody = [
+                `> This issue was created automatically from \`docs/open-handoffs.md\`.`,
+                `> Do not edit here — update the source handoff file instead.`,
+                ``,
+                `**From Agent:** ${extract('From')}`,
+                `**To Agent:** ${extract('To')}`,
+                ``,
+                `### Situation`,
+                extract('Situation'),
+                ``,
+                `### Background`,
+                extract('Background'),
+                ``,
+                `### Assessment`,
+                extract('Assessment'),
+                ``,
+                `### Decision Needed`,
+                extract('Decision Needed'),
+              ].join('\n');
+
+              const issueTitle = `[Agent Handoff] ${title}`;
+
+              // Search for an existing issue with this title
+              const existingIssues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'agent-handoff',
+                state: 'all',
+                per_page: 100,
+              });
+
+              const existing = existingIssues.data.find(i => i.title === issueTitle);
+
+              if (status === 'OPEN') {
+                if (existing && existing.state === 'open') {
+                  console.log(`Issue already open for: ${title}`);
+                } else if (existing && existing.state === 'closed') {
+                  // Re-open if handoff was re-opened
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: existing.number,
+                    state: 'open',
+                    body: issueBody,
+                  });
+                  console.log(`Re-opened issue #${existing.number} for: ${title}`);
+                } else {
+                  // Create new issue
+                  const created = await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: issueTitle,
+                    body: issueBody,
+                    labels: ['agent-handoff'],
+                  });
+                  console.log(`Created issue #${created.data.number} for: ${title}`);
+                }
+              } else if (status === 'RESOLVED') {
+                if (existing && existing.state === 'open') {
+                  const resolution = extract('Resolution');
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: existing.number,
+                    body: `**Resolved:** ${resolution}\n\nThis handoff was marked RESOLVED in \`docs/open-handoffs.md\`.`,
+                  });
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: existing.number,
+                    state: 'closed',
+                  });
+                  console.log(`Closed issue #${existing.number} for: ${title}`);
+                } else {
+                  console.log(`No open issue to close for: ${title}`);
+                }
+              }
+            }
+            console.log('Handoff sync complete.');
