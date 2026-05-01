@@ -313,6 +313,18 @@ test(sync): Cover partial failures
 - Commits must be descriptive and useful to reviewers: explain intent, scope, and impact.
 - Avoid vague commit messages that do not communicate behavior change.
 
+### Escalation Protocol
+
+When an agent cannot resolve a decision alone, it must:
+1. Write an entry to `docs/open-handoffs.md` using the SBAR format (Situation, Background, Assessment, Decision needed)
+2. Set status to `OPEN`
+3. Name the receiving agent explicitly
+4. Do NOT proceed with implementation while the escalation is unresolved
+
+The receiving agent reads `docs/open-handoffs.md` at the start of their invocation to understand context without requiring chat history.
+
+When a handoff is resolved, update the entry status to `RESOLVED` and fill in the Resolution field.
+
 ### Pull Requests
 - Merge latest `main` into your branch before opening or updating a PR.
 - Verify functionality in the real user-visible path before pushing and opening a PR.
