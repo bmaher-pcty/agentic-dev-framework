@@ -5,8 +5,8 @@ A portable, technology-agnostic Copilot configuration framework for agent-guided
 ## What This Is
 
 A complete set of `.github/` configuration files that give GitHub Copilot:
-- **10 specialized agents** — each with a defined scope, constraints, and decision pattern.
-- **19 domain skills** — procedural guidance for common engineering tasks.
+- **11 specialized agents** — each with a defined scope, constraints, and decision pattern.
+- **22 domain skills** — procedural guidance for common engineering tasks.
 - **Path-scoped instructions** — security, testing, branching, and review rules that activate by file pattern.
 - **Reusable prompts** — council review, codebase audit, PR readiness, security review, smoke verification.
 
@@ -43,12 +43,13 @@ After bootstrapping, confirm:
     veteran-qa.agent.md        # Regression and release quality
     bold-ux-designer.agent.md  # UX hierarchy and accessibility
     technical-writer.agent.md  # Documentation governance
-    review-council.agent.md    # 6-perspective code review
+    review-council.agent.md    # 7-perspective code review
     accessibility.agent.md     # WCAG compliance
     devops-infrastructure.agent.md
     performance.agent.md
+    innovator.agent.md         # Creative problem-reframer and council voice
   skills/
-    # 19 skill files covering backend, frontend, infra, and cross-functional concerns
+    # 22 skill files covering backend, frontend, infra, innovation, and cross-functional concerns
   instructions/
     testing.instructions.md    # Verification gates (path-scoped)
     security.instructions.md   # Auth, secrets, infrastructure (path-scoped)
@@ -68,20 +69,21 @@ docs/
   PHILOSOPHY.md    # Framework design philosophy
 ```
 
-## The 10 Agents
+## The 11 Agents
 
-| Agent | When to Use |
-|-------|------------|
-| **Engineer** | Implementing features, fixing bugs, verifying runtime behavior |
-| **System Architect** | Designing APIs, data models, service boundaries |
-| **Thoughtful Product Manager** | Scoping features, defining acceptance criteria |
-| **Veteran QA** | Test planning, regression analysis, release readiness |
-| **Bold UX Designer** | Visual hierarchy, accessibility, interaction design |
-| **Technical Writer** | Documentation consolidation and governance |
-| **Review Council** | Multi-perspective code and architecture review |
-| **Accessibility** | WCAG 2.1 AA compliance and keyboard navigation |
-| **DevOps/Infrastructure** | Container config, CI/CD, health checks |
-| **Performance** | Bundle size, query efficiency, response time |
+| Agent | When to Use | Invocation |
+|-------|------------|------------|
+| **Engineer** | Implementing features, fixing bugs, verifying runtime behavior | `@engineer` |
+| **System Architect** | Designing APIs, data models, service boundaries | `@architect` |
+| **Thoughtful Product Manager** | Scoping features, defining acceptance criteria | `@pm` |
+| **Veteran QA** | Test planning, regression analysis, release readiness | `@qa` |
+| **Bold UX Designer** | Visual hierarchy, accessibility, interaction design | `@designer` |
+| **Technical Writer** | Documentation consolidation and governance | `@technical-writer` |
+| **Review Council** | Multi-perspective code and architecture review | `@review-council` |
+| **Accessibility** | WCAG 2.1 AA compliance and keyboard navigation | `@accessibility` |
+| **DevOps/Infrastructure** | Container config, CI/CD, health checks | `@devops-infrastructure` |
+| **Performance** | Bundle size, query efficiency, response time | `@performance` |
+| **Innovator** | Reframes problems, scouts solutions, designs experiments | `@innovator` |
 
 ## Key Principles
 
@@ -90,12 +92,39 @@ docs/
 3. **90%+ test coverage target** — shortfalls must be called out explicitly.
 4. **No false-complete claims** — never say "done" or "implemented" if the feature isn't working end-to-end.
 5. **Security is non-negotiable** — Guardian findings cannot be downgraded.
-6. **Scripts live under `{{SCRIPTS_DIR}}/`** — no operational scripts at repository root.
+6. **The first viable solution is rarely the best solution** — before committing to an approach, ask what you'd build if you started fresh with current knowledge. The Innovator exists to enforce this question.
+
+## The 22 Skills
+
+| Skill | Category | Purpose |
+|-------|----------|---------|
+| `#static-typing-practices` | Backend | Type safety, generics, discriminated unions |
+| `#api-design` | Backend | REST endpoints, versioning, error codes |
+| `#error-handling` | Backend | Consistent error structures, logging strategy |
+| `#security` | Backend | Input validation, secrets management, CORS |
+| `#testing` | Backend | Unit test patterns, fixtures, mocking |
+| `#data-modeling` | Backend | Schema design, migrations, indexes |
+| `#data-migrations` | Backend | Safe schema evolution, backfill patterns |
+| `#observability` | Backend | Structured logging, health checks, correlation IDs |
+| `#ui-component-design` | Frontend | UI patterns, prop APIs, visual states |
+| `#client-state-management` | Frontend | State stores, data fetching, cache invalidation |
+| `#ui-principles` | Frontend | Accessibility, responsive design, result visibility |
+| `#e2e-testing-patterns` | Frontend | E2E structure, semantic selectors, auth fixtures |
+| `#async-data-fetching` | Frontend | Query key factory, optimistic updates |
+| `#log-analysis-and-triage` | Frontend | Post-smoke log triage, release-gate policy |
+| `#accessibility-testing` | Frontend | axe-core integration, keyboard nav, WCAG 2.1 AA |
+| `#container-operations` | Infrastructure | Container security, health checks, compose |
+| `#internet-research` | Cross-functional | Evidence gathering with calibrated confidence |
+| `#pull-request-readiness` | Cross-functional | Pre-PR quality gates |
+| `#council-review` | Cross-functional | Seven-perspective review methodology |
+| `#creative-problem-solving` | Innovation | Five Whys, SCAMPER, 10x Thinking, Pre-Mortem |
+| `#solution-scouting` | Innovation | 4-tier research, 10x Solution Test, Scout Report |
+| `#experimental-design` | Innovation | Hypothesis-driven spikes, time-box discipline |
 
 ## Token Replacement
 
 All `{{TOKEN}}` placeholders must be replaced before the framework is useful.
-See `TOKENS.md` for the full token table and run `BOOTSTRAP.prompt.md` to automate replacement.
+See `TOKENS.md` for the full token reference (with Category and Source columns) and run `BOOTSTRAP.prompt.md` to automate replacement via the 7-question smart wizard.
 
 ## Framework Version
 agentic-dev-framework v1.0.0
