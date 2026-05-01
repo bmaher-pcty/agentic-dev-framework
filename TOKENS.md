@@ -74,6 +74,16 @@ When you bootstrap a new project, the smart bootstrap wizard infers most tokens 
 | `{{AUTH_PROVIDER}}` | Integrations | Optional (N/A if unused) | Primary authentication provider | `GitHub OAuth`, `Google OAuth` |
 | `{{INTEGRATION_PLATFORM}}` | Integrations | Optional (N/A if unused) | Third-party integration platform | `Jira`, `GitHub`, `Slack` |
 
+## Monorepo Tokens
+
+These tokens apply only when the project uses a monorepo layout. Set them when bootstrapping a project of type "Microservices system" or when enabling `.github/instructions/monorepo.instructions.md`.
+
+| Token | Category | Source | Purpose | Example Value |
+|-------|----------|--------|---------|---------------|
+| `{{SERVICE_DIRS}}` | Monorepo | Optional (N/A if not monorepo) | Comma-separated list of service root directories | `services/api,services/worker,services/frontend` |
+| `{{SHARED_LIB_DIR}}` | Monorepo | Optional (N/A if not monorepo) | Shared library directory consumed by multiple services | `shared`, `packages/common`, `libs/shared` |
+| `{{SERVICE_MANIFEST}}` | Monorepo | Optional (N/A if not monorepo) | Inline markdown table of services — see `monorepo.instructions.md` for format | *(table rows)* |
+
 ## Bootstrap Process
 
 1. Copy this framework into your project's `.github/` directory.

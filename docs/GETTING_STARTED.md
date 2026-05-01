@@ -70,6 +70,8 @@ After bootstrapping, run these checks:
 
 **For the first PR merge**, always run `@review-council` — it establishes the first baseline for `docs/project-intelligence.md`.
 
+**If your team uses CODEOWNERS**, copy `docs/templates/CODEOWNERS.template` to `.github/CODEOWNERS` and customize the owner assignments to match your team structure. The template maps agent domains (Security → Guardian, Frontend → UX+Accessibility, Infrastructure → DevOps) to human reviewer teams.
+
 **First council review checklist:**
 - [ ] Bootstrap complete (`docs/FRAMEWORK_SETUP.md` exists)
 - [ ] At least one `@engineer` session completed

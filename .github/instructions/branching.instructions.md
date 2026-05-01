@@ -35,6 +35,15 @@ Format: `<type>/<short-description>`
 
 Keep descriptions kebab-case, concise, and descriptive (e.g., `feat/user-auth-flow`).
 
+## Phase / Task Completion Gate
+
+A phase or task is **not complete** until:
+1. All deliverables are committed to the feature branch.
+2. The branch is pushed to `origin`.
+3. A pull request is open on GitHub (`gh pr create` or equivalent).
+
+Do not declare a phase done, summarize it as finished, or move on to the next phase until the PR URL has been confirmed. "Implementation complete" without an open PR is not done.
+
 ## Rules
 
 1. Never commit directly to `main`.
@@ -42,3 +51,4 @@ Keep descriptions kebab-case, concise, and descriptive (e.g., `feat/user-auth-fl
 3. One logical change per branch.
 4. Pull latest `main` before creating any new branch.
 5. Delete merged branches to keep the branch list clean.
+6. Every completed phase ends with an open PR — no exceptions.
