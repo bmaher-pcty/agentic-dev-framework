@@ -83,6 +83,10 @@ JSDoc for public APIs only — document intent and parameter semantics, not impl
 9. **Scripts live under `{{SCRIPTS_DIR}}/`** — No operational scripts at repo root; CI and docs reference `{{TASK_RUNNER}}` targets.
 10. **Skills must be flat files** — One file per skill, `.github/skills/<name>.md`, no subfolders.
 
+## Interpretation Gate
+
+Before acting on any prompt, state your interpretation of the task in one or two sentences — what you understand the goal to be, what's in scope, and your intended approach. Confirm this is correct before proceeding. If something is genuinely ambiguous and cannot be inferred from the codebase, ask — but don't ask more than necessary. Surface assumptions before work begins, not after.
+
 ## Large Codebase Protocol
 
 1. **Read contracts before implementations** — interfaces, API schemas, and tests before source files.

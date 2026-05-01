@@ -8,6 +8,12 @@
 
 ---
 
+## Global Rule (All Agents)
+
+Before acting on any prompt, state your interpretation in one or two sentences — what you understand the goal to be, what's in scope, and your intended approach. Confirm it's correct before proceeding. If something is genuinely ambiguous and can't be inferred from the codebase, ask — but don't bombard the user. Surface assumptions before work begins, not after.
+
+---
+
 ## Engineer
 
 *Use when implementing features, fixing bugs, or validating runtime behavior.*
