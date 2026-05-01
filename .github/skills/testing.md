@@ -27,7 +27,7 @@ description: 'Testing patterns with clear arrange-act-assert structure and cover
 ## Test Data Builder Pattern
 ```
 // Use builders for test fixtures, not literals
-// Example shown in {{UNIT_TEST_ adapt to your frameworkFRAMEWORK}} 
+// Example shown in {{UNIT_TEST_FRAMEWORK}} — adapt to your framework
 function createUserFixture(overrides) {
   return {
     id: 'user-test-id',
@@ -40,14 +40,14 @@ function createUserFixture(overrides) {
 ```
 
 ## Mock Strategy
-- Mock at the boundary (HTTP client, DB  not deep inside service logic.client) 
+- Mock at the boundary (HTTP client, DB client) — not deep inside service logic.
 - Use {{UNIT_TEST_FRAMEWORK}} spy/mock functions for verifying calls and replacing behavior.
 - Reset mocks after each test to prevent test order dependencies.
 
 ## Checklist
 - [ ] Tests are deterministic (no `Date.now()` without mocking, no random).
 - [ ] Edge cases and failure paths are included, not just happy path.
-- [ ] Assertions are explicit and  one concern per test.minimal 
+- [ ] Assertions are explicit and minimal — one concern per test.
 - [ ] Coverage remains at or above targets.
 - [ ] User-visible outcomes are asserted for feature-critical flows.
 - [ ] A change is not marked complete when only unit tests are green but workflow output is unverified.
@@ -55,6 +55,6 @@ function createUserFixture(overrides) {
 - [ ] Behavior contract changes are reflected in both implementation and tests in the same change.
 
 ## Anti-Patterns
-- Testing implementation details (mocking internal function  breaks on refactoring.calls) 
-- `expect(something).toBeDefined()` as the only  catches nothing meaningful.assertion 
+- Testing implementation details (mocking internal function calls) — breaks on refactoring.
+- `expect(something).toBeDefined()` as the only assertion — catches nothing meaningful.
 - Modifying tests to make them pass without understanding why they failed.

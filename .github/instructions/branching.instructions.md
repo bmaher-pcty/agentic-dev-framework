@@ -26,12 +26,12 @@ Use these instructions at the start of every new work session.
 
 Format: `<type>/<short-description>`
 
-- ` new featuresfeat/` 
-- ` bug fixesfix/` 
-- ` restructuring without behavior changerefactor/` 
-- ` documentation onlydocs/` 
-- ` test additions or improvementstest/` 
-- ` tooling, CI, dependencieschore/` 
+- `feat/` — new features.
+- `fix/` — bug fixes.
+- `refactor/` — restructuring without behavior change.
+- `docs/` — documentation only.
+- `test/` — test additions or improvements.
+- `chore/` — tooling, CI, dependencies.
 
 Keep descriptions kebab-case, concise, and descriptive (e.g., `feat/user-auth-flow`).
 

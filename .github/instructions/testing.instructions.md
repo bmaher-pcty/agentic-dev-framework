@@ -59,4 +59,4 @@ Use these instructions for all implementation, refactors, and bug fixes.
 | `{{CLIENT_SOURCE_DIR}}/pages/**` | Frontend CI + E2E for affected page |
 | `{{CONTAINER_COMPOSE_FILE}}` | Full smoke workflow |
 | `schema/` or `migrations/` | Unit/integration CI (migration test) + full smoke |
-| `.github/agents/**` or `.github/skills/**` | Manual  no automated tests |review 
+| `.github/agents/**` or `.github/skills/**` | Manual review — no automated tests |

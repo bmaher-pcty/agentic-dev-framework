@@ -40,10 +40,10 @@ Use these instructions for authentication, authorization, OAuth integration, tok
 > Add a placeholder to `.env.example` for every new secret introduced.
 
 Common variables for auth/OAuth features:
-- `JWT_ signs access tokensSECRET` 
-- `DATABASE_ database connection stringURL` 
-- `FRONTEND_ used for CORS and OAuth callbackURL` 
-- `SESSION_EXPIRES_ token lifetimeIN` 
+- `JWT_SECRET` — signs access tokens.
+- `DATABASE_URL` — database connection string.
+- `FRONTEND_URL` — used for CORS and OAuth callback.
+- `SESSION_EXPIRES_IN` — token lifetime.
 
 When introducing new auth providers or secrets, add a placeholder to `.env.example` in the same change.
 
@@ -52,6 +52,6 @@ When introducing new auth providers or secrets, add a placeholder to `.env.examp
 1. {{CONTAINER_RUNTIME}} images must use specific version tags, not `:latest`.
 2. Containers must run as non-root users for application services.
 3. {{REVERSE_PROXY}} configuration must include security headers: `X-Frame-Options`, `X-Content-Type-Options`, `Strict-Transport-Security`, `X-XSS-Protection`, `Content-Security-Policy`, `Referrer-Policy`.
-4. TLS certificates must not be committed to source  `certs/` must be gitignored.control 
+4. TLS certificates must not be committed to source control — `certs/` must be gitignored.
 5. {{CONTAINER_RUNTIME}} Compose must not expose database ports to the host unless explicitly required for development.
 6. Health check endpoints must not expose internal system details beyond status and timestamp.

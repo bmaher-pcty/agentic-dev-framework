@@ -46,7 +46,7 @@ test('page has no accessibility violations', async ({ page }) => {
 |-----------|-------------|-------------|
 | 1.1.1 | Non-text content has text alternatives | All `<img>` have `alt`, icons have `aria-label` |
 | 1.3.1 | Info/structure conveyed programmatically | Semantic HTML, heading hierarchy, form labels |
-| 1.4.3 | Contrast 4.5:1 (normal text) | DevTools accessibility panel or `{{A11Y_TESTING_LIB}}` |ratio 
+| 1.4.3 | Contrast ratio 4.5:1 (normal text) | DevTools accessibility panel or `{{A11Y_TESTING_LIB}}` |
 | 2.1.1 | All functionality keyboard-accessible | Tab through entire page |
 | 2.4.3 | Focus order is meaningful | Verify tab sequence matches layout |
 | 2.4.7 | Focus is visible | Check focus ring on all interactive elements |
@@ -64,10 +64,10 @@ function handleClose():
 ```
 
 ## Anti-Patterns
-- Using `div` with `onClick` instead of ` loses keyboard access and semantics.button` 
-- Setting `outline: none` without replacement focus  makes focus invisible.indicator 
-- Using `aria-label` on elements that already have visible  creates redundancy/confusion.text 
+- Using `div` with `onClick` instead of `button` — loses keyboard access and semantics.
+- Setting `outline: none` without replacement focus indicator — makes focus invisible.
+- Using `aria-label` on elements that already have visible text — creates redundancy/confusion.
 - Using `role="button"` without `tabindex="0"` and keyboard event handlers.
-- Toast notifications without `aria-live=" invisible to screen readers.polite"` 
-- Color-only error indication without icon or  fails WCAG 1.4.1 Use of Color.text 
-- Placeholder-only form  disappear when user starts typing.labels 
+- Toast notifications without `aria-live="polite"` — invisible to screen readers.
+- Color-only error indication without icon or text — fails WCAG 1.4.1 Use of Color.
+- Placeholder-only form labels — disappear when user starts typing.

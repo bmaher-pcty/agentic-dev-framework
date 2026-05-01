@@ -46,13 +46,13 @@ Review the project codebase across three domains:
 
 ## Output
 
-1. **Executive  Overall codebase health across the three domains.Summary** 
-2. **Advocate  Top 10 strengths (with file references) that define the quality baseline.Report** 
-3. **Code Quality  Craftsperson + Skeptic findings with severity and file references.Findings** 
-4. **Security  Guardian findings with severity, attack vector, and remediation.Findings** 
-5. **UI/UX  User Champion findings with severity, affected page/component, and fix.Findings** 
-6. **Synthesizer  Cross-cutting patterns to consolidate and spread.Recommendations** 
-7. **Prioritized Improvement  Numbered, severity-tagged, with owner perspective and effort estimate (S/M/L).Backlog** 
+1. **Executive Summary** — Overall codebase health across the three domains.
+2. **Advocate Report** — Top 10 strengths (with file references) that define the quality baseline.
+3. **Code Quality Findings** — Craftsperson + Skeptic findings with severity and file references.
+4. **Security Findings** — Guardian findings with severity, attack vector, and remediation.
+5. **UI/UX Findings** — User Champion findings with severity, affected page/component, and fix.
+6. **Synthesizer Recommendations** — Cross-cutting patterns to consolidate and spread.
+7. **Prioritized Improvement Backlog** — Numbered, severity-tagged, with owner perspective and effort estimate (S/M/L).
 
 ## Rules
 

@@ -24,7 +24,7 @@ description: 'Security patterns for input validation, auth handling, rate limits
 - [ ] Inputs validated before use (schema validation at route layer).
 - [ ] Auth tokens verified and expired safely on all protected routes.
 - [ ] Rate limiting enabled for login, register, and token refresh routes.
-- [ ] No hardcoded  all credentials in environment variables.secrets 
+- [ ] No hardcoded secrets — all credentials in environment variables.
 - [ ] No secret/token/password fields in logs or error messages.
 - [ ] Debugging artifacts and runtime traces do not expose credential-bearing data.
 - [ ] Stored feature results are access-controlled and scoped to owning user.
@@ -46,8 +46,8 @@ router.get('/resource/:id', authenticateToken, async (req, res) => {
 ```
 
 ## Anti-Patterns
-- Using `findUnique({ where: { id } })` without `userId`  exposes all users' data.scope 
-- Returning 403 for non-owned  reveals the resource exists (enumeration).resources 
-- Logging `req.headers. exposes Bearer tokens.authorization` 
-- Using unsafe types as JWT  loses type safety on `req.user`.payload 
-- Returning raw {{ORM}}/database error  leaks schema details to the client.messages 
+- Using `findUnique({ where: { id } })` without `userId` scope — exposes all users' data.
+- Returning 403 for non-owned resources — reveals the resource exists (enumeration).
+- Logging `req.headers.authorization` — exposes Bearer tokens.
+- Using unsafe types as JWT payload — loses type safety on `req.user`.
+- Returning raw {{ORM}}/database error messages — leaks schema details to the client.

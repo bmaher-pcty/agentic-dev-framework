@@ -8,12 +8,12 @@ Convene the Review Council to evaluate the specified code or feature from six pe
 
 ## Council Members
 
-1. **The  What is strong, well-built, and worth preserving?Advocate** 
-2. **The  What assumptions are fragile? What fails at 2 AM?Skeptic** 
-3. **The  Where is the best pattern, and where should it be applied everywhere?Synthesizer** 
-4. **The  What are the attack vectors, secret risks, and auth gaps?Guardian** 
-5. **The  Is this maintainable, testable, DRY, and properly typed?Craftsperson** 
-6. **The User  Can users find results, recover from errors, and navigate clearly?Champion** 
+1. **The Advocate** — What is strong, well-built, and worth preserving?
+2. **The Skeptic** — What assumptions are fragile? What fails at 2 AM?
+3. **The Synthesizer** — Where is the best pattern, and where should it be applied everywhere?
+4. **The Guardian** — What are the attack vectors, secret risks, and auth gaps?
+5. **The Craftsperson** — Is this maintainable, testable, DRY, and properly typed?
+6. **The User Champion** — Can users find results, recover from errors, and navigate clearly?
 
 ## Procedure
 
@@ -21,7 +21,8 @@ Convene the Review Council to evaluate the specified code or feature from six pe
 2. Read the relevant code, tests, and configuration.
 3. Run each perspective analysis in the order above.
 4. Synthesize findings into a unified assessment.
-6. Produce prioritized action items with specific file references and recommended fixes.5. Classify each finding by severity (
+5. Classify each finding by severity (🔴 Critical / 🟠 High / 🟡 Medium / 🔵 Low — see `.github/skills/council-review.md`).
+6. Produce prioritized action items with specific file references and recommended fixes.
 
 ## Output
 

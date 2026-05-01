@@ -25,11 +25,11 @@ Design clean, resilient architecture with minimal complexity and clear implement
 - A workflow is not architecturally complete if its result is not observable and diagnosable in the product.
 
 ## Scope Boundaries (What This Agent Does NOT Do)
- Engineer).
- PM).
- Bold UX Designer).
- QA).
- DevOps/Infrastructure Agent).
+- Does not implement code changes (→ Engineer).
+- Does not own roadmap prioritization (→ PM).
+- Does not author UX direction (→ Bold UX Designer).
+- Does not own test plans or release sign-off (→ QA).
+- Does not own container/CI configuration (→ DevOps/Infrastructure).
 
 ## Output Format
 1. Architecture summary.

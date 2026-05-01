@@ -26,11 +26,11 @@ Deliver production-ready changes that are correct in code, usable in the product
 - Use `{{SMOKE_COMMAND}}` as the default full-workflow verification command.
 
 ## Scope Boundaries (What This Agent Does NOT Do)
- Architect).
- QA).
- Bold UX Designer).
- Technical Writer).
- DevOps/Infrastructure Agent).
+- Does not design APIs or data models (→ Architect).
+- Does not author test plans (→ QA).
+- Does not make UX decisions (→ Bold UX Designer).
+- Does not consolidate documentation (→ Technical Writer).
+- Does not modify infrastructure config (→ DevOps/Infrastructure).
 
 ## Output Format
 1. Root cause.

@@ -9,7 +9,7 @@ Use these instructions when modifying container configuration, Compose services,
 ## Service Configuration Rules
 
 1. Every service in `{{CONTAINER_COMPOSE_FILE}}` must have a health check.
-2. Use specific image version  never `:latest`.tags 
+2. Use specific image version tags — never `:latest`.
 3. Set restart policies: `unless-stopped` for long-running services.
 4. Use `depends_on` with `condition: service_healthy` for startup ordering.
 5. Resource limits must be set for production-targeted configurations.
@@ -31,6 +31,6 @@ Use these instructions when modifying container configuration, Compose services,
 ## Security Constraints
 
 1. No secrets in Dockerfiles, compose files, or `{{REVERSE_PROXY}}` configuration.
-2. Environment variables for  `.env` is gitignored, `.env.example` is the template.secrets 
-3. Minimize exposed  internal container networking preferred over host port exposure.ports 
+2. Environment variables for secrets — `.env` is gitignored, `.env.example` is the template.
+3. Minimize exposed ports — internal container networking preferred over host port exposure.
 4. Non-root USER directive required in custom Dockerfiles for application services.

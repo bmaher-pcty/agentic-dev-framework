@@ -11,11 +11,11 @@ description: 'Schema and migration patterns with indexing, relations, and query 
 - Planning safe schema evolution for existing data.
 
 ## Procedure
-1. Model entities and relations  use enums for constrained values.explicitly 
+1. Model entities and relations explicitly — use enums for constrained values.
 2. Add indexes for frequent lookup and sort paths.
 3. Plan migration naming and rollout strategy (see `#data-migrations`).
 4. Avoid N+1 query behavior with eager loading or batched queries.
-5. Scope queries to the authenticated  never return all rows without a userId filter.user 
+5. Scope queries to the authenticated user — never return all rows without a userId filter.
 
 ## Schema Patterns (pseudocode)
 
@@ -68,7 +68,7 @@ enum Role {
 
 ## N+1 Prevention
 ```
-// Bad: N+ one query per user's sessions1 
+// Bad: N+1 — one query per user's sessions
 users = db.user.findMany()
 for each user:
   sessions = db.session.findMany({ where: { userId: user.id } })
@@ -91,8 +91,8 @@ users = db.user.findMany({
 - [ ] Eager loading or batching used to prevent N+1 loading.
 
 ## Anti-Patterns
-- Free-text role/status fields instead of  allows invalid values to enter the DB.enums 
-- `findMany()` without pagination on user-facing  causes slow queries at scale.endpoints 
-- Missing `updatedAt` tracking on mutable  makes auditing impossible.models 
-- Deeply nested eager-load  use multiple targeted queries instead.chains 
-- Schema changes without a migration  leaves database out of sync.file 
+- Free-text role/status fields instead of enums — allows invalid values to enter the DB.
+- `findMany()` without pagination on user-facing endpoints — causes slow queries at scale.
+- Missing `updatedAt` tracking on mutable models — makes auditing impossible.
+- Deeply nested eager-load chains — use multiple targeted queries instead.
+- Schema changes without a migration file — leaves database out of sync.

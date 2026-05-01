@@ -14,10 +14,10 @@ Keep Copilot customizations under `.github/`:
 
 When guidance conflicts between different sources, apply in this order:
 
-1. **Path-scoped instructions** (`.github/instructions/*.instructions.md` with matching ` highest authority for files in their scope.applyTo`) 
-2. **Agent definitions** (`.github/agents/*.agent. highest authority for agent-specific behavior when that agent is active.md`) 
-3. **Skills** (`.github/skills/*. procedural guidance when explicitly invoked.md`) 
-4. **This file** (`copilot-instructions. baseline defaults and global rules.md`) 
+1. **Path-scoped instructions** (`.github/instructions/*.instructions.md` with matching `applyTo`) — highest authority for files in their scope.
+2. **Agent definitions** (`.github/agents/*.agent.md`) — highest authority for agent-specific behavior when that agent is active.
+3. **Skills** (`.github/skills/*.md`) — procedural guidance when explicitly invoked.
+4. **This file** (`copilot-instructions.md`) — baseline defaults and global rules.
 
 If a path-scoped instruction contradicts this file, the path-scoped instruction wins for files matching its `applyTo` pattern. If an agent's constraints contradict a skill's procedure, the agent's constraints win.
 
@@ -74,31 +74,31 @@ Each agent has:
 > **Note:** Skill categories reflect web application defaults. Reorganize for your project type.
 
 ### Backend Skills
-1. **#static-typing- Type safety, generics, discriminated unions, no unsafe type escapespractices** 
-2. **#api- REST endpoints, versioning, error codes, validationdesign** 
-3. **#error- Consistent error structures, proper HTTP codes, logging strategyhandling** 
-4. **# Input validation, secrets management, CORS, security headerssecurity** 
-5. **# Unit test patterns, fixtures, mocking, test data builderstesting** 
-6. **#data- Schema design, migrations, indexesmodeling** 
-7. **#data- Safe schema evolution, migration naming, backfill patterns, rollback planningmigrations** 
-8. **# Structured logging, health checks, request correlation IDs, error trackingobservability** 
+1. **#static-typing-practices** — Type safety, generics, discriminated unions, no unsafe type escapes
+2. **#api-design** — REST endpoints, versioning, error codes, validation
+3. **#error-handling** — Consistent error structures, proper HTTP codes, logging strategy
+4. **#security** — Input validation, secrets management, CORS, security headers
+5. **#testing** — Unit test patterns, fixtures, mocking, test data builders
+6. **#data-modeling** — Schema design, migrations, indexes
+7. **#data-migrations** — Safe schema evolution, migration naming, backfill patterns, rollback planning
+8. **#observability** — Structured logging, health checks, request correlation IDs, error tracking
 
 ### Frontend Skills
-9. **#ui-component- UI framework patterns, prop APIs, composition, visual statesdesign** 
-10. **#client-state- State library stores, data fetching integration, cache invalidation, logout cleanupmanagement** 
-11. **#ui- Accessibility baseline, responsive design, `{{CSS_FRAMEWORK}}` spacing, result visibility rulesprinciples** 
-12. **#e2e-testing- E2E test structure, semantic selectors, auth fixtures, assertion patternspatterns** 
-13. **#async-data- Query key factory, optimistic updates, stale time guidelines, cache invalidationfetching** 
-14. **#log-analysis-and- Post-smoke log triage, hidden-problem detection, release-gate policytriage** 
-15. **#accessibility- `{{A11Y_TESTING_LIB}}` integration, keyboard navigation checklist, WCAG 2.1 AA quick referencetesting** 
+9. **#ui-component-design** — UI framework patterns, prop APIs, composition, visual states
+10. **#client-state-management** — State library stores, data fetching integration, cache invalidation, logout cleanup
+11. **#ui-principles** — Accessibility baseline, responsive design, `{{CSS_FRAMEWORK}}` spacing, result visibility rules
+12. **#e2e-testing-patterns** — E2E test structure, semantic selectors, auth fixtures, assertion patterns
+13. **#async-data-fetching** — Query key factory, optimistic updates, stale time guidelines, cache invalidation
+14. **#log-analysis-and-triage** — Post-smoke log triage, hidden-problem detection, release-gate policy
+15. **#accessibility-testing** — `{{A11Y_TESTING_LIB}}` integration, keyboard navigation checklist, WCAG 2.1 AA quick reference
 
 ### Infrastructure Skills
-16. **#container- Container security, health check patterns, compose best practices, debugging commandsoperations** 
+16. **#container-operations** — Container security, health check patterns, compose best practices, debugging commands
 
 ### Cross-Functional Skills
-17. **#internet- External evidence gathering with skeptical validation and confidence calibrated by independent source convergenceresearch** 
-18. **#pull-request- Pre-PR quality gates: latest main sync, commit/PR quality, functionality verification, and full test execution before push/opening PRreadiness** 
-19. **#council- Six-perspective structured review methodology, severity classification, conflict resolutionreview** 
+17. **#internet-research** — External evidence gathering with skeptical validation and confidence calibrated by independent source convergence
+18. **#pull-request-readiness** — Pre-PR quality gates: latest main sync, commit/PR quality, functionality verification, and full test execution before push/opening PR
+19. **#council-review** — Six-perspective structured review methodology, severity classification, conflict resolution
 
 ## Agent Invocation
 
@@ -311,12 +311,12 @@ Before pushing the final commit on a feature branch, perform a cleanup sweep on 
 5. **Spec vs implementation drift**: Walk the diff one more time and confirm every new type/interface matches how its callers actually use it. Remove fields no caller reads.
 6. **Operator setup leakage**: Any new file under `docs/`, `RUN.md`, or `*_SETUP*.md` at the repo root that describes provider-console clicks, API-key acquisition, OAuth app registration, callback URL configuration, tenant-specific values, or operator-machine-specific paths must be moved to `docs/local/` (which is gitignored). See "Local-Only Setup Docs" below.
 
-Use sub-agents in parallel for this sweep (one for dead-code, one for security/secrets) so the cleanup and the security review happen together rather than serially. Treat any finding as in-scope for the same  do not open a follow-up unless the user explicitly defers.PR 
+Use sub-agents in parallel for this sweep (one for dead-code, one for security/secrets) so the cleanup and the security review happen together rather than serially. Treat any finding as in-scope for the same PR — do not open a follow-up unless the user explicitly defers.
 
 ### Pre-PR Security Review (Sensitive-Data Sweep)
 Before pushing the final commit, also run a security sweep on the diff:
 
-1. **No secrets in source, tests, fixtures, docs, or  only `.env.example` placeholders are allowed in version control.migrations** 
+1. **No secrets in source, tests, fixtures, docs, or migrations** — only `.env.example` placeholders are allowed in version control.
 2. **No raw credentials, tokens, or auth headers in `logger.*`  confirm redaction on every new log line that touches credentialed paths.calls** 
 3. **All new endpoints require authentication middleware** and enforce per-user ownership for any record reads/writes/deletes.
 4. **All user-supplied input that flows into external API calls is validated and escaped** at both the route layer and the service layer (defense in depth). Specifically, anything that gets interpolated into a query string, header, URL path, or shell command must be whitelisted to safe characters before use.
@@ -340,23 +340,23 @@ See `.github/instructions/testing.instructions.md` for test integrity standards,
 
 ## Constraints (Non-Negotiable)
 
-1. **No AI-generated  All designs manually crafted, `{{CSS_FRAMEWORK}}` baseUI** 
-2. **No copy-paste  Extract to utilities; use the DRY principlecode** 
-3. **No abandoned  Features ship or get reverted; no "draft" PRsPRs** 
-4. **No secrets in  Mask tokens/passwords; sanitize error messageslogs** 
-5. **Core stack is  `{{SERVER_FRAMEWORK}}`, `{{FRONTEND_FRAMEWORK}}`, `{{DATABASE}}`, `{{ORM}}`, `{{CONTAINER_RUNTIME}}`locked** 
-6. **Scripts live under `{{SCRIPTS_ No operational scripts at repository rootDIR}}/`** 
-7. **Command-first execution  Use `{{TASK_RUNNER}} <target>` instead of invoking scripts directlyonly** 
-8. **Skills must be flat  Store each skill as `.github/skills/<skill_name>.md`; do not use per-skill subfoldersfiles** 
-9. **No false-complete  Do not say work is done unless the feature is working in the user-visible path, the application is still reachable and passing required verification, or the remaining blocker has been explicitly surfacedclaims** 
-10. **No broken  If a change leaves the app broken, degraded, or unreachable, continue working until service is restored and verification passes; never stop at "implemented" while the application is non-functionalhandoff** 
-11. **No operator setup docs in tracked  See "Local-Only Setup Docs" below.folders** 
+1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base.
+2. **No copy-paste code** — Extract to utilities; use the DRY principle.
+3. **No abandoned PRs** — Features ship or get reverted; no "draft" PRs.
+4. **No secrets in logs** — Mask tokens/passwords; sanitize error messages.
+5. **Core stack is locked** — `{{SERVER_FRAMEWORK}}`, `{{FRONTEND_FRAMEWORK}}`, `{{DATABASE}}`, `{{ORM}}`, `{{CONTAINER_RUNTIME}}`.
+6. **Scripts live under `{{SCRIPTS_DIR}}/`** — No operational scripts at repository root.
+7. **Command-first execution only** — Use `{{TASK_RUNNER}} <target>` instead of invoking scripts directly.
+8. **Skills must be flat files** — Store each skill as `.github/skills/<skill_name>.md`; do not use per-skill subfolders.
+9. **No false-complete claims** — Do not say work is done unless the feature is working in the user-visible path, the application is still reachable and passing required verification, or the remaining blocker has been explicitly surfaced.
+10. **No broken handoff** — If a change leaves the app broken, degraded, or unreachable, continue working until service is restored and verification passes; never stop at "implemented" while the application is non-functional.
+11. **No operator setup docs in tracked folders** — See "Local-Only Setup Docs" below.
 
 ## Local-Only Setup Docs
 
 Documentation that explains how a single operator stands up *their* own
- registering an OAuth app, generating an API key, configuring ainstance 
-specific tenant, recovering from a provider-side  mustmisconfiguration 
+instance — registering an OAuth app, generating an API key, configuring a
+specific tenant, recovering from a provider-side misconfiguration — must
 **never** be committed to the repository. It lives in `docs/local/`, which
 is gitignored.
 
@@ -444,18 +444,22 @@ is gitignored.
 
 ## Related Files
 
-- [../docs/LOCAL_SETUP.md](../docs/LOCAL_SETUP. how to obtain operator-specific setup notes (untracked `docs/local/`)md) 
-- [../docs/DEVELOPMENT.md](../docs/DEVELOPMENT. Development patternsmd) 
-- [../docs/database.md](../docs/database. Database guidemd) 
-- [../docs/adr/](../docs/ Architecture decisionsadr/) 
-- [instructions/testing.instructions.md](instructions/testing.instructions. Path-scoped testing and verification rulesmd) 
-- [instructions/security.instructions.md](instructions/security.instructions. Path-scoped security and secret-handling rulesmd) 
-- [agents/thoughtful-product-manager.agent.md](agents/thoughtful-product-manager.agent. Product scope and prioritization agentmd) 
-- [agents/system-architect.agent.md](agents/system-architect.agent. Architecture and API design agentmd) 
-- [agents/engineer.agent.md](agents/engineer.agent. Implementation and verification agentmd) 
-- [agents/veteran-qa.agent.md](agents/veteran-qa.agent. Regression-focused quality agentmd) 
-- [agents/bold-ux-designer.agent.md](agents/bold-ux-designer.agent. Impactful UX direction agentmd) 
-- [agents/technical-writer.agent.md](agents/technical-writer.agent. Documentation governance agentmd) 
+- [../docs/LOCAL_SETUP.md](../docs/LOCAL_SETUP.md) — how to obtain operator-specific setup notes (untracked `docs/local/`)
+- [../docs/DEVELOPMENT.md](../docs/DEVELOPMENT.md) — Development patterns
+- [../docs/database.md](../docs/database.md) — Database guide
+- [../docs/adr/](../docs/adr/) — Architecture decisions
+- [instructions/testing.instructions.md](instructions/testing.instructions.md) — Path-scoped testing and verification rules
+- [instructions/security.instructions.md](instructions/security.instructions.md) — Path-scoped security and secret-handling rules
+- [agents/thoughtful-product-manager.agent.md](agents/thoughtful-product-manager.agent.md) — Product scope and prioritization agent
+- [agents/system-architect.agent.md](agents/system-architect.agent.md) — Architecture and API design agent
+- [agents/engineer.agent.md](agents/engineer.agent.md) — Implementation and verification agent
+- [agents/veteran-qa.agent.md](agents/veteran-qa.agent.md) — Regression-focused quality agent
+- [agents/bold-ux-designer.agent.md](agents/bold-ux-designer.agent.md) — Impactful UX direction agent
+- [agents/technical-writer.agent.md](agents/technical-writer.agent.md) — Documentation governance agent
+- [agents/review-council.agent.md](agents/review-council.agent.md) — Multi-perspective code and architecture review agent
+- [agents/accessibility.agent.md](agents/accessibility.agent.md) — WCAG 2.1 AA accessibility agent
+- [agents/devops-infrastructure.agent.md](agents/devops-infrastructure.agent.md) — Container, CI/CD, and runtime infrastructure agent
+- [agents/performance.agent.md](agents/performance.agent.md) — Performance profiling and optimization agent
 
 ## Custom Agent Tool Profiles
 
@@ -469,11 +473,11 @@ is gitignored.
 ## Questions?
 
 Consult the relevant agent for decisions:
- Product Manager
- Architect
- Engineer
- QA
- Designer
+- @pm: Product Manager
+- @architect: Architect
+- @engineer: Engineer
+- @qa: QA
+- @designer: Designer
 
 See [agents/technical-writer.agent.md](agents/technical-writer.agent.md) for documentation cleanup workflow and [skills/](skills/) for skill definitions.
 

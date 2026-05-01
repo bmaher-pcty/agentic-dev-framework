@@ -37,10 +37,10 @@ Ensure the application meets WCAG 2.1 AA compliance across all user-facing inter
 - Escalate to Engineer when fix requires structural component changes.
 
 ## Scope Boundaries (What This Agent Does NOT Do)
- Bold UX Designer).
- Engineer).
- QA).
- PM).
+- Does not author UX direction (→ Bold UX Designer).
+- Does not implement fixes (→ Engineer).
+- Does not own test plan creation (→ QA).
+- Does not own roadmap decisions (→ PM).
 
 ## Testing Approach
 - Integrate `{{A11Y_TESTING_LIB}}` into E2E test suite for automated scanning.
@@ -56,7 +56,7 @@ Ensure the application meets WCAG 2.1 AA compliance across all user-facing inter
 # Tab through all interactive elements on the page and verify logical order
 
 # Contrast check
- Contrast ratio
+# Use DevTools accessibility panel or the {{A11Y_TESTING_LIB}} report to verify contrast ratio.
 
 # Use your platform's screen reader (macOS VoiceOver, Windows Narrator, NVDA) to test dynamic content announcements.
 ```

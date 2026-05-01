@@ -1,4 +1,4 @@
-# Token  agentic-dev-frameworkReference 
+# Token Reference — agentic-dev-framework
 
 This document lists all placeholder tokens used throughout the framework files.
 Run `BOOTSTRAP.prompt.md` to replace these tokens with your project's actual values.
