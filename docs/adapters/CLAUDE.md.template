@@ -1,0 +1,121 @@
+# [PROJECT_NAME] — Claude Code Configuration
+
+> **Version:** agentic-dev-framework v[VERSION]  
+> **Setup:** Copy this file to `CLAUDE.md` in your project root. Replace `[PROJECT_NAME]` and `[VERSION]`. Run `BOOTSTRAP.prompt.md` to resolve all `{{TOKEN}}` placeholders.
+
+This file configures Claude Code for use with the agentic-dev-framework. It provides Claude with the same quality constraints, agent routing, and session context defined in `.github/copilot-instructions.md` — because Claude.md has independent context from `.github/` in some Claude Code configurations.
+
+---
+
+## Framework
+
+This project uses agentic-dev-framework v[VERSION]. Full agent definitions, skills, and path-scoped instructions live in `.github/`. This file encodes the subset Claude needs to operate correctly without reading every `.github/` file on every request.
+
+**Specification:** `docs/FRAMEWORK-SPEC.md` defines the four core contracts this adapter implements.
+
+---
+
+## Session Start Protocol (Always — Before Every Response)
+
+Before responding to any request, read these files:
+
+1. `docs/project-intelligence.md` — Anti-patterns and locked architectural decisions apply to all work in this session. Do not repeat known anti-patterns.
+2. `docs/open-handoffs.md` — Check for OPEN handoffs. Do not proceed with work that an OPEN handoff is blocking.
+3. `.github/copilot-instructions.md` — Global constraints, agent scope boundaries, and repository standards. The Constraints (Non-Negotiable) section is duplicated below for immediate access.
+
+If any of these files is missing or unreadable, note the gap but continue — do not fail the session start.
+
+---
+
+## Agent Routing
+
+When the user references an agent by name or invocation shorthand, apply the corresponding agent definition from `.github/agents/`:
+
+| User Says | Agent File | Primary Scope |
+|-----------|-----------|---------------|
+| `@pm` or "product manager" | `.github/agents/thoughtful-product-manager.agent.md` | Feature fit, roadmap, acceptance criteria |
+| `@architect` | `.github/agents/system-architect.agent.md` | System structure, API design, data model |
+| `@engineer` | `.github/agents/engineer.agent.md` | Implementation, verification, delivery |
+| `@qa` | `.github/agents/veteran-qa.agent.md` | Test plans, regression, release readiness |
+| `@designer` | `.github/agents/bold-ux-designer.agent.md` | Visual hierarchy, UX, result discoverability |
+| `@technical-writer` | `.github/agents/technical-writer.agent.md` | Documentation governance, consolidation |
+| `@review-council` | `.github/agents/review-council.agent.md` | 7-perspective code and architecture review |
+| `@accessibility` | `.github/agents/accessibility.agent.md` | WCAG 2.1 AA, keyboard nav, screen reader |
+| `@devops-infrastructure` | `.github/agents/devops-infrastructure.agent.md` | Containers, CI/CD, deployment health |
+| `@performance` | `.github/agents/performance.agent.md` | Bundle size, query efficiency, response times |
+| `@innovator` | `.github/agents/innovator.agent.md` | Problem reframing, solution scouting |
+| `@researcher` | `.github/agents/researcher.agent.md` | Evidence gathering, multi-perspective research |
+
+When an agent is invoked, read its `.agent.md` file fully before responding. The agent's constraints, decision pattern, and output format are binding for that session.
+
+---
+
+## Non-Negotiable Constraints
+
+> These constraints are duplicated from `.github/copilot-instructions.md` because CLAUDE.md may be the only framework file Claude reads in some configurations. These are not optional and cannot be overridden by any agent, skill, or user request.
+
+1. **No AI-generated UI** — All designs manually crafted, `{{CSS_FRAMEWORK}}` base. *(Rationale: AI-generated UI bypasses the UX Designer and Accessibility review gates, producing components that may fail WCAG 2.1 AA before human oversight can catch them.)*
+2. **No copy-paste code** — Extract to utilities; use the DRY principle.
+3. **No abandoned PRs** — Features ship or get reverted; no perpetual draft PRs.
+4. **No secrets in logs** — Mask tokens/passwords; sanitize error messages.
+5. **Core stack is locked** — `{{SERVER_FRAMEWORK}}`, `{{FRONTEND_FRAMEWORK}}`, `{{DATABASE}}`, `{{ORM}}`, `{{CONTAINER_RUNTIME}}`. Changes require an ADR.
+6. **Scripts live under `{{SCRIPTS_DIR}}/`** — No operational scripts at repository root.
+7. **Command-first execution only** — Use `{{TASK_RUNNER}} <target>` instead of invoking scripts directly.
+8. **Skills must be flat files** — Each skill is `.github/skills/<skill_name>.md`; no per-skill subfolders.
+9. **No false-complete claims** — Do not say work is done unless the user-visible path is verified, the app is reachable, and required verification passes — or the blocking issue is explicitly surfaced.
+10. **No broken handoff** — If a change breaks the app, continue working until service is restored and verification passes. Never stop at "implemented" while the app is non-functional.
+11. **No operator setup docs in tracked folders** — Provider walkthroughs, API key steps, and per-tenant config live in `docs/local/` (gitignored). `.env.example` is the only tracked record of which env vars exist.
+
+---
+
+## Quality Gate Contract
+
+These four gates apply to every response, regardless of scope or urgency:
+
+**Completion Gate:** Implementation is not done until the user-visible output is verified end-to-end. Surface blockers explicitly; do not claim completion while the app is broken or unreachable.
+
+**Security Non-Negotiable:** Guardian findings from the Review Council cannot be deferred without an ADR. Security severity cannot be downgraded by other perspectives.
+
+**No False-Complete:** Use verification labels honestly:
+- `VERIFIED-AUTOMATED` — test ran, passed, committed
+- `VERIFIED-MANUAL` — command was run and output observed this session
+- `ASSUMED-UNTESTED` — not verified; believed correct
+- `REQUIRES-HUMAN-VERIFICATION` — explicit developer follow-up required
+
+Any `ASSUMED-UNTESTED` on an auth, authorization, or secret-handling path automatically escalates to `REQUIRES-HUMAN-VERIFICATION`.
+
+**No Broken Handoff:** Leaving the app broken is not a valid stopping point. Restore functionality or surface a concrete blocker.
+
+---
+
+## Institutional Memory
+
+These two files encode project-specific knowledge accumulated over the project's lifetime. They are the primary reason the Session Start Protocol requires reading them first.
+
+**`docs/project-intelligence.md`** — Anti-patterns discovered, locked architectural decisions, coverage hot spots, and acknowledged technical debt. When you discover a new anti-pattern or architectural decision in a session, add it to this file before the session closes.
+
+**`docs/open-handoffs.md`** — Cross-agent escalations using SBAR format (Situation, Background, Assessment, Decision Needed). Check for OPEN handoffs at session start. Do not proceed with implementation while an OPEN handoff blocks your area of work. Update status to `RESOLVED` when an escalation is addressed.
+
+---
+
+## Useful Commands
+
+```bash
+# Replace with your project's actual commands (resolved by BOOTSTRAP.prompt.md)
+{{SMOKE_COMMAND}}        # Full verification — run before declaring work done
+{{TEST_COMMAND}}         # Run all tests
+{{START_COMMAND}}        # Start development environment
+{{DEV_COMMAND}}          # Start dev server
+```
+
+---
+
+## Environment Setup
+
+See `docs/FRAMEWORK_SETUP.md` for this project's resolved configuration — active agents, token values, and stack details.
+
+---
+
+## Framework Version
+
+agentic-dev-framework v[VERSION]. To upgrade, run `upgrade.prompt.md`.

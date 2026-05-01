@@ -287,6 +287,28 @@ With the approved map, generate the tailored `.github/` folder:
 
    `docs/FRAMEWORK_SETUP.md` is tracked in the project (not gitignored). It helps future team members understand the framework configuration without re-running bootstrap.
 
+9. **Multi-model adapter setup (optional — skip if using GitHub Copilot only):**
+
+   If the team uses Claude Code, Cursor, or Amazon Q alongside (or instead of) GitHub Copilot, generate the corresponding adapter files. Full capability details: `docs/enterprise/AI-GOVERNANCE.md`.
+
+   **Claude Code** (uses `CLAUDE.md` in project root):
+   - Copy `docs/adapters/CLAUDE.md.template` to `CLAUDE.md` in the project root.
+   - Replace `[PROJECT_NAME]` with `{{PROJECT_NAME}}` and `[VERSION]` with `v1.0.0`.
+   - Apply the same token resolution map used for `.github/` — resolve all `{{TOKEN}}` placeholders.
+   - Verify `CLAUDE.md` contains no unresolved `{{TOKEN}}` patterns before committing.
+
+   **Cursor** (uses `.cursorrules` in project root):
+   - Copy `docs/adapters/.cursorrules.template` to `.cursorrules` in the project root.
+   - Replace `[PROJECT_NAME]` and `[VERSION]`.
+   - Apply the same token resolution map.
+   - Verify `.cursorrules` contains no unresolved `{{TOKEN}}` patterns before committing.
+
+   **Amazon Q Developer** (uses `.amazonq/rules.md`):
+   - Amazon Q has partial framework support — see `docs/enterprise/AI-GOVERNANCE.md` for capability gaps.
+   - Copy the non-negotiable constraints from `.github/copilot-instructions.md` into `.amazonq/rules.md` and manually add the session start protocol (read `docs/project-intelligence.md` and `docs/open-handoffs.md`).
+
+   Add any generated adapter files to `docs/FRAMEWORK_SETUP.md` under a new "Active Adapters" section listing which tools are configured.
+
 ---
 
 ## Phase 6: Summary and Next Steps
