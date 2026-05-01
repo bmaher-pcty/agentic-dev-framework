@@ -23,6 +23,7 @@ Minimum required:
 3. State which anti-patterns and locked decisions apply, or "No relevant anti-patterns from project intelligence."
 
 ### 🔴 High-Stakes task (auth, schema, API contract, security-relevant deps)
+0. **Pre-commitment:** State to the developer: "This touches [auth/schema/security]. I will run full verification before declaring done. Guardian findings cannot be dismissed without a documented ADR — please confirm before we proceed."
 1. Everything from 🟡 Standard.
 2. Read `docs/PHILOSOPHY.md` "Security findings are never downgraded" and `docs/ADR/` entries that touch the affected surface.
 3. Pre-declare the verification path you will run before declaring done — an explicit `{{SMOKE_COMMAND}}` plus the scoped tests from `.github/instructions/testing.instructions.md`.
