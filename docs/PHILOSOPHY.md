@@ -96,4 +96,4 @@ Run `BOOTSTRAP.prompt.md` to replace tokens with your project's actual values.
 ---
 
 ## Framework Version
-agentic-dev-framework v1.0.0
+agentic-dev-framework v1.1.0

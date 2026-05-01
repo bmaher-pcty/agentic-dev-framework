@@ -40,7 +40,7 @@ Review the project codebase across three domains:
 1. Read key server-side files: routes, middleware, services, schema, tests.
 2. Read key client-side files: pages, components, API layer, state management, tests.
 3. Read configuration: compose file, reverse proxy config, env examples.
-4. Run all six council perspectives across each domain.
+4. Run all seven council perspectives across each domain. The Innovator runs last, after all other perspectives have spoken, and presents a reframing or cross-domain insight not raised by any other perspective.
 5. Synthesize cross-domain findings.
 6. Produce a prioritized improvement plan.
 
@@ -54,10 +54,15 @@ Review the project codebase across three domains:
 6. **Synthesizer Recommendations** — Cross-cutting patterns to consolidate and spread.
 7. **Prioritized Improvement Backlog** — Numbered, severity-tagged, with owner perspective and effort estimate (S/M/L).
 
+8. **Innovator Reframe** — The Innovator's alternative framing or cross-domain insight not raised by any other perspective, with a proposed spike if meaningful uncertainty remains.
+
+9. **Project Intelligence Update** — Format per `council-review.instructions.md` requirements: new anti-patterns discovered, architectural decisions to lock, coverage hot spots, open Innovator experiments. If nothing new, write: "No updates — intelligence file current."
+
 ## Rules
 
 - Be exhaustive but actionable. Every finding must have a specific fix.
 - Advocate speaks first per domain.
 - Security findings from the Guardian cannot be deprioritized.
+- The Innovator perspective must run last, after all other perspectives. Reference `.github/skills/council-review.md` for Innovator validity rules.
 - Reference `.github/skills/council-review.md` for the full methodology.
 - Apply the path-scoped security and testing instructions in `.github/instructions/` when evaluating findings.

@@ -8,12 +8,13 @@ Use these instructions when the Review Council agent is invoked or when a counci
 
 ## Structural Requirements
 
-1. Every council review must include all seven perspectives: Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator.
+1. Every council review at **Standard** or **High-Stakes** triage level must include all seven perspectives: Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator. For **Trivial** tasks, the 4-perspective Micro Council (Advocate + Guardian + Craftsperson + User Champion) defined in `.github/skills/task-triage.md` is permitted. If any Guardian finding during a Micro Council is 🟠 High or 🔴 Critical, immediately escalate to the full 7-perspective council. The Guardian perspective runs at full depth on all triage levels.
 2. The Advocate always presents first. Reviews must not open with criticism.
 3. The Innovator speaks last. Their section must present at least one genuinely alternative framing or approach that was not raised by the other six perspectives. "Nothing new to add" is not a valid Innovator finding — if no alternative is apparent, the Innovator must state which assumption they challenged and why it held.
 4. Each perspective section must contain at least two concrete findings with file references.
 5. The Guardian and User Champion sections must always appear as dedicated sections in the output, never folded into other perspectives.
 6. Findings without specific file paths, line numbers, or concrete examples are not valid findings.
+7. High-Stakes reviews that result in a significant architectural decision (new integration pattern, security approach change, data model revision) should produce an ADR using `docs/templates/ADR.template.md`, filed as `docs/adr/ADR-[N]-[title].md`. An ADR is required when a Guardian finding is deferred — per `docs/PHILOSOPHY.md`, deferring a security finding requires documented justification.
 
 ## Severity Classification
 
