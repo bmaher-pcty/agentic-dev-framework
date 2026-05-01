@@ -1,423 +1,170 @@
 ---
 name: "Bootstrap Agentic Dev Framework"
-description: "Smart setup wizard: answer 7 questions, the AI infers the rest. Produces a complete, ready-to-use .github/ configuration in minutes."
+description: "Smart setup wizard: answer 7 questions, the AI infers the rest. Produces a ready-to-use .github/ configuration in under 10 minutes."
 argument-hint: "Describe your project or answer the 7 setup questions interactively."
 ---
 
 # Bootstrap: agentic-dev-framework
 
 > Run this in GitHub Copilot Chat or any capable AI coding assistant with file-system access.
-> Have your project open — the AI will scan it to pre-fill many answers automatically.
-
----
-
-## Privacy Advisory
-
-> **Before proceeding, review this advisory if you are working in a corporate or regulated environment.**
->
-> This bootstrap wizard may scan the following files in your project to auto-detect your technology stack:
-> - `package.json` / `package-lock.json`
-> - `pyproject.toml` / `requirements.txt` / `Pipfile`
-> - `go.mod` / `go.sum`
-> - `Cargo.toml`
-> - `Gemfile` / `Gemfile.lock`
-> - `pom.xml` / `build.gradle`
->
-> **What these files may contain:**
-> - Dependency names and versions (generally non-sensitive)
-> - Internal package names that may reveal internal tooling or project structure
-> - Internal registry URLs (e.g., private npm, PyPI, or Maven registries)
->
-> **What this wizard does NOT scan:**
-> - `.env` files or any file matching `.env*`
-> - `secrets/`, `certs/`, `keys/`, or any directory commonly used for credentials
-> - Any file with "secret", "credential", "key", or "token" in the filename
-> - Source code files (only manifest/config files are scanned for stack detection)
->
-> **AI model data governance:** The contents of scanned files are sent to your configured AI assistant (GitHub Copilot, Claude, Cursor, etc.). Ensure this complies with your organization's AI usage policy before proceeding.
->
-> **Manual mode:** If your organization restricts what may be sent to AI models, type **"manual mode"** at the start of the session to disable all file scanning. The wizard will ask all 7 questions interactively without reading any project files. You lose the auto-detect convenience but maintain full control over what is shared.
+> Have your project open — the AI will scan manifest files to pre-fill most answers.
 
 ---
 
 ## Phase 1: Smart Intake (7 Questions)
 
-Ask the developer these seven questions. Present them as a numbered list. Do not ask more than these seven unless a follow-up is needed to resolve genuine ambiguity. Let the answers unlock the rest.
+Ask these seven questions as a numbered list. Do not ask more unless a follow-up is strictly needed to resolve genuine ambiguity. Attempt to scan `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, or `Gemfile` before asking about stack — scanning pre-fills most answers without questions.
 
-**Question 1: Project identity**
+**Q1: Project identity**
 "What is your project's name, and in one sentence, what does it do?"
-_(Used in file headers, agent examples, and README.)_
 
-**Question 2: Primary language and project type**
+**Q2: Primary language and project type**
 "What is your primary programming language, and which type best describes your project?"
-Choose from: `Web application (full-stack)` / `API or backend service` / `CLI tool` / `Data pipeline` / `Mobile app` / `Library or SDK` / `Microservices system` / `Other`
-_(This single answer unlocks ~70% of all token inferences.)_
+Choices: `Web app (full-stack)` / `API or backend service` / `CLI tool` / `Data pipeline` / `Library or SDK` / `Other`
 
-**Question 3: Core technology decisions already made**
+**Q3: Core technology decisions already made**
 "List any frameworks, databases, or tools you've already committed to. Leave blank if none yet."
-_(Free-form. E.g., "React frontend, FastAPI backend, PostgreSQL, Docker". The AI will parse this and lock in those tokens.)_
+(E.g., "React, FastAPI, PostgreSQL, Docker")
 
-**Question 4: Has this project been started?**
+**Q4: Has any code been written yet?**
 "Has any code been written yet, or is this a fresh project?"
-If yes: "Great — I'll scan your project's `package.json`, `pyproject.toml`, `go.mod`, or equivalent to auto-detect the rest of the stack."
-_(Scanning can pre-fill 90% of tokens without asking. The AI should attempt to read these files from the current working directory.)_
+If yes: scan the dependency manifest to auto-detect remaining stack tokens.
 
-**Question 5: Team size and deployment profile**
-"How many people are actively developing this? (solo / small 2–5 / medium 6–15 / large 15+)"
-"And which deployment profile fits best? (Solo / Small Team / Enterprise)"
-_(Used to scale agent coordination language and select the right profile.)_
+**Q5: Team size**
+"How many people are actively developing this? (solo / 2–10 / 10+)"
 
-**Deployment Profile Reference:**
+**Q6: Any of the 5 agents to skip?** *(Optional)*
+"Any of these you definitely don't need: Engineer, System Architect, Review Council, Veteran QA, Innovator? Leave blank to keep all."
 
-| Profile | Team Size | Default Agents | Council Depth |
-|---------|-----------|----------------|---------------|
-| **Solo** | 1 developer | Engineer, Architect, Review Council, QA, Innovator | 4-perspective Micro Council |
-| **Small Team** | 2–10 | All 12 agents active | Full 7-perspective Council |
-| **Enterprise** | 10+ / regulated | All 12 agents + compliance gates | Full council + audit trail |
-
-All profiles enforce identical quality guarantees. Profiles reduce coordination overhead — not quality bars.
-
-**Solo Developer Note:** If your team size is `solo`, the bootstrap will apply the Solo Profile: 5 default agents (Engineer, System Architect, Review Council, QA, Innovator) with a 4-perspective Micro Council as the default review depth. All other agents are available via explicit invocation but deactivated by default. All quality guarantees (completion gate, security non-negotiable, no false-complete) apply identically in the Solo Profile.
-
-**Solo Output Mode:** After confirming solo team size, ask: "Would you like:
-- **(A) Minimal mode** — one `AGENTS.md` file with all 5 core agents inline (see `docs/examples/solo-starter/AGENTS.md` for a preview). Fastest to adopt, lowest cognitive overhead. Upgrade to full structure when your team grows.
-- **(B) Full mode** — individual agent files per the standard framework structure. More context per agent, easier to customize individual agents later.
-
-Both modes enforce identical quality guarantees: completion gate, security non-negotiable, no false-complete claims."
-
-If minimal mode is chosen: generate `docs/examples/solo-starter/AGENTS.md` adapted to the developer's stack (with all `{{TOKEN}}` patterns resolved) instead of individual agent files. Still generate all instruction files, skill files, and prompts in the standard structure.
-
-**Question 5b (Enterprise only — ask only if team size is `large 15+` or profile is `Enterprise`):**
-"Does your organization require an audit trail of AI-assisted decisions — recording what the agent decided, what evidence it used, and what a human approved? This enables the Enterprise profile's compliance features: structured audit records in `docs/audit/`, a compliance audit prompt, and CODEOWNERS integration."
-_(Yes/No. If Yes: the bootstrap generates `docs/audit/.gitkeep`, activates `.github/prompts/compliance-audit.prompt.md`, and sets `docs/FRAMEWORK_PROFILE.md` audit trail to Enabled. Recommended for HIPAA, SOC 2, PCI-DSS, and similar regulated environments.)_
-
-**Question 6: Any agents to deactivate?**
-"Are there any of the 12 agents you definitely don't need? Common exclusions:
-- No UI → deactivate Bold UX Designer, Accessibility
-- No containers → deactivate DevOps/Infrastructure
-- No concern with creativity/research → deactivate Innovator, Researcher"
-_(Optional. If blank, all 12 are active.)_
-
-**Question 7: What's your smoke test?**
-"What single command verifies your whole application is working end-to-end? (or say 'not set up yet')"
-_(This is the most critical token. If unknown, the AI will suggest a placeholder based on the stack.)_
+**Q7: Smoke test command**
+"What single command verifies your whole application works end-to-end? (or say 'not set up yet')"
+This is the most critical token. If unknown, suggest a placeholder based on the stack.
 
 ---
 
 ## Phase 2: AI Inference Pass
 
-After receiving answers to all seven questions, perform the following inference pass **before asking any more questions**. This is the core of the smart bootstrap.
+After the 7 questions, run this inference pass **before asking anything else**. This is the core of the smart bootstrap.
 
-### Inference Rules (apply in order)
+### From Language + Project Type (HIGH confidence — no follow-up needed)
 
-**From Language + Project Type, infer with HIGH confidence (no follow-up needed):**
-
-| If language is... | And project type is... | Then infer... |
-|---|---|---|
+| Language | Project Type | Infer |
+|----------|-------------|-------|
 | TypeScript/JavaScript | Web (full-stack) | `{{RUNTIME}}` = Node.js; `{{UNIT_TEST_FRAMEWORK}}` = Vitest (suggest) or Jest; `{{SOURCE_CODE_PATHS}}` = `src/**/*.ts,src/**/*.tsx`; `{{TEST_PATHS}}` = `**/*.test.ts,**/*.spec.ts` |
 | TypeScript/JavaScript | API/backend | `{{RUNTIME}}` = Node.js; `{{UNIT_TEST_FRAMEWORK}}` = Vitest or Jest; `{{SOURCE_CODE_PATHS}}` = `src/**/*.ts`; `{{TEST_PATHS}}` = `**/*.test.ts` |
 | Python | Any | `{{RUNTIME}}` = Python; `{{UNIT_TEST_FRAMEWORK}}` = pytest; `{{SOURCE_CODE_PATHS}}` = `**/*.py`; `{{TEST_PATHS}}` = `tests/**/*.py,**/*_test.py` |
 | Go | Any | `{{RUNTIME}}` = Go; `{{UNIT_TEST_FRAMEWORK}}` = go test; `{{SOURCE_CODE_PATHS}}` = `**/*.go`; `{{TEST_PATHS}}` = `**/*_test.go` |
 | Java/Kotlin | Any | `{{RUNTIME}}` = JVM; `{{UNIT_TEST_FRAMEWORK}}` = JUnit; `{{SOURCE_CODE_PATHS}}` = `src/main/**/*.java`; `{{TEST_PATHS}}` = `src/test/**/*.java` |
 | Ruby | Any | `{{RUNTIME}}` = Ruby; `{{UNIT_TEST_FRAMEWORK}}` = RSpec; `{{SOURCE_CODE_PATHS}}` = `app/**/*.rb,lib/**/*.rb`; `{{TEST_PATHS}}` = `spec/**/*.rb` |
-| Rust | Any | `{{RUNTIME}}` = Rust; `{{UNIT_TEST_FRAMEWORK}}` = cargo test; `{{SOURCE_CODE_PATHS}}` = `src/**/*.rs`; `{{TEST_PATHS}}` = `src/**/*.rs` (inline tests) |
 
-**From Stack choices (Question 3 or scanned from project files), infer with HIGH confidence:**
+### From Stack (HIGH confidence — no follow-up needed)
 
-| If stack includes... | Infer... |
-|---|---|
-| React | `{{FRONTEND_FRAMEWORK}}` = React; `{{CLIENT_SOURCE_DIR}}` = `frontend/src` (or `src` if monorepo) |
-| Vue | `{{FRONTEND_FRAMEWORK}}` = Vue; `{{CSS_FRAMEWORK}}` = (ask or suggest Tailwind) |
-| Svelte | `{{FRONTEND_FRAMEWORK}}` = Svelte |
+| If stack includes… | Infer… |
+|--------------------|--------|
+| React | `{{FRONTEND_FRAMEWORK}}` = React; `{{CLIENT_SOURCE_DIR}}` = `frontend/src` or `src` |
+| Vue | `{{FRONTEND_FRAMEWORK}}` = Vue |
 | Next.js | `{{FRONTEND_FRAMEWORK}}` = Next.js; `{{SERVER_FRAMEWORK}}` = Next.js API routes |
 | Express | `{{SERVER_FRAMEWORK}}` = Express; `{{SERVER_SOURCE_DIR}}` = `src` or `backend/src` |
 | FastAPI | `{{SERVER_FRAMEWORK}}` = FastAPI; `{{VALIDATION_LIBRARY}}` = Pydantic |
 | Django | `{{SERVER_FRAMEWORK}}` = Django; `{{ORM}}` = Django ORM; `{{MIGRATION_TOOL}}` = Django migrations |
 | Rails | `{{SERVER_FRAMEWORK}}` = Rails; `{{ORM}}` = ActiveRecord; `{{MIGRATION_TOOL}}` = Rails migrations |
-| Gin | `{{SERVER_FRAMEWORK}}` = Gin |
-| Prisma | `{{ORM}}` = Prisma; `{{MIGRATION_TOOL}}` = Prisma Migrate; `{{SCHEMA_FILE}}` = `prisma/schema.prisma` |
-| SQLAlchemy + Alembic | `{{ORM}}` = SQLAlchemy; `{{MIGRATION_TOOL}}` = Alembic |
-| PostgreSQL | `{{DATABASE}}` = PostgreSQL; `{{DB_USER}}` = postgres (suggest); `{{DB_NAME}}` = `<project_name>_dev` |
-| MongoDB | `{{DATABASE}}` = MongoDB; `{{ORM}}` = (suggest Mongoose or native driver) |
+| Prisma | `{{ORM}}` = Prisma; `{{MIGRATION_TOOL}}` = Prisma Migrate |
+| PostgreSQL | `{{DATABASE}}` = PostgreSQL |
+| MongoDB | `{{DATABASE}}` = MongoDB |
 | Docker | `{{CONTAINER_RUNTIME}}` = Docker; `{{CONTAINER_COMPOSE_FILE}}` = `docker-compose.yaml` |
 | Tailwind | `{{CSS_FRAMEWORK}}` = Tailwind CSS |
-| Playwright | `{{E2E_TEST_FRAMEWORK}}` = Playwright; `{{A11Y_TESTING_LIB}}` = @axe-core/playwright (suggest) |
-| Cypress | `{{E2E_TEST_FRAMEWORK}}` = Cypress |
-| Zod | `{{VALIDATION_LIBRARY}}` = Zod |
-| Pydantic | `{{VALIDATION_LIBRARY}}` = Pydantic |
-| npm/package.json detected | `{{TASK_RUNNER}}` = npm run; `{{TASK_RUNNER_FILE}}` = package.json |
-| Makefile detected | `{{TASK_RUNNER}}` = make; `{{TASK_RUNNER_FILE}}` = Makefile (or `tools/Makefile` if under tools/) |
-| No frontend | `{{FRONTEND_FRAMEWORK}}` = N/A; `{{CSS_FRAMEWORK}}` = N/A; `{{STATE_MANAGEMENT_LIB}}` = N/A; `{{DATA_FETCHING_LIB}}` = N/A; `{{CLIENT_SOURCE_DIR}}` = N/A; `{{FRONTEND_URL}}` = N/A |
-| CLI tool | All frontend tokens = N/A; no UX Designer or Accessibility agents |
-| No containers | `{{CONTAINER_RUNTIME}}` = N/A; `{{CONTAINER_COMPOSE_FILE}}` = N/A; `{{REVERSE_PROXY}}` = N/A |
+| Playwright | `{{E2E_TEST_FRAMEWORK}}` = Playwright |
+| npm detected | `{{TASK_RUNNER}}` = npm run; `{{TASK_RUNNER_FILE}}` = package.json |
+| Makefile detected | `{{TASK_RUNNER}}` = make; `{{TASK_RUNNER_FILE}}` = Makefile |
+| No frontend | All frontend tokens = N/A |
+| No containers | All container tokens = N/A |
 
-**Command inference (MEDIUM confidence — present to user for confirmation):**
+### Commands (MEDIUM confidence — present for confirmation)
 
-Infer commands from task runner + stack:
-- If `npm run` detected: `{{DEV_COMMAND}}` = `npm run dev`, `{{TEST_COMMAND}}` = `npm test`, `{{START_COMMAND}}` = `npm start`, `{{SETUP_COMMAND}}` = `npm install`
-- If `make` detected: derive from Makefile targets if readable, otherwise suggest `make dev`, `make test`, `make start`
-- If Python/pytest: `{{TEST_COMMAND}}` = `pytest`, `{{DEV_COMMAND}}` = `uvicorn main:app --reload` (if FastAPI)
-- If Go: `{{TEST_COMMAND}}` = `go test ./...`, `{{DEV_COMMAND}}` = `go run .`
-
-**If team size is `solo`:**
-- Apply Solo Framework Profile: activate Engineer, System Architect, Review Council, QA, Innovator
-- Deactivate by default: PM (activate when product has users), UX Designer (activate when UI work begins), Technical Writer (activate when docs become a priority), Accessibility, DevOps/Infrastructure, Performance
-- Default council depth: Micro Council (Advocate + Guardian + Craftsperson + User Champion)
-- Full 7-perspective council available via: "Run full council review on [PR/change]"
-- Note to developer: "I've applied the Solo Profile. You can activate any deactivated agent by invoking them directly. All quality guarantees remain enforced — the profile reduces coordination overhead, not quality bars."
-
-**URL inference (MEDIUM confidence — present for confirmation):**
-- TypeScript full-stack with Vite detected: `{{FRONTEND_URL}}` = `http://localhost:5173`, `{{API_URL}}` = `http://localhost:3000`
-- FastAPI: `{{API_URL}}` = `http://localhost:8000`
-- Rails: `{{API_URL}}` = `http://localhost:3000`
-- Default if unknown: `{{FRONTEND_URL}}` = `http://localhost:3000`, `{{API_URL}}` = `http://localhost:8080`
-
-**Remaining tokens default:**
-- `{{BUNDLE_SIZE_THRESHOLD}}` = 50KB (reasonable default)
-- `{{BUNDLE_ANALYSIS_COMMAND}}` = N/A (unless build tool detected)
-- `{{DB_EXPLAIN_COMMAND}}` = `EXPLAIN ANALYZE` (generic SQL; adjust for DB)
-- `{{PERFORMANCE_AUDIT_COMMAND}}` = N/A (set up manually if needed)
-- `{{INTEGRATION_PLATFORM}}` = N/A (unless mentioned)
-- `{{SESSION_SECRET}}` = SESSION_SECRET (conventional env var name)
+- npm: `{{DEV_COMMAND}}` = `npm run dev`, `{{TEST_COMMAND}}` = `npm test`, `{{SMOKE_COMMAND}}` = `npm test`
+- Python/pytest: `{{TEST_COMMAND}}` = `pytest`, `{{DEV_COMMAND}}` = `uvicorn main:app --reload` (FastAPI)
+- Go: `{{TEST_COMMAND}}` = `go test ./...`, `{{DEV_COMMAND}}` = `go run .`
+- URL defaults: TypeScript/Vite → `{{FRONTEND_URL}}` = `http://localhost:5173`; FastAPI → `{{API_URL}}` = `http://localhost:8000`
 
 ---
 
 ## Phase 3: Token Resolution Review
 
-Based on your answers and stack inference, here is your proposed token resolution. **Review each group and flag any corrections before I generate files.**
+Show all resolved tokens as a single table grouped by category (Identity, Stack, Commands, Paths/URLs, N/A). Mark each as ✅ confirmed, 🟡 inferred, or ❓ needs review.
 
----
-
-### Group 1 — Identity (Required: confirm these)
-*These are unique to your project. I cannot infer them.*
-
-| Token | Resolved Value | Source | Status |
-|-------|---------------|--------|--------|
-| `{{PROJECT_NAME}}` | [your answer] | You provided | ✅ |
-| `{{PROJECT_DOMAIN}}` | [your answer] | You provided | ✅ |
-| `{{PRIMARY_LANGUAGE}}` | [your answer] | You provided | ✅ |
-
----
-
-### Group 2 — Stack (Inferred: spot-check for accuracy)
-*Inferred from your language + framework choices. Verify these are correct.*
-
-| Token | Resolved Value | Source | Status |
-|-------|---------------|--------|--------|
-| `{{SERVER_FRAMEWORK}}` | [inferred] | Inferred from language | ✅/❓ |
-| `{{DATABASE}}` | [your answer] | You provided | ✅ |
-| `{{ORM}}` | [inferred or provided] | ... | ✅/❓ |
-| `{{FRONTEND_FRAMEWORK}}` | [your answer or N/A] | You provided | ✅ |
-| `{{CSS_FRAMEWORK}}` | [inferred or N/A] | ... | ✅/❓ |
-| ... | | | |
-
----
-
-### Group 3 — Commands (Inferred: most likely to need correction)
-*Inferred from your stack and task runner. These are where errors most commonly occur — verify carefully.*
-
-| Token | Resolved Value | Source | Status |
-|-------|---------------|--------|--------|
-| `{{SMOKE_COMMAND}}` | [inferred or your answer] | ... | ✅/❓ |
-| `{{TEST_COMMAND}}` | [inferred] | ... | ✅/❓ |
-| `{{START_COMMAND}}` | [inferred] | ... | ✅/❓ |
-| `{{SETUP_COMMAND}}` | [inferred] | ... | ✅/❓ |
-| `{{DEV_COMMAND}}` | [inferred] | ... | ✅/❓ |
-| ... | | | |
-
----
-
-### Group 4 — Paths and URLs (Inferred: verify directory structure)
-*Inferred from your project structure answers. Confirm these match your actual directories.*
-
-| Token | Resolved Value | Source | Status |
-|-------|---------------|--------|--------|
-| `{{SERVER_SOURCE_DIR}}` | [your answer] | You provided | ✅ |
-| `{{CLIENT_SOURCE_DIR}}` | [your answer or N/A] | You provided | ✅ |
-| `{{SOURCE_CODE_PATHS}}` | [inferred glob] | Inferred from language | ✅/❓ |
-| `{{FRONTEND_URL}}` | [inferred] | ... | ✅/❓ |
-| `{{API_URL}}` | [inferred] | ... | ✅/❓ |
-| ... | | | |
-
----
-
-### Group 5 — Optional / N/A (Pre-set: no review needed unless your project uses these)
-*These are set to N/A based on your answers. If your project does use any of these, flag them now.*
-
-| Token | Resolved Value | Reason |
-|-------|---------------|--------|
-| `{{E2E_TEST_FRAMEWORK}}` | N/A | You indicated no E2E tests |
-| `{{A11Y_TESTING_LIB}}` | N/A | You indicated no frontend |
-| ... | | |
-
----
-
-**Any corrections?** Reply with the Group number and token to change, or type "All approved" to proceed to file generation.
+Ask once: "Any corrections? Reply with the token name and new value, or type 'All approved'."
 
 ---
 
 ## Phase 4: Targeted Follow-Ups (Only If Needed)
 
-If the developer corrects tokens in Phase 3, update the map, show only the changed rows, and ask "Anything else to change, or shall I proceed?"
+If tokens were corrected in Phase 3, update the map, show only changed rows, and ask "Anything else, or shall I proceed?"
 
-If the smoke command is still unknown (developer said "not set up yet" in Question 7), ask: "What directory structure does your project use? I'll suggest a smoke command based on your task runner."
+If smoke command is still unknown, ask: "What task runner does your project use? I'll suggest a smoke command."
 
 ---
 
 ## Phase 5: Generate Files
 
-With the approved map, generate the tailored `.github/` folder:
+With the approved token map:
 
-1. Copy every file from the framework.
+1. Copy every file from the framework's `.github/` folder.
 2. Apply all token replacements from the approved map.
-3. For any token still unknown (marked ❓), leave it as `{{TOKEN}}` and add it to the manual review list.
-4. For agents deactivated in Question 6:
-   - Create a stub file with frontmatter only and: `> This agent was deactivated at bootstrap. Restore content from agentic-dev-framework to re-activate.`
-5. For skills that are N/A for this project type (e.g., `ui-component-design.md` for a CLI project):
-   - Add `status: inactive` to frontmatter and a note at the top.
-6. Resolve `applyTo` globs in `testing.instructions.md`, `security.instructions.md`, and `council-review.instructions.md` using `{{SOURCE_CODE_PATHS}}` and `{{TEST_PATHS}}` from the approved map.
-7. **Enterprise profile only** (if Question 5b answered Yes):
-   - Create `docs/audit/.gitkeep` to initialize the audit record directory.
-   - Set `docs/FRAMEWORK_PROFILE.md` audit trail field to `Enabled`.
-   - Set `docs/FRAMEWORK_PROFILE.md` profile field to `Enterprise`.
-   - Confirm `.github/prompts/compliance-audit.prompt.md` is present and token-resolved.
-   - Add a note in `docs/FRAMEWORK_SETUP.md`: "Enterprise profile active. Run `.github/prompts/compliance-audit.prompt.md` before each regulated PR and commit the record to `docs/audit/`."
-   - Recommend adding `docs/templates/CODEOWNERS.template` to `.github/CODEOWNERS`.
-8. Generate `docs/FRAMEWORK_SETUP.md` with the following content (uses `docs/templates/FRAMEWORK_SETUP.md.template.md` as the structural template — follow that template's section order and table formats):
-   - **Bootstrap date** — the date bootstrap was run.
-   - **Framework version** — v1.1.0 (or read from README.md if available).
-   - **Active agents** — list of N of 12 active agents.
-   - **Deactivated agents** — list with the reason each was deactivated.
-   - **Token resolution summary** — table of token → resolved value (or ❓ if not resolved), grouped by category (Identity, Stack, Commands, Paths, Optional/N/A).
-   - **Tokens requiring manual review** — list of any ❓ tokens still needing resolution.
-
-   > **Important:** `docs/FRAMEWORK_SETUP.md` must not contain secrets, credential values, or environment-specific paths. It documents which agents are active and which tokens were resolved — not the resolved values of secrets. Tokens whose values are secrets (e.g., `{{SESSION_SECRET}}`, API keys, database passwords) must appear as `[secret — set in .env, not tracked]` rather than their actual values.
-
-   `docs/FRAMEWORK_SETUP.md` is tracked in the project (not gitignored). It helps future team members understand the framework configuration without re-running bootstrap.
-
-10. **Generate enforcement artifacts:**
-
-   - Copy `docs/templates/pull-request-template.template.md` to `.github/PULL_REQUEST_TEMPLATE.md` in the project. Replace `{{SMOKE_COMMAND}}` with the resolved smoke command from the approved token map. This gives every PR a verification label checklist.
-   - Copy `docs/templates/ci-quality-gates.template.yaml` to `.github/workflows/quality-gates.yml` in the project. Replace `{{TEST_COMMAND}}` and `{{COVERAGE_THRESHOLD}}` with the resolved values. This adds CI gates for secret scanning, token detection, and coverage thresholds.
-   - List both files in `docs/FRAMEWORK_SETUP.md` under a new "Enforcement Artifacts" section.
-
-   > These two files give the framework mechanical teeth: CI fails on unresolved tokens, and every PR has a structured verification checklist. Without them, all framework rules are advisory only.
-
-11. **Multi-model adapter setup (optional — skip if using GitHub Copilot only):**
-
-   If the team uses Claude Code, Cursor, or Amazon Q alongside (or instead of) GitHub Copilot, generate the corresponding adapter files. Full capability details: `docs/enterprise/AI-GOVERNANCE.md`.
-
-   **Claude Code** (uses `CLAUDE.md` in project root):
-   - Copy `docs/adapters/CLAUDE.md.template` to `CLAUDE.md` in the project root.
-   - Replace `[PROJECT_NAME]` with `{{PROJECT_NAME}}` and `[VERSION]` with `v1.1.0`.
-   - Apply the same token resolution map used for `.github/` — resolve all `{{TOKEN}}` placeholders.
-   - Verify `CLAUDE.md` contains no unresolved `{{TOKEN}}` patterns before committing.
-
-   **Cursor** (uses `.cursorrules` in project root):
-   - Copy `docs/adapters/.cursorrules.template` to `.cursorrules` in the project root.
-   - Replace `[PROJECT_NAME]` and `[VERSION]`.
-   - Apply the same token resolution map.
-   - Verify `.cursorrules` contains no unresolved `{{TOKEN}}` patterns before committing.
-
-   **Amazon Q Developer** (uses `.amazonq/rules.md`):
-   - Amazon Q has partial framework support — see `docs/enterprise/AI-GOVERNANCE.md` for capability gaps.
-   - Copy the non-negotiable constraints from `.github/copilot-instructions.md` into `.amazonq/rules.md` and manually add the session start protocol (read `docs/project-intelligence.md` and `docs/open-handoffs.md`).
-
-   Add any generated adapter files to `docs/FRAMEWORK_SETUP.md` under a new "Active Adapters" section listing which tools are configured.
+3. For any token still ❓, leave it as `{{TOKEN}}` and add it to the manual review list.
+4. For agents deactivated in Q6: create a stub file with frontmatter only and a note: `> This agent was deactivated at bootstrap. Restore content from agentic-dev-framework to re-activate.`
+5. Resolve `applyTo` globs in `testing.instructions.md` and `security.instructions.md` using `{{SOURCE_CODE_PATHS}}` and `{{TEST_PATHS}}`.
+6. Copy root `AGENTS.md` with tokens resolved (the drop-in single-file starter).
 
 ---
 
-## Phase 6: Summary and Next Steps
-
-Produce this summary after generation:
+## Phase 6: Summary
 
 ```
 ## Bootstrap Complete
 
 ### Token Resolution
-[Table of all tokens and their final values]
+[Table of all tokens → resolved values]
 
 ### Confidence Summary
-- ✅ Confirmed: [N] tokens
-- 🟡 Inferred: [N] tokens (verify if behavior seems off)
-- ❓ Manual review needed: [N] tokens (listed below)
+- ✅ Confirmed: N tokens
+- 🟡 Inferred: N tokens (verify if behavior seems off)
+- ❓ Manual review needed: N tokens
 
-### Manual Review Required
-[List any ❓ tokens with a one-line note on how to find the value]
-
-### Active Agents ([N] of 11)
+### Active Agents
 [list]
 
-### Deactivated Agents
-[list with reason]
-
 ### Next Steps
-1. Copy `.github/` and `docs/FRAMEWORK_SETUP.md` into your project root
-2. Commit: `git add .github/ docs/FRAMEWORK_SETUP.md && git commit -m "chore: add agentic dev framework"`
-3. Verify smoke command: run `[SMOKE_COMMAND]` — if it fails, fix the command first
-4. First agent invocation: `@engineer: [describe your first task]`
-5. Before first PR: run `@review-council` for a full perspective review
-6. Innovator tip: `@innovator: [describe any design decision you're unsure about]` to get a creative second opinion before committing
+1. Copy `.github/` and `AGENTS.md` into your project root
+2. git add .github/ AGENTS.md && git commit -m "chore: add agentic dev framework"
+3. Verify: run [SMOKE_COMMAND]
+4. First use: @engineer: [describe your first task]
+5. Before first PR: @review-council on your changes
 ```
 
 ---
 
 ## Phase 7: Bootstrap Verification
 
-After generating files, execute these four self-checks before presenting the summary. Report the result of each check in the Bootstrap Complete output.
+Run these three checks and report results in the Bootstrap Complete summary.
 
 ### Check 1: Token Scan
+`grep -r '{{[A-Z_]*}}' .github/ --include="*.md"`
+Expected: zero matches. If tokens remain, list each with file and line in "Manual Review Required."
 
-Run: `grep -r '{{[A-Z_]*}}' .github/ --include="*.md" --include="*.yml"`
-
-Expected result: Zero matches.
-
-If tokens remain: List each unresolved token, its file, and line number in the "Manual Review Required" section. Do not claim bootstrap is complete while unresolved tokens exist.
-
-### Check 2: Agent Count Match
-
-Run: `ls .github/agents/*.agent.md | wc -l`
-
-Expected result: The count must match the "Active Agents" number in the generated summary (active agents + stub agents = total agent files).
-
-If mismatch: List which agent files are present vs. expected and identify any missing stubs.
+### Check 2: Agent Count
+`ls .github/agents/*.agent.md | wc -l`
+Expected: matches Active Agents count (active + stubs = total).
 
 ### Check 3: Smoke Command Resolved
-
-Confirm the resolved `{{SMOKE_COMMAND}}` value does not contain the literal string `{{` — it must be a real command or a concrete placeholder like `npm test` or `pytest`.
-
-If it still contains `{{`: Flag as `REQUIRES-HUMAN-VERIFICATION` with note: "Smoke command was not resolved. Set it manually in `docs/FRAMEWORK_SETUP.md` and `.github/instructions/testing.instructions.md`."
-
-### Check 4: FRAMEWORK_SETUP.md Generated
-
-Confirm `docs/FRAMEWORK_SETUP.md` was generated and contains no unreplaced `{{TOKEN}}` patterns.
-
-If missing or contains tokens: Flag as a generation failure and list the unresolved items.
-
-### Verification Report
-
-Add this block to the Bootstrap Complete summary:
-
-```
-### Bootstrap Verification
-- ✅/❌ Token scan: [0 unresolved tokens / N tokens need manual review]
-- ✅/❌ Agent count: [N agent files match summary / mismatch: list]
-- ✅/❌ Smoke command resolved: [resolved to: <command> / REQUIRES-HUMAN-VERIFICATION]
-- ✅/❌ FRAMEWORK_SETUP.md generated: [generated, no tokens / N tokens unresolved]
-
-**Overall: [PASS / PASS WITH WARNINGS / FAIL]**
-```
-
-If FAIL: Do not commit `.github/` until the issues above are resolved.
+Confirm `{{SMOKE_COMMAND}}` does not contain literal `{{`. If it does: flag as `REQUIRES-HUMAN-VERIFICATION` with note: "Set smoke command manually in `.github/instructions/testing.instructions.md`."
 
 ---
 
 ## Rules (Non-Negotiable)
 
-- Do NOT ask more than 7 questions in Phase 1 unless a follow-up is strictly required to resolve genuine ambiguity.
-- Do NOT present the full token map question-by-question — always as a single table for batch review.
-- Do NOT leave `{{TOKEN}}` in the output without calling it out in the manual review list.
-- Do NOT soften any security constraint. Security rules are non-negotiable regardless of project type.
-- Do NOT remove the completion gate logic from any agent or instruction file.
-- Do NOT remove the "invisible success is a defect" rule from any file where it appears.
-- ALWAYS attempt to scan the project's dependency manifest (package.json, pyproject.toml, go.mod, Cargo.toml, Gemfile) before asking about stack — many tokens can be resolved without a single question.
+- Do NOT ask more than 7 questions in Phase 1 unless strictly required.
+- Do NOT present tokens question-by-question — always as a single table.
+- Do NOT leave `{{TOKEN}}` in output without listing it in manual review.
+- Do NOT soften security constraints. They are non-negotiable regardless of project type.
+- Do NOT remove the completion gate logic or the verification label definitions.
+- ALWAYS scan the dependency manifest before asking about stack.

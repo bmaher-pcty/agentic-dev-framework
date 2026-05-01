@@ -28,7 +28,7 @@ All perspectives generated in a single pass. Faster, more internally consistent.
 Run Guardian at code-write time — before you've convinced yourself it's correct. Run Skeptic 24 hours later when context has faded. Run User Champion right before demo or release. Same model, genuinely different priming. Costs only discipline.
 
 ### Multi-Model Mode *(for findings you must stake trust on)*
-Run perspectives across different AI assistants for genuine independence. See `.github/prompts/multi-model-council.prompt.md`. 3× slower. Reserve for High-Stakes security reviews and architectural decisions before large refactors.
+Run the same council prompts in two different AI assistants for genuine independence. 3× slower. Reserve for High-Stakes security reviews and architectural decisions before large refactors.
 
 ## The Seven Perspectives
 
@@ -140,7 +140,6 @@ These examples illustrate what distinguishes a valid Innovator finding from a re
 ## Checklist
 
 - [ ] Scope is clearly defined before review begins.
-- [ ] `docs/project-intelligence.md` was read before scoping (Step 0.5) and referenced in findings where applicable.
 - [ ] Advocate has identified at least 3 strengths.
 - [ ] Skeptic has examined failure modes and edge cases.
 - [ ] Guardian has reviewed auth, validation, secrets, and logging.
