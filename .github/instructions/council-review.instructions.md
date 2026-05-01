@@ -19,6 +19,16 @@ Use these instructions when the Review Council agent is invoked or when a counci
 ## Severity Classification
 
 See `.github/skills/council-review.md` for the canonical severity classification legend. Do not duplicate the legend here — reference the skill file as the single source of truth.
+## Anti-Pattern Recurrence Check
+
+The Craftsperson perspective must specifically check whether any finding in this review matches a known anti-pattern from `docs/project-intelligence.md`. If a known anti-pattern has recurred:
+
+- Flag it as 🟠 High severity (not Medium) — it was already identified and still appeared.
+- Note in the finding: "RECURRENCE: This pattern was previously identified on [date]. See project-intelligence.md."
+- Include it in the Project Intelligence Update section as an escalating recurrence.
+
+An anti-pattern that recurs without escalation is a Craftsperson finding omission — treat it as if the Craftsperson perspective is absent.
+
 ## Conflict Resolution
 
 1. When perspectives disagree, the Synthesizer resolves by finding the approach satisfying the most constraints.
