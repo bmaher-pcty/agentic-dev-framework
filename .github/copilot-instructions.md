@@ -290,40 +290,9 @@ Each agent has:
 
 ## Development Phase Structure
 
-> **Replace this section with your project's actual phases.**
-> The structure below describes common phase patterns for reference.
+Define your project's phases in `docs/ROADMAP.md`. A template with common phase types (Scaffolding, Core Domain, Integration, Observability, Hardening) is available at `docs/templates/ROADMAP.template.md`.
 
-### Phase 1: Scaffolding
-- Project structure and repository setup
-- Container/runtime configuration
-- CI/CD pipeline baseline
-- Core tooling (task runner, linter, formatter)
-
-### Phase 2: Core Domain
-- Primary data model and schema
-- Core business logic and API layer
-- Authentication and authorization (e.g., `{{AUTH_PROVIDER}}`)
-- Basic UI shell (if applicable)
-
-### Phase 3: Integration
-- External service integrations (e.g., `{{INTEGRATION_PLATFORM}}`)
-- Webhooks or event handling
-- Background jobs or workers
-- Import/export flows
-
-### Phase 4: Observability
-- Structured logging
-- Health checks and readiness probes
-- Error tracking integration
-- Performance baselines
-
-### Phase 5: Hardening
-- Security audit and remediation
-- Performance optimization
-- Accessibility review (if applicable)
-- Documentation finalization
-
-> Define your own phases in `docs/ROADMAP.md` and link to it here.
+Agents reference this document for roadmap context. Keep it current.
 
 ## Branching Workflow
 
