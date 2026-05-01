@@ -8,11 +8,12 @@ Use these instructions when the Review Council agent is invoked or when a counci
 
 ## Structural Requirements
 
-1. Every council review must include all six perspectives: Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion.
+1. Every council review must include all seven perspectives: Advocate, Skeptic, Synthesizer, Guardian, Craftsperson, User Champion, Innovator.
 2. The Advocate always presents first. Reviews must not open with criticism.
-3. Each perspective section must contain at least two concrete findings with file references.
-4. The Guardian and User Champion sections must always appear as dedicated sections in the output, never folded into other perspectives.
-5. Findings without specific file paths, line numbers, or concrete examples are not valid findings.
+3. The Innovator speaks last. Their section must present at least one genuinely alternative framing or approach that was not raised by the other six perspectives. "Nothing new to add" is not a valid Innovator finding — if no alternative is apparent, the Innovator must state which assumption they challenged and why it held.
+4. Each perspective section must contain at least two concrete findings with file references.
+5. The Guardian and User Champion sections must always appear as dedicated sections in the output, never folded into other perspectives.
+6. Findings without specific file paths, line numbers, or concrete examples are not valid findings.
 
 ## Severity Classification
 

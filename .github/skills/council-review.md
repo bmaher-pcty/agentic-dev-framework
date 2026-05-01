@@ -1,6 +1,6 @@
 ---
 name: council-review
-description: 'Multi-perspective review methodology with six specialized reviewer roles for comprehensive code, architecture, and UX assessment.'
+description: 'Multi-perspective review methodology with seven specialized reviewer roles for comprehensive code, architecture, and UX assessment.'
 ---
 
 # Council Review
@@ -14,7 +14,7 @@ description: 'Multi-perspective review methodology with six specialized reviewer
 - Assessing UI/UX implementations for accessibility and usability.
 - Validating security posture of new features or integrations.
 
-## The Six Perspectives
+## The Seven Perspectives
 
 ### 1. The Advocate (Strength Finder)
 Identifies what is working well. Anchors the review in existing strengths before criticism begins.
@@ -60,14 +60,24 @@ Assesses the experience from the user's perspective.
 - Navigation clarity and information hierarchy.
 - Responsive design and loading/empty states.
 
+### 7. The Innovator (Alternative Lens)
+Speaks last. Challenges the frame of the problem itself.
+- Asks whether a fundamentally different approach would have served better — not a better implementation of the current approach, but a different approach entirely.
+- Surfaces cross-domain patterns or prior art the other six perspectives may have missed, with source tier and confidence level.
+- Proposes a concrete timeboxed experiment (see `#experimental-design`) if meaningful uncertainty remains after the other perspectives have spoken.
+- Finding is **invalid** if it merely restates a concern already raised by another perspective — the Innovator must add a genuinely new framing, not reinforce an existing one.
+- Finding is **invalid** if it proposes an alternative with no plausible implementation path — every alternative must have a concrete next step.
+- If no better alternative is apparent, the Innovator must state which assumption they challenged, what they found when they investigated it, and why it held. This is still a valuable contribution: it confirms that the current approach survived scrutiny from a creative perspective.
+
 ## Procedure
 
 1. **Scope Definition** — Identify what is being reviewed (files, feature, full codebase).
 2. **Advocate First** — Start with strengths to establish baseline quality and patterns worth keeping.
 3. **Parallel Perspectives** — Run Skeptic, Guardian, Craftsperson, and User Champion analyses.
 4. **Synthesizer Pass** — Compare findings across perspectives, resolve conflicts, identify cross-cutting themes.
-5. **Severity Classification** — Rate each finding using the legend below.
-6. **Consensus Output** — Unified findings with specific file references, severity, owning perspective, and recommended fix.
+5. **Innovator Last** — After all other perspectives have spoken, the Innovator presents an alternative framing or cross-domain insight not raised by any other perspective. If no alternative is apparent, the Innovator documents the assumption challenged and why it held.
+6. **Severity Classification** — Rate each finding using the legend below.
+7. **Consensus Output** — Unified findings with specific file references, severity, owning perspective, and recommended fix.
 
 ## Severity Classification
 
@@ -81,6 +91,7 @@ This legend mirrors the one in `.github/instructions/council-review.instructions
 ## Rules of Deliberation
 
 - The Advocate always speaks first. No review starts with criticism.
+- The Innovator always speaks last. Their contribution must be genuinely new — a restatement of another perspective's concern is not valid.
 - The Guardian has veto power on security — security findings cannot be deprioritized below their assigned severity.
 - The Synthesizer resolves disagreements by finding the approach that satisfies the most constraints.
 - Every finding must be actionable — "improve X" is not acceptable; "change Y in file Z at line N" is.
@@ -98,6 +109,7 @@ This legend mirrors the one in `.github/instructions/council-review.instructions
 - [ ] Craftsperson has checked type safety, patterns, and test quality.
 - [ ] User Champion has verified result visibility and accessibility.
 - [ ] Synthesizer has resolved conflicts and identified cross-cutting themes.
+- [ ] Innovator has presented at least one genuinely alternative framing not raised by any other perspective (or documented the assumption challenged and why it held).
 - [ ] All findings include file/line references or concrete examples.
 - [ ] Severity ratings are assigned and Guardian findings are not deprioritized.
 - [ ] Action items are numbered, assigned to a perspective, and implementable.
