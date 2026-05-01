@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} - Copilot Instructions
 
-Agent-guided software development framework with 11 specialized agents and 23 domain skills.
+Agent-guided software development framework with 12 specialized agents and 26 domain skills.
 
 ## Copilot Customization Layout
 
@@ -25,7 +25,7 @@ If a path-scoped instruction contradicts this file, the path-scoped instruction 
 
 ---
 
-## 11 Agents (Roles)
+## 12 Agents (Roles)
 
 Each agent has:
 - **Scope**: What they decide/design
@@ -99,6 +99,12 @@ Each agent has:
 **Decision Pattern**: Applies Five Whys and constraint classification before proposing alternatives; scouts prior art using the 4-tier research methodology; designs hypothesis-driven spikes for uncertain proposals; speaks last on the Review Council and must add a genuinely new framing not raised by any other perspective
 **Tools**: Skills: #creative-problem-solving, #solution-scouting, #experimental-design, #internet-research
 
+### 12. Researcher Agent
+**Scope**: Evidence gathering, multi-perspective research, source credibility evaluation, balanced findings delivery for any question posed by the council or other agents
+**Constraints**: Never the final decision-maker — defers all decisions to the commissioning agent or council; maintains strict impartiality (no advocacy); must include all identified perspectives, including those that contradict the emerging picture; every finding must carry a confidence level (🟢/🟡/🔴); all cited sources must have been actually consulted in the session; briefs must pass the Balance Audit before delivery
+**Decision Pattern**: Audits and restates biased questions before researching; systematically inventories all stakeholder perspectives before collecting evidence; weights evidence by quality and independence, not by volume; discloses conflicts of interest when a commission appears to seek validation rather than research; can proactively offer unsolicited findings when a critical perspective is missing from a discussion
+**Tools**: Skills: #research-methodology, #evidence-synthesis, #internet-research, #solution-scouting
+
 ## Domain Skills
 
 > **Note:** Skill categories reflect web application defaults. Reorganize for your project type.
@@ -135,6 +141,10 @@ Each agent has:
 21. **#creative-problem-solving** — Lateral thinking, problem reframing (Five Whys, Constraint Removal, SCAMPER, Pre-Mortem, 10x Thinking), cross-domain pattern recognition
 22. **#solution-scouting** — Deep research methodology with 4-tier source hierarchy, 10x Solution Test, confidence reporting (High/Medium/Low), Scout Report format
 23. **#experimental-design** — Hypothesis-driven spike design, spike types (Technology/Performance/Feasibility/Risk), time-box discipline, Spike Summary format
+
+### Research Skills
+24. **#research-methodology** — Structured research process: question scoping, perspective inventory, source discovery, evidence collection, multi-perspective synthesis, and Balance Audit gate
+25. **#evidence-synthesis** — Claim clustering, convergence/divergence mapping, Pros/Cons Framework with steelmanning, confidence calibration per finding, Impartiality Test
 
 ## Agent Invocation
 
@@ -287,6 +297,18 @@ Each agent has:
 # Data pipeline
 @innovator: Our ETL pipeline is getting complex. Are we solving the right problem, or is the data model the issue?
 @innovator: Before we build a custom scheduler, what approaches exist for this class of problem?
+```
+
+### When to Use Researcher
+```
+# Council / any agent — commissioning research
+@researcher: What are the documented tradeoffs of approach X vs. Y in production at scale?
+@researcher: What does the evidence say about how teams handle problem P, and what perspectives am I missing?
+@researcher: Survey the security landscape on threat vector Z before the Guardian issues a finding.
+
+# Proactive use — Researcher offers unsolicited findings
+@researcher: I noticed the discussion is missing the end-user / compliance perspective — here are findings you may not have considered.
+@researcher: Prior research exists on this topic; here is the brief before you proceed.
 ```
 
 ## Development Phase Structure
@@ -494,6 +516,7 @@ is gitignored.
 - [agents/devops-infrastructure.agent.md](agents/devops-infrastructure.agent.md) — Container, CI/CD, and runtime infrastructure agent
 - [agents/performance.agent.md](agents/performance.agent.md) — Performance profiling and optimization agent
 - [agents/innovator.agent.md](agents/innovator.agent.md) — Creative problem-reframer, solution scout, and experimentalist agent
+- [agents/researcher.agent.md](agents/researcher.agent.md) — Impartial multi-perspective research agent for the council and all agents
 
 ## Custom Agent Tool Profiles
 
@@ -508,6 +531,7 @@ is gitignored.
 - DevOps Infrastructure: `tools: [read, search, edit, execute]`
 - Performance: `tools: [read, search, execute]`
 - Innovator: `tools: [read, search, web, todo]`
+- Researcher: `tools: [read, search, web, todo]`
 
 ## Questions?
 
@@ -518,6 +542,7 @@ Consult the relevant agent for decisions:
 - @qa: QA
 - @designer: Designer
 - @innovator: Innovator (creative challenge, alternative framing, pre-commitment research)
+- @researcher: Researcher (evidence gathering, multi-perspective analysis, impartial findings for council or any agent)
 
 See [agents/technical-writer.agent.md](agents/technical-writer.agent.md) for documentation cleanup workflow and [skills/](skills/) for skill definitions.
 
