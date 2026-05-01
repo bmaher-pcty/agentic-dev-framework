@@ -38,6 +38,8 @@ Use these instructions for all implementation, refactors, and bug fixes.
 
 ## Verification Categories
 
+<!-- CANONICAL DEFINITION: Verification labels are defined here. Reference this section from all other files. Do not duplicate these definitions elsewhere in .github/. -->
+
 When reporting completion, agents must categorize each verification claim using exactly one of these labels:
 
 - **`VERIFIED-AUTOMATED`** — Test ran, passed, and is committed. The automated test validates this behavior.
@@ -59,7 +61,7 @@ An honest `ASSUMED-UNTESTED` report is acceptable. A false `VERIFIED-AUTOMATED` 
 
 1. Cover success, validation, and failure paths.
 2. Add or update integration/E2E tests when feature behavior is user-visible.
-3. Keep coverage moving toward repository quality targets and call out gaps explicitly.
+3. Keep coverage moving toward the targets defined in `.github/skills/testing.md` (80% floor, 90% aspiration). Call out gaps explicitly with the actual coverage percentage.
 
 ## Scope-to-Test Mapping
 

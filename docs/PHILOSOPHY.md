@@ -1,5 +1,7 @@
 # Framework Philosophy
 
+> This is a reference document — read it to understand why rules exist. If you are new to the framework, start with [`docs/GETTING_STARTED.md`](GETTING_STARTED.md).
+
 ## Why This Framework Exists
 
 AI coding assistants are powerful, but unconstrained they drift toward:
@@ -34,7 +36,9 @@ If a change leaves the application broken, the work is not complete. The agent m
 
 ### 3. Security Is Non-Negotiable
 
-The Guardian perspective in every Review Council cannot be overridden. Security findings do not get deprioritized, softened, or deferred without an explicit decision and documented ADR.
+The Guardian perspective in every Review Council must not be overridden. Security findings must not be deprioritized, softened, or deferred without an explicit decision and documented ADR.
+
+In practice, "non-negotiable" means that any proposal to defer or downgrade a security finding requires a human to make that decision explicitly and document it in an ADR. AI agents are configured to resist this — but the human in the loop is the ultimate enforcement mechanism.
 
 ### 4. Quality Bars Are Additive
 
@@ -82,7 +86,7 @@ The framework uses `{{TOKEN}}` placeholders instead of hardcoded technology name
 - **Honest** — instructions explicitly state what technology they assume.
 - **Upgradeable** — when you change your stack, update one token and all instructions stay consistent.
 
-Run `BOOTSTRAP.prompt.md` to replace tokens with your project's actual values.
+See `TOKENS.md` for the full token reference.
 
 ---
 

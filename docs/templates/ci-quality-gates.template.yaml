@@ -52,7 +52,9 @@ jobs:
           head: HEAD
 
   # Gate 2: Test Coverage Threshold
-  # Prevents coverage regression. Target: 90%+ (start at 80% and raise incrementally).
+  # Prevents coverage regression. Global floor: 80%. Aspiration: 90%+.
+  # Per-type targets: Services >80%, Utilities >90%, API handlers >60% + integration tests.
+  # See .github/skills/testing.md for the full breakdown.
   coverage-check:
     name: Coverage Check
     runs-on: ubuntu-latest
@@ -66,7 +68,8 @@ jobs:
           # Replace with your coverage tool's threshold check
           # Example for Jest: npx jest --coverage --coverageThreshold='{"global":{"lines":80}}'
           echo "Configure coverage threshold check for your test framework"
-          # Minimum recommended: 80%. Target: 90%+
+          # Minimum: 80%. Aspiration: 90%+. Set threshold to your current floor and raise incrementally.
+          # See .github/skills/testing.md for per-type targets.
 
   # Gate 3: Unreplaced Token Detection
   # Two-step scan: first .github/ framework files, then application source files.
@@ -177,4 +180,19 @@ jobs:
 
           if [ "$FAILED" -ne 0 ]; then
             exit 1
+          fi
+
+      - name: Assert verification label definitions are in exactly one file
+        run: |
+          # The ## Verification Categories section must be defined in exactly one .github/ file.
+          # Canonical location: .github/instructions/testing.instructions.md
+          DEF_COUNT=$(grep -rl '## Verification Categories' .github/ | wc -l | tr -d ' ')
+          if [ "$DEF_COUNT" -gt 1 ]; then
+            echo "❌ ## Verification Categories defined in $DEF_COUNT .github/ files — must be exactly 1."
+            echo "   Canonical location: .github/instructions/testing.instructions.md"
+            echo "   Remove duplicate definitions and replace with a reference to testing.instructions.md."
+            grep -rl '## Verification Categories' .github/
+            exit 1
+          else
+            echo "✅ Verification Categories defined in exactly one place."
           fi

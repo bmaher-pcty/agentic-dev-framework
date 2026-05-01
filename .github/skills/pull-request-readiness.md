@@ -57,3 +57,32 @@ git merge origin/main
 - PR body includes meaningful implementation and verification details.
 - Functionality verified before push/PR.
 - Required tests run before push/PR.
+
+---
+
+## Pre-PR Cleanup Sweep (Always)
+
+Before pushing the final commit on a feature branch, perform a cleanup sweep on the diff against `main`:
+
+1. **Stale-attempt scan**: Remove code left over from earlier approaches in the session that did not become the chosen solution. Watch for: dead imports, unused exports, helper functions never called, two parallel implementations where only one is wired up, commented-out blocks, stub TODOs, debug `console.log` lines, temporary feature flags, and migration files for schemas that were redesigned.
+2. **Reference integrity**: Confirm every imported symbol is actually used and every export is consumed somewhere (production code or tests). If an export exists only because tests assert on it, document that with a brief JSDoc note.
+3. **Duplicated logic**: Look for near-identical blocks across the diff that should be deduplicated into a shared helper. Resolve them inside the same PR rather than deferring.
+4. **Doc/script drift**: If the PR rewrites a flow, remove docs and scripts that describe the old flow. Markdown that points to deleted endpoints or removed UI is a defect.
+5. **Spec vs implementation drift**: Confirm every new type/interface matches how its callers actually use it. Remove fields no caller reads.
+6. **Operator setup leakage**: Any new file under `docs/`, `RUN.md`, or `*_SETUP*.md` at the repo root that describes provider-console clicks, API-key acquisition, OAuth app registration, or tenant-specific values must be moved to `docs/local/` (gitignored).
+
+Use sub-agents in parallel for this sweep (one for dead-code, one for security/secrets) so the cleanup and security review happen together. Treat any finding as in-scope for the same PR.
+
+---
+
+## Pre-PR Security Review (Sensitive-Data Sweep)
+
+Before pushing the final commit, run a security sweep on the diff:
+
+1. **No secrets in source, tests, fixtures, docs, or migrations** — only `.env.example` placeholders are allowed in version control.
+2. **No raw credentials, tokens, or auth headers in log calls** — confirm redaction on every new log line that touches credentialed paths.
+3. **All new endpoints require authentication middleware** and enforce per-user ownership for any record reads/writes/deletes.
+4. **All user-supplied input that flows into external API calls is validated and escaped** at both the route layer and the service layer (defense in depth). Anything interpolated into a query string, header, URL path, or shell command must be whitelisted to safe characters before use.
+5. **No PII in new log lines** that did not appear before this PR.
+
+Run this with a sub-agent so review happens in parallel with implementation rather than after.

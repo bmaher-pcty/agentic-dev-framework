@@ -1,7 +1,9 @@
 # Token Reference — agentic-dev-framework
 
 This document lists all placeholder tokens used throughout the framework files.
-Run `BOOTSTRAP.prompt.md` to replace these tokens with your project's actual values.
+It is a reference used during the bootstrap process. Once bootstrap is complete and all tokens are resolved, this file can be deleted from your project.
+
+> **To replace tokens:** See `BOOTSTRAP.prompt.md` for the guided wizard. This file is a read-only reference — do not modify it to replace tokens.
 
 ## How Tokens Work
 

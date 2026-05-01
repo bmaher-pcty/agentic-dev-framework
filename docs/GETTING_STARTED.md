@@ -79,7 +79,6 @@ After bootstrapping, run these checks:
 
 ## Next Steps
 
-- Read [`README.md`](../README.md) for the full agent and skills reference
 - Read [`TOKENS.md`](../TOKENS.md) if you need to understand any `{{TOKEN}}` placeholder
 - Run [`BOOTSTRAP.prompt.md`](../BOOTSTRAP.prompt.md) to configure the framework
 - Review [`docs/PHILOSOPHY.md`](PHILOSOPHY.md) when you want to understand WHY a rule exists

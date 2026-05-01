@@ -1,5 +1,5 @@
 ---
-applyTo: "{{SERVER_SOURCE_DIR}}/**/*.ts,{{SERVER_SOURCE_DIR}}/**/*.js,.github/workflows/**/*.yml,.github/workflows/**/*.yaml,{{CONTAINER_COMPOSE_FILE}},{{REVERSE_PROXY}}/**/*,**/Dockerfile,**/Dockerfile.*,certs/**/*"
+applyTo: "{{SERVER_SOURCE_DIR}}/**/*.ts,{{SERVER_SOURCE_DIR}}/**/*.js,{{CLIENT_SOURCE_DIR}}/**/*.ts,{{CLIENT_SOURCE_DIR}}/**/*.tsx,{{CLIENT_SOURCE_DIR}}/**/*.js,.github/workflows/**/*.yml,.github/workflows/**/*.yaml,{{CONTAINER_COMPOSE_FILE}},{{REVERSE_PROXY}}/**/*,**/Dockerfile,**/Dockerfile.*,certs/**/*"
 ---
 
 # Security Implementation Instructions
@@ -48,6 +48,16 @@ Common variables for auth/OAuth features:
 - `SESSION_EXPIRES_IN` — token lifetime.
 
 When introducing new auth providers or secrets, add a placeholder to `.env.example` in the same change.
+
+## Client-Side Security Rules
+
+1. Never store access tokens, session tokens, or sensitive credentials in `localStorage` or `sessionStorage` — use HTTP-only secure cookies or in-memory state only.
+2. Sanitize all user-supplied content before inserting into the DOM. Never use `innerHTML`, `dangerouslySetInnerHTML`, or `eval()` with user-supplied strings without explicit sanitization.
+3. Apply Content Security Policy headers that restrict inline script execution. Reference the CSP header requirements in the Infrastructure Security Rules section.
+4. Validate that third-party scripts are loaded from known, pinned CDN URLs and that Subresource Integrity (SRI) hashes are included where supported.
+5. Never log authentication tokens, session identifiers, or sensitive form field values in the browser console.
+6. All client-side validation is defense-in-depth only — every input must also be validated server-side. Client-only validation is not a security control.
+7. OAuth tokens received by the frontend must be forwarded to the backend immediately and never persisted in client storage.
 
 ## Infrastructure Security Rules
 

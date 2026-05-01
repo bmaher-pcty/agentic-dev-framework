@@ -20,6 +20,9 @@ description: 'Testing patterns with clear arrange-act-assert structure and cover
 9. Run canonical smoke verification from repository root: `{{SMOKE_COMMAND}}`.
 
 ## Coverage Targets
+
+> These per-type floors are the minimum acceptable thresholds. The framework aspiration is 90%+ across all categories. New projects should start at the floors and raise over time.
+
 - Services: >80%
 - Utilities: >90%
 - API handlers: >60% (plus integration tests)

@@ -22,7 +22,7 @@ See `.github/skills/council-review.md` for the canonical severity classification
 ## Conflict Resolution
 
 1. When perspectives disagree, the Synthesizer resolves by finding the approach satisfying the most constraints.
-2. Security findings from the Guardian cannot be downgraded in severity by other perspectives.
+2. Security findings from the Guardian **must not** be downgraded in severity by other perspectives. If this occurs, flag it to the human reviewer for manual correction.
 3. User Champion findings about invisible success states or missing result surfaces carry the same weight as functional defects.
 4. The Craftsperson defers to existing patterns unless a measurable improvement is demonstrated.
 

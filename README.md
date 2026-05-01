@@ -2,6 +2,8 @@
 
 A portable, technology-agnostic Copilot configuration framework for agent-guided software development.
 
+> **New to the framework? Start here: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)**
+
 ## What This Is
 
 A complete set of `.github/` configuration files that give GitHub Copilot:
