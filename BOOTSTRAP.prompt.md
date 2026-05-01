@@ -156,6 +156,17 @@ With the approved map, generate the tailored `.github/` folder:
 5. For skills that are N/A for this project type (e.g., `ui-component-design.md` for a CLI project):
    - Add `status: inactive` to frontmatter and a note at the top.
 6. Resolve `applyTo` globs in `testing.instructions.md`, `security.instructions.md`, and `council-review.instructions.md` using `{{SOURCE_CODE_PATHS}}` and `{{TEST_PATHS}}` from the approved map.
+7. Generate `docs/FRAMEWORK_SETUP.md` with the following content:
+   - **Bootstrap date** — the date bootstrap was run.
+   - **Framework version** — v1.0.0 (or read from README.md if available).
+   - **Active agents** — list of N of 11 active agents.
+   - **Deactivated agents** — list with the reason each was deactivated.
+   - **Token resolution summary** — table of token → resolved value (or ❓ if not resolved), grouped by category (Identity, Stack, Commands, Paths, Optional/N/A).
+   - **Tokens requiring manual review** — list of any ❓ tokens still needing resolution.
+
+   > **Important:** `docs/FRAMEWORK_SETUP.md` must not contain secrets, credential values, or environment-specific paths. It documents which agents are active and which tokens were resolved — not the resolved values of secrets. Tokens whose values are secrets (e.g., `{{SESSION_SECRET}}`, API keys, database passwords) must appear as `[secret — set in .env, not tracked]` rather than their actual values.
+
+   `docs/FRAMEWORK_SETUP.md` is tracked in the project (not gitignored). It helps future team members understand the framework configuration without re-running bootstrap.
 
 ---
 
@@ -184,8 +195,8 @@ Produce this summary after generation:
 [list with reason]
 
 ### Next Steps
-1. Copy `.github/` into your project root
-2. Commit: `git add .github/ && git commit -m "chore: add agentic dev framework"`
+1. Copy `.github/` and `docs/FRAMEWORK_SETUP.md` into your project root
+2. Commit: `git add .github/ docs/FRAMEWORK_SETUP.md && git commit -m "chore: add agentic dev framework"`
 3. Verify smoke command: run `[SMOKE_COMMAND]` — if it fails, fix the command first
 4. First agent invocation: `@engineer: [describe your first task]`
 5. Before first PR: run `@review-council` for a full perspective review
