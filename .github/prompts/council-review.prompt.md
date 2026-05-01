@@ -6,6 +6,20 @@ argument-hint: "Specify files, features, or a PR to review. Use 'full codebase' 
 
 Convene the Review Council to evaluate the specified code or feature from seven perspectives.
 
+## Sequential Blinding Protocol
+
+For 🔴 **High-Stakes** reviews (auth, schema, security surfaces), use **Sequential Blinding Mode** for more divergent findings:
+
+1. Write each perspective **without reading prior perspectives first.** Each section is written to completion before moving to the next.
+2. Use this order: **Guardian → Skeptic → Advocate → Craftsperson → User Champion → Innovator**
+3. Only **after** all six perspectives are written, run the **Synthesizer** to reconcile and produce the final unified assessment.
+
+**Why this works:** Each perspective arrives without the anchoring effect of reading what the previous perspectives said. The Skeptic doesn't self-censor after reading an optimistic Advocate. The Guardian doesn't soften after reading a sympathetic Craftsperson. You get more divergent findings from the same model.
+
+**Standard Mode (default for 🟡 Standard and 🔵 Trivial):** Write all perspectives in a single pass — faster, more internally consistent, appropriate for routine reviews.
+
+**Temporal Separation Mode (underused, free):** Run Guardian immediately when code is fresh. Run Skeptic 24 hours later when you've lost context. Run User Champion right before demo or release. Same model, genuinely different priming — costs only discipline.
+
 ## Council Members
 
 1. **The Advocate** — What is strong, well-built, and worth preserving?

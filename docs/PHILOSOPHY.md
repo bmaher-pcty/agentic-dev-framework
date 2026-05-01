@@ -99,5 +99,21 @@ See `TOKENS.md` for the full token reference.
 
 ---
 
+## What the Framework Cannot Enforce
+
+Understanding these limits prevents overconfidence in the framework's guarantees.
+
+**Constraint compliance depends on model willingness.** Every rule in this framework is a text instruction the model chooses to follow. Compliance degrades under deadline pressure, when users push back firmly, and when the model's training conflicts with a specific rule. The framework states the rules — teams provide the enforcement culture.
+
+**Text instructions are not mechanical gates.** The most important rules — completion gate, Guardian non-negotiation, no false-complete claims — should be paired with mechanical enforcement: PR templates with verification label checklists, CI gates that fail on unresolved tokens, and pre-commit hooks. The `docs/templates/ci-quality-gates.template.yaml` and `docs/templates/pull-request-template.template.md` files exist for this reason. Text alone is not enforcement.
+
+**The Guardian non-negotiation protocol is the closest the framework gets to enforcement.** When a developer disputes a security finding, the protocol redirects the decision to the human rather than letting the model cave under social pressure. But it still relies on model compliance. An explicit ADR requirement is the backstop — it forces the human to own the decision rather than having it dissolve in conversation.
+
+**The Review Council is a single-model roleplay.** Seven perspectives from one model are more thorough than one perspective, but they are not seven independent reviewers. For High-Stakes security decisions, the multi-model workflow (`.github/prompts/multi-model-council.prompt.md`) provides the closest available approximation to genuine independence.
+
+**Coverage targets are aspirational without CI gates.** "90%+ coverage" is a quality target, not an enforced floor, until you add a coverage threshold check to CI. The `ci-quality-gates.template.yaml` includes this gate — configure it for your project.
+
+---
+
 ## Framework Version
 agentic-dev-framework v1.1.0

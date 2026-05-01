@@ -14,11 +14,11 @@ Tier the protocol depth to the task using the rubric in `.github/skills/task-tri
 
 ### 🟢 Trivial task (≤3 files, no security/schema/contract surfaces touched)
 Minimum required:
-1. Skim `docs/project-intelligence.md` "Known Anti-Patterns" headings (do not read full file). If any anti-pattern name plausibly matches the task domain, read that entry in full before editing.
+1. Skim `docs/project-intelligence.md` "Known Anti-Patterns" headings (do not read full file). If any anti-pattern name plausibly matches the task domain, read that entry in full before editing. If `docs/project-intelligence.md` is absent, empty, or contains only template placeholder rows, skip this step and note: "project-intelligence.md not yet populated — proceeding without project-specific context."
 2. State at the top of the response: "Triaged 🟢 Trivial — no project-intelligence reads required" *or* name the anti-pattern that did apply.
 
 ### 🟡 Standard task (multi-file feature work, no security/schema surfaces)
-1. Read `docs/project-intelligence.md` "Known Anti-Patterns" and "Locked Architectural Decisions" sections in full.
+1. Read `docs/project-intelligence.md` "Known Anti-Patterns" and "Locked Architectural Decisions" sections in full. If this file is absent, empty, or contains only template placeholder rows, skip this step and note: "project-intelligence.md not yet populated — proceeding without project-specific context. After this session, run `.github/prompts/post-mortem.prompt.md` to capture findings."
 2. Check `docs/open-handoffs.md` for OPEN handoffs addressed to the Engineer.
 3. State which anti-patterns and locked decisions apply, or "No relevant anti-patterns from project intelligence."
 

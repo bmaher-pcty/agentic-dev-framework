@@ -14,6 +14,22 @@ description: 'Multi-perspective review methodology with seven specialized review
 - Assessing UI/UX implementations for accessibility and usability.
 - Validating security posture of new features or integrations.
 
+## Council Modes
+
+Choose the mode based on task triage level (see `#task-triage`).
+
+### Standard Mode *(default for 🟡 Standard and 🔵 Trivial)*
+All perspectives generated in a single pass. Faster, more internally consistent. Appropriate for routine feature reviews, refactors, and documentation changes.
+
+### Structured Independence Mode *(recommended for 🔴 High-Stakes)*
+**Sequential blinding:** write each perspective independently without reading prior ones. Use the order defined in `.github/prompts/council-review.prompt.md`. Produces more divergent findings. Worth the extra time for security/auth changes, architectural decisions, and anything you must trust.
+
+### Temporal Separation Mode *(free, underused)*
+Run Guardian at code-write time — before you've convinced yourself it's correct. Run Skeptic 24 hours later when context has faded. Run User Champion right before demo or release. Same model, genuinely different priming. Costs only discipline.
+
+### Multi-Model Mode *(for findings you must stake trust on)*
+Run perspectives across different AI assistants for genuine independence. See `.github/prompts/multi-model-council.prompt.md`. 3× slower. Reserve for High-Stakes security reviews and architectural decisions before large refactors.
+
 ## The Seven Perspectives
 
 ### 1. The Advocate (Strength Finder)

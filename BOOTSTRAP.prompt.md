@@ -79,6 +79,14 @@ All profiles enforce identical quality guarantees. Profiles reduce coordination 
 
 **Solo Developer Note:** If your team size is `solo`, the bootstrap will apply the Solo Profile: 5 default agents (Engineer, System Architect, Review Council, QA, Innovator) with a 4-perspective Micro Council as the default review depth. All other agents are available via explicit invocation but deactivated by default. All quality guarantees (completion gate, security non-negotiable, no false-complete) apply identically in the Solo Profile.
 
+**Solo Output Mode:** After confirming solo team size, ask: "Would you like:
+- **(A) Minimal mode** — one `AGENTS.md` file with all 5 core agents inline (see `docs/examples/solo-starter/AGENTS.md` for a preview). Fastest to adopt, lowest cognitive overhead. Upgrade to full structure when your team grows.
+- **(B) Full mode** — individual agent files per the standard framework structure. More context per agent, easier to customize individual agents later.
+
+Both modes enforce identical quality guarantees: completion gate, security non-negotiable, no false-complete claims."
+
+If minimal mode is chosen: generate `docs/examples/solo-starter/AGENTS.md` adapted to the developer's stack (with all `{{TOKEN}}` patterns resolved) instead of individual agent files. Still generate all instruction files, skill files, and prompts in the standard structure.
+
 **Question 5b (Enterprise only — ask only if team size is `large 15+` or profile is `Enterprise`):**
 "Does your organization require an audit trail of AI-assisted decisions — recording what the agent decided, what evidence it used, and what a human approved? This enables the Enterprise profile's compliance features: structured audit records in `docs/audit/`, a compliance audit prompt, and CODEOWNERS integration."
 _(Yes/No. If Yes: the bootstrap generates `docs/audit/.gitkeep`, activates `.github/prompts/compliance-audit.prompt.md`, and sets `docs/FRAMEWORK_PROFILE.md` audit trail to Enabled. Recommended for HIPAA, SOC 2, PCI-DSS, and similar regulated environments.)_
@@ -287,7 +295,15 @@ With the approved map, generate the tailored `.github/` folder:
 
    `docs/FRAMEWORK_SETUP.md` is tracked in the project (not gitignored). It helps future team members understand the framework configuration without re-running bootstrap.
 
-9. **Multi-model adapter setup (optional — skip if using GitHub Copilot only):**
+10. **Generate enforcement artifacts:**
+
+   - Copy `docs/templates/pull-request-template.template.md` to `.github/PULL_REQUEST_TEMPLATE.md` in the project. Replace `{{SMOKE_COMMAND}}` with the resolved smoke command from the approved token map. This gives every PR a verification label checklist.
+   - Copy `docs/templates/ci-quality-gates.template.yaml` to `.github/workflows/quality-gates.yml` in the project. Replace `{{TEST_COMMAND}}` and `{{COVERAGE_THRESHOLD}}` with the resolved values. This adds CI gates for secret scanning, token detection, and coverage thresholds.
+   - List both files in `docs/FRAMEWORK_SETUP.md` under a new "Enforcement Artifacts" section.
+
+   > These two files give the framework mechanical teeth: CI fails on unresolved tokens, and every PR has a structured verification checklist. Without them, all framework rules are advisory only.
+
+11. **Multi-model adapter setup (optional — skip if using GitHub Copilot only):**
 
    If the team uses Claude Code, Cursor, or Amazon Q alongside (or instead of) GitHub Copilot, generate the corresponding adapter files. Full capability details: `docs/enterprise/AI-GOVERNANCE.md`.
 

@@ -10,6 +10,12 @@ coverage_hotspot_count: 0
 
 # Project Intelligence
 
+> **This is the highest-leverage file in the repository.**
+> A well-populated file produces project-aware, context-rich agent responses.
+> An empty file produces generic responses indistinguishable from a project with no framework.
+> Populate after every council review — copy findings directly from council output.
+> One row per finding. Takes 2 minutes. Compounds across every future session.
+
 > Updated after each council review. Agents read this file at the start of every session.
 > **Agents: Read the front-matter counts to assess whether this file has been populated.**
 > If all counts are zero, this file has not been populated — run a council review first.
