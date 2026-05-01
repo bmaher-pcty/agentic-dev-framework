@@ -1,218 +1,124 @@
 # agentic-dev-framework
 
-A portable, technology-agnostic Copilot configuration framework for agent-guided software development.
+A lean, technology-agnostic Copilot framework with 5 specialized agents and 8 domain skills.
 
-> **New to the framework? Start here: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)**
+## Why This Exists
 
-## What This Is
+Default AI assistants say things like: *"I've updated the function — it should work now."*
 
-A complete set of `.github/` configuration files that give GitHub Copilot:
-- **12 specialized agents** — each with a defined scope, constraints, and decision pattern.
-- **29 domain skills** — procedural guidance for common engineering tasks.
-- **Path-scoped instructions** — security, testing, branching, and review rules that activate by file pattern.
-- **Reusable prompts** — council review, codebase audit, PR readiness, security review, smoke verification.
+This framework makes them say:
 
-All technology-specific values are replaced with `{{TOKEN}}` placeholders so the framework works for any project: web apps, CLIs, data pipelines, microservices.
+```
+## Verification Summary
+- auth.ts: VERIFIED-AUTOMATED (test: auth.test.ts — 12 tests pass)
+- middleware.ts: VERIFIED-MANUAL (ran: npm test, observed: all 47 tests green)
+- callback.ts: REQUIRES-HUMAN-VERIFICATION (OAuth redirect — cannot simulate without provider)
+```
 
-## How Agents Actually Work (Honest Disclosure)
-
-The framework uses the term "agent" the way the AI-coding ecosystem uses it today: **a named role with a scoped prompt, a constraint set, and recommended tool capabilities.** Agents in this repository are **Markdown prompt conventions, not runtime-enforced primitives.** They work because:
-
-1. The model loads the agent file as context (via `.github/agents/<name>.agent.md`).
-2. The user invokes the role by name (e.g., `@engineer`, `@review-council`) so the model adopts the role.
-3. The constraints and decision patterns in the file shape the model's response — but **enforcement is by convention, not by a runtime gate.** No process spawns a separate agent. No tool registry blocks calls. The `recommended_capabilities:` frontmatter (formerly `tools:`) is advisory.
-
-What this means for you:
-- ✅ The verification labels, completion gate, severity rubric, and council methodology work in any compatible AI assistant (Copilot, Claude, Cursor, etc.) because they are textual rules the model follows.
-- ❌ Listing `tools: [edit, execute]` in an agent file does **not** sandbox or restrict that agent at runtime. If your AI assistant grants edit/execute permissions for the session, every agent inherits them.
-- 🟡 Roadmap: where a runtime *does* support real agent primitives — Claude Code Subagents, future Copilot custom chat participants — we will ship native bindings. Until then, the framework is honest about what it is: a high-quality, opinionated prompt scaffolding kit.
-
-If your enterprise security model requires hard tool isolation per role, do not rely on this framework's frontmatter to provide it. Use your AI assistant's native permission model.
-
-## Deployment Profiles
-
-Choose a profile before running bootstrap. Profiles reduce coordination overhead — not quality bars.
-
-| Profile | Team Size | Default Agents | Council Depth |
-|---------|-----------|----------------|---------------|
-| **Solo** | 1 developer | Engineer, Architect, Review Council, QA, Innovator | 4-perspective Micro Council |
-| **Small Team** | 2–10 developers | All 12 agents active | Full 7-perspective Council |
-| **Enterprise** | 10+ / regulated | All 12 agents + compliance gates | Full council + audit trail |
-
-All profiles enforce identical quality guarantees: completion gate, security non-negotiable, no false-complete claims. To apply a profile, answer Question 5 during bootstrap ("solo" / "small team" / "enterprise").
+That difference — **honest labeling of what was actually verified** — is the framework's core value. Everything else supports it.
 
 ---
 
-## Try It in 5 Minutes
+## 2-Minute Drop-In (No Bootstrap Required)
 
-No setup required. Prove the framework works before committing to full bootstrap:
+Copy `AGENTS.md` from this repo into your project root. Open GitHub Copilot Chat and type:
 
-```bash
-# Copy just the Engineer agent into any existing project
-cp .github/agents/engineer.agent.md /path/to/your-project/.github/agents/
+```
+@engineer: Add input validation to this endpoint [paste your code]
 ```
 
-Then in GitHub Copilot Chat, type:
-```
-@engineer: Add input validation to this function [paste any function from your codebase]
-```
-
-**How you know it's working:** The response includes a `## Verification Summary` section with labels like `VERIFIED-AUTOMATED` or `ASSUMED-UNTESTED` — never just "it's done." That label is the framework's core differentiator: honest reporting of what was actually verified, not assumed.
-
-When you're ready for the full framework: follow the [Quick Start](#quick-start) below and run `BOOTSTRAP.prompt.md`.
+**You know it's working** when the response includes a `## Verification Summary` with explicit `VERIFIED-AUTOMATED` / `ASSUMED-UNTESTED` labels — never just "it's done."
 
 ---
 
-## Quick Start
+## Full Setup (10 Minutes)
 
-### 1. Copy into your project
+For path-scoped security rules, testing gates, and individual agent files:
+
 ```bash
 cp -r agentic-dev-framework/.github /path/to/your-project/
 cp agentic-dev-framework/BOOTSTRAP.prompt.md /path/to/your-project/
 cp agentic-dev-framework/TOKENS.md /path/to/your-project/
 ```
 
-### 2. Bootstrap your project
-Open `BOOTSTRAP.prompt.md` in GitHub Copilot Chat and follow the prompts.
-The bootstrap process replaces all `{{TOKEN}}` placeholders with your actual values.
+Open `BOOTSTRAP.prompt.md` in Copilot Chat and answer 7 questions. The AI fills in the rest.
 
-### 3. Verify
-After bootstrapping, confirm:
-- `.github/copilot-instructions.md` has no `{{TOKEN}}` placeholders remaining
-- Agent files reference your actual framework/library names
-- `applyTo` patterns in instructions files match your directory structure
+After bootstrap: `grep -r '{{' .github/` should return **zero matches**.
 
-### ✅ Success Signal
+---
 
-**Behavioral signals — look for these in agent responses:**
-- `@engineer` responses include a `## Verification Summary` with explicit `VERIFIED-AUTOMATED` / `ASSUMED-UNTESTED` labels — never just "it's done"
-- `@review-council` output is structured into named sections: Advocate Highlights, Critical Findings, Security Assessment, UX Assessment
-- When you push back on a security finding, the Guardian restates it unchanged rather than softening it
-- `@engineer` refuses to mark work complete when the smoke command hasn't been run
+## 5 Agents
 
-**Structural signal:**
-- `grep -r '{{' .github/ --include="*.md"` returns **no matches**
-- `docs/FRAMEWORK_SETUP.md` exists and shows your project name in the header
-- Bootstrap Verification (Phase 7) reported **PASS** or **PASS WITH WARNINGS** with a clear list of any manual items
+| Agent | When to use | Invoke |
+|-------|-------------|--------|
+| **Engineer** | Implementing, fixing bugs, verifying behavior | `@engineer` |
+| **System Architect** | API design, data models, feature scoping | `@architect` |
+| **Review Council** | Pre-PR review, architecture audits | `@review-council` |
+| **Veteran QA** | Test planning, release readiness | `@qa` |
+| **Innovator** | Pre-commitment research, problem reframing | `@innovator` |
 
-→ Next: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
+## 8 Skills
+
+| Skill | Use for |
+|-------|---------|
+| `#council-review` | 7-perspective review methodology |
+| `#task-triage` | 🟢/🟡/🔴 risk classification |
+| `#testing` | Verification patterns and coverage |
+| `#security` | Auth, secrets, input validation |
+| `#api-design` | REST contracts and versioning |
+| `#error-handling` | Error structures and logging |
+| `#pull-request-readiness` | Pre-PR cleanup and security sweep |
+| `#data-modeling` | Schema design and migrations |
+
+---
+
+## What Makes This Different
+
+1. **Verification labels** — `VERIFIED-AUTOMATED` / `VERIFIED-MANUAL` / `ASSUMED-UNTESTED` / `REQUIRES-HUMAN-VERIFICATION`. The model can't just say "done."
+2. **Completion gate** — the model continues working if verification hasn't passed, instead of declaring success on a broken app.
+3. **Task triage** — 🟢 trivial / 🟡 standard / 🔴 high-stakes; different depth of review for different risk levels.
+4. **Honest council** — the Review Council's Guardian cannot be talked out of a security finding. It requires a documented ADR to defer — not just pushback.
+5. **Invisible success is a defect** — the User Champion in every council review treats "feature works but result is invisible" as blocking.
+
+---
+
+## Philosophy (5 Rules)
+
+1. Keep only what measurably changes model output. Everything else is overhead.
+2. Work is done when it's verified in the user-visible path — not when code is committed.
+3. Security findings cannot be silently downgraded. Document the disposition or fix it.
+4. The first viable solution is rarely the best. Use the Innovator before committing to architecture.
+5. Honest reporting of uncertainty is a feature, not a weakness.
+
+---
 
 ## Directory Layout
 
 ```
+AGENTS.md                          # Drop-in single-file starter (start here)
+BOOTSTRAP.prompt.md                # 7-question setup wizard
+TOKENS.md                          # Token reference
 .github/
-  copilot-instructions.md      # Global agent rules and framework overview
-  agents/
-    engineer.agent.md          # Implementation and verification
-    system-architect.agent.md  # API design and data modeling
-    thoughtful-product-manager.agent.md
-    veteran-qa.agent.md        # Regression and release quality
-    bold-ux-designer.agent.md  # UX hierarchy and accessibility
-    technical-writer.agent.md  # Documentation governance
-    review-council.agent.md    # 7-perspective code review
-    accessibility.agent.md     # WCAG compliance
-    devops-infrastructure.agent.md
-    performance.agent.md
-    innovator.agent.md         # Creative problem-reframer and council voice
-    researcher.agent.md        # Evidence-based multi-perspective research
-  skills/
-    # 29 skill files covering backend, frontend, infra, operations, research, innovation, and cross-functional concerns
+  copilot-instructions.md          # Global rules
+  agents/                          # 5 agent files
+  skills/                          # 8 skill files
   instructions/
-    testing.instructions.md    # Verification gates (path-scoped)
-    security.instructions.md   # Auth, secrets, infrastructure (path-scoped)
-    branching.instructions.md  # Branch workflow (applies to all files)
-    docker.instructions.md     # Container configuration (path-scoped)
-    council-review.instructions.md
+    testing.instructions.md        # Verification labels + completion gate
+    security.instructions.md       # Auth, secrets, infra rules
+    branching.instructions.md      # Branch workflow
   prompts/
     council-review.prompt.md
-    codebase-audit.prompt.md
     pr-readiness.prompt.md
     security-review.prompt.md
     smoke-verification.prompt.md
     repo-cleanup.prompt.md
-TOKENS.md          # Token reference and bootstrap guide
-BOOTSTRAP.prompt.md # Interactive bootstrap prompt
 docs/
-  PHILOSOPHY.md    # Framework design philosophy
+  templates/
+    ADR.template.md
+    ROADMAP.template.md
+  examples/
+    fastapi-react/                 # Concrete adoption example
 ```
 
-## The 12 Agents
-
-| Agent | When to Use | Invocation |
-|-------|------------|------------|
-| **Engineer** | Implementing features, fixing bugs, verifying runtime behavior | `@engineer` |
-| **System Architect** | Designing APIs, data models, service boundaries | `@architect` |
-| **Thoughtful Product Manager** | Scoping features, defining acceptance criteria | `@pm` |
-| **Veteran QA** | Test planning, regression analysis, release readiness | `@qa` |
-| **Bold UX Designer** | Visual hierarchy, accessibility, interaction design | `@designer` |
-| **Technical Writer** | Documentation consolidation and governance | `@technical-writer` |
-| **Review Council** | Multi-perspective code and architecture review | `@review-council` |
-| **Accessibility** | WCAG 2.1 AA compliance and keyboard navigation | `@accessibility` |
-| **DevOps/Infrastructure** | Container config, CI/CD, health checks | `@devops-infrastructure` |
-| **Performance** | Bundle size, query efficiency, response time | `@performance` |
-| **Innovator** | Reframes problems, scouts solutions, designs experiments | `@innovator` |
-| **Researcher** | Evidence-based multi-perspective research for agent decisions | `@researcher` |
-
-## Key Principles
-
-1. **User-visible verification is mandatory** — work is not done until the user can see the outcome.
-2. **No broken handoff** — if a change breaks the app, continue until it works or a blocker is proven.
-3. **90%+ test coverage target** — shortfalls must be called out explicitly.
-4. **No false-complete claims** — never say "done" or "implemented" if the feature isn't working end-to-end.
-5. **Security is non-negotiable** — Guardian findings cannot be downgraded.
-6. **The first viable solution is rarely the best solution** — before committing to an approach, ask what you'd build if you started fresh with current knowledge. The Innovator exists to enforce this question.
-
-## Upgrading the Framework
-
-Run `upgrade.prompt.md` in your AI assistant with your project open. Provide your current and target framework versions. The upgrade wizard:
-1. Reads the CHANGELOG to classify what changed (additive, modifying, breaking, structural)
-2. Produces a token-aware diff for each modified file — showing framework improvements alongside your resolved values
-3. Applies additive changes automatically
-4. Presents breaking and structural changes for your explicit approval before applying
-5. Verifies the upgrade applied correctly and reports any regressions
-
-> ⚠️ **Never re-run `BOOTSTRAP.prompt.md` to upgrade.** Bootstrap is for initial setup only. Re-running it will overwrite your resolved token values with generic `{{TOKEN}}` placeholders, reverting your project-specific configuration.
->
-> **Principle:** Upgrading adds framework improvements. It never removes your project-specific configuration.
-
-## Skills
-
-| Skill | Category | Purpose |
-|-------|----------|---------|
-| `#static-typing-practices` | Backend | Type safety, generics, discriminated unions |
-| `#api-design` | Backend | REST endpoints, versioning, error codes |
-| `#error-handling` | Backend | Consistent error structures, logging strategy |
-| `#security` | Backend | Input validation, secrets management, CORS |
-| `#testing` | Backend | Unit test patterns, fixtures, mocking |
-| `#data-modeling` | Backend | Schema design, migrations, indexes |
-| `#data-migrations` | Backend | Safe schema evolution, backfill patterns |
-| `#observability` | Backend | Structured logging, health checks, correlation IDs |
-| `#ui-component-design` | Frontend | UI patterns, prop APIs, visual states |
-| `#client-state-management` | Frontend | State stores, data fetching, cache invalidation |
-| `#ui-principles` | Frontend | Accessibility, responsive design, result visibility |
-| `#e2e-testing-patterns` | Frontend | E2E structure, semantic selectors, auth fixtures |
-| `#async-data-fetching` | Frontend | Query key factory, optimistic updates |
-| `#log-analysis-and-triage` | Frontend | Post-smoke log triage, release-gate policy |
-| `#accessibility-testing` | Frontend | axe-core integration, keyboard nav, WCAG 2.1 AA |
-| `#container-operations` | Infrastructure | Container security, health checks, compose |
-| `#deployment` | Operations | Deployment verification, rollback procedure, blue-green/canary |
-| `#secrets-rotation` | Operations | Rotation triggers, zero-downtime rotation, rotation verification |
-| `#api-deprecation` | Operations | Deprecation notices, sunset headers, migration guides |
-| `#db-backup-recovery` | Operations | Backup verification, PITR, RTO testing, backup storage security |
-| `#internet-research` | Cross-functional | Evidence gathering with calibrated confidence |
-| `#pull-request-readiness` | Cross-functional | Pre-PR quality gates |
-| `#council-review` | Cross-functional | Seven-perspective review methodology |
-| `#task-triage` | Cross-Functional | Risk-calibrated triage; determines Micro Council vs. full 7-perspective council depth |
-| `#creative-problem-solving` | Innovation | Five Whys, SCAMPER, 10x Thinking, Pre-Mortem |
-| `#solution-scouting` | Innovation | 4-tier research, 10x Solution Test, Scout Report |
-| `#experimental-design` | Innovation | Hypothesis-driven spikes, time-box discipline |
-| `#research-methodology` | Research | Structured research process: question scoping, source discovery, evidence collection |
-| `#evidence-synthesis` | Research | Combining disparate sources into calibrated, impartial Research Briefs |
-
-## Token Replacement
-
-All `{{TOKEN}}` placeholders must be replaced before the framework is useful.
-See `TOKENS.md` for the full token reference (with Category and Source columns) and run `BOOTSTRAP.prompt.md` to automate replacement via the 7-question smart wizard.
-
 ## Framework Version
-agentic-dev-framework v1.1.0
+agentic-dev-framework v2.0.0 ("Lean Machine")

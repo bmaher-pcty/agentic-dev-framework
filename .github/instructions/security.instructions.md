@@ -78,7 +78,7 @@ These are additive controls. If your CI pipeline includes a SAST tool, keep it r
 1. The secret-scan gate (TruffleHog) in `docs/templates/ci/` is complementary to SAST secret detection, not a replacement. If your SAST tool already covers hardcoded secret detection with HIGH/CRITICAL findings, you may substitute the TruffleHog gate with a gate that asserts your SAST run completed with zero HIGH/CRITICAL secret findings — but you must keep one of the two gates.
 2. SAST findings at HIGH or CRITICAL severity are treated as Guardian-level findings in council reviews — they cannot be downgraded in severity by other council perspectives.
 3. If a SAST tool is intentionally disabled or excluded from a path (e.g., a legacy file excluded by configuration), that exclusion must be documented in `docs/adr/` with rationale and a compensating control.
-4. When AI-generated code is introduced, run SAST on the diff before merging — AI assistants can produce code that passes human review but fails static analysis. See `docs/enterprise/SBOM.md` for the Guardian finding format for AI-introduced dependencies.
+4. When AI-generated code is introduced, run SAST on the diff before merging — AI assistants can produce code that passes human review but fails static analysis.
 
 ### When SAST and Framework Rules Conflict
 
@@ -105,3 +105,12 @@ They should not conflict — but if a SAST tool flags code that this framework's
 4. TLS certificates must not be committed to source control — `certs/` must be gitignored.
 5. {{CONTAINER_RUNTIME}} Compose must not expose database ports to the host unless explicitly required for development.
 6. Health check endpoints must not expose internal system details beyond status and timestamp.
+
+## Container Service Rules
+
+1. Every service in `{{CONTAINER_COMPOSE_FILE}}` must have a health check that verifies actual service readiness (not just process startup).
+2. Set `restart: unless-stopped` for all long-running services.
+3. Use `depends_on` with `condition: service_healthy` for services that require another service to be ready before starting.
+4. Set resource limits (CPU and memory) for production-targeted configurations.
+5. No secrets in Dockerfiles, Compose files, or reverse proxy configuration — use environment variables only.
+6. Non-root `USER` directive required in custom Dockerfiles for application services.
