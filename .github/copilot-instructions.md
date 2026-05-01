@@ -129,6 +129,16 @@ Operator-specific documentation (OAuth registration, API keys, tenant configurat
 8. Blocked is better than wrong — state blockers plainly; do not guess or continue on a broken path.
 9. Quality bars are additive — functionality, usability, security, and accessibility never regress without an explicit user decision.
 
+## Large Codebase Protocol
+
+For repositories with extensive codebases, agents must follow these navigation constraints to work effectively within context window limits:
+
+1. **Read contracts before implementations.** Always read interface files, API schemas, and test files before reading implementation files. The contract tells you what to expect; the implementation confirms it. Reading implementations first without knowing the contract wastes context and produces lower-quality results.
+2. **Scope before reading.** State the target module, service, and specific file(s) before beginning any read sequence. Do not speculatively read files that may not be relevant. Every file read consumes context that cannot be recovered — scope the problem first.
+3. **Use `docs/project-intelligence.md` as the first read.** Anti-patterns, locked architectural decisions, and coverage hot spots in the intelligence file directly constrain implementation choices. Read it before reading source code. Reproducing a known anti-pattern is a framework violation even if the implementation is otherwise correct.
+4. **Prefer grep over full reads.** Use file search (grep, ripgrep, code intelligence) to locate relevant code patterns before reading entire files. Read only the sections containing the relevant code. A targeted grep is faster than a full file read and leaves more context for implementation.
+5. **Surface scope creep explicitly.** If completing a task requires reading more files than initially scoped, surface the expanded scope to the user before proceeding. Never silently expand the reading scope. Unannounced scope expansion makes work unpredictable and can pull in unrelated concerns.
+
 ## Environment Setup
 
 See [`docs/ENVIRONMENT.md`](../docs/ENVIRONMENT.md) for prerequisites, quick start commands, and useful development commands.

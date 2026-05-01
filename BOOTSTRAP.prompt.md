@@ -79,6 +79,10 @@ All profiles enforce identical quality guarantees. Profiles reduce coordination 
 
 **Solo Developer Note:** If your team size is `solo`, the bootstrap will apply the Solo Profile: 5 default agents (Engineer, System Architect, Review Council, QA, Innovator) with a 4-perspective Micro Council as the default review depth. All other agents are available via explicit invocation but deactivated by default. All quality guarantees (completion gate, security non-negotiable, no false-complete) apply identically in the Solo Profile.
 
+**Question 5b (Enterprise only — ask only if team size is `large 15+` or profile is `Enterprise`):**
+"Does your organization require an audit trail of AI-assisted decisions — recording what the agent decided, what evidence it used, and what a human approved? This enables the Enterprise profile's compliance features: structured audit records in `docs/audit/`, a compliance audit prompt, and CODEOWNERS integration."
+_(Yes/No. If Yes: the bootstrap generates `docs/audit/.gitkeep`, activates `.github/prompts/compliance-audit.prompt.md`, and sets `docs/FRAMEWORK_PROFILE.md` audit trail to Enabled. Recommended for HIPAA, SOC 2, PCI-DSS, and similar regulated environments.)_
+
 **Question 6: Any agents to deactivate?**
 "Are there any of the 11 agents you definitely don't need? Common exclusions:
 - No UI → deactivate Bold UX Designer, Accessibility
@@ -264,10 +268,17 @@ With the approved map, generate the tailored `.github/` folder:
 5. For skills that are N/A for this project type (e.g., `ui-component-design.md` for a CLI project):
    - Add `status: inactive` to frontmatter and a note at the top.
 6. Resolve `applyTo` globs in `testing.instructions.md`, `security.instructions.md`, and `council-review.instructions.md` using `{{SOURCE_CODE_PATHS}}` and `{{TEST_PATHS}}` from the approved map.
-7. Generate `docs/FRAMEWORK_SETUP.md` with the following content (uses `docs/templates/FRAMEWORK_SETUP.md.template.md` as the structural template — follow that template's section order and table formats):
+7. **Enterprise profile only** (if Question 5b answered Yes):
+   - Create `docs/audit/.gitkeep` to initialize the audit record directory.
+   - Set `docs/FRAMEWORK_PROFILE.md` audit trail field to `Enabled`.
+   - Set `docs/FRAMEWORK_PROFILE.md` profile field to `Enterprise`.
+   - Confirm `.github/prompts/compliance-audit.prompt.md` is present and token-resolved.
+   - Add a note in `docs/FRAMEWORK_SETUP.md`: "Enterprise profile active. Run `.github/prompts/compliance-audit.prompt.md` before each regulated PR and commit the record to `docs/audit/`."
+   - Recommend adding `docs/templates/CODEOWNERS.template` to `.github/CODEOWNERS`.
+8. Generate `docs/FRAMEWORK_SETUP.md` with the following content (uses `docs/templates/FRAMEWORK_SETUP.md.template.md` as the structural template — follow that template's section order and table formats):
    - **Bootstrap date** — the date bootstrap was run.
    - **Framework version** — v1.0.0 (or read from README.md if available).
-   - **Active agents** — list of N of 11 active agents.
+   - **Active agents** — list of N of 12 active agents.
    - **Deactivated agents** — list with the reason each was deactivated.
    - **Token resolution summary** — table of token → resolved value (or ❓ if not resolved), grouped by category (Identity, Stack, Commands, Paths, Optional/N/A).
    - **Tokens requiring manual review** — list of any ❓ tokens still needing resolution.

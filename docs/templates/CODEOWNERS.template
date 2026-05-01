@@ -1,0 +1,87 @@
+# CODEOWNERS Template for agentic-dev-framework Adopters
+
+# The Review Council identifies which agents are relevant to a change.
+# Map agent domains to human reviewers using CODEOWNERS so that council
+# findings are reviewed by the humans most qualified to evaluate them.
+#
+# Usage:
+#   1. Copy this file to .github/CODEOWNERS in your project.
+#   2. Replace placeholder team names (@security-team, @frontend-team, etc.)
+#      with your organization's actual GitHub teams or usernames.
+#   3. Remove sections that don't apply to your project type.
+#   4. Add project-specific paths as needed.
+#
+# GitHub CODEOWNERS rules:
+#   - Last matching pattern wins.
+#   - Use @org/team-name for GitHub teams, @username for individuals.
+#   - Patterns follow .gitignore syntax.
+#
+# Framework agent → reviewer mapping rationale:
+#   Guardian perspective (security findings) → @security-team
+#   Bold UX Designer + Accessibility → @frontend-team
+#   DevOps/Infrastructure → @platform-team
+#   Framework configuration → @platform-team (changes affect all agents)
+
+# =============================================================================
+# DEFAULT: All files require at least one review
+# =============================================================================
+*                                   @team-lead
+
+# =============================================================================
+# SECURITY-SENSITIVE PATHS
+# Guardian perspective always runs here. Map to humans who can evaluate
+# security findings (auth flows, input validation, middleware, migrations).
+# =============================================================================
+{{SERVER_SOURCE_DIR}}/auth/         @security-team
+{{SERVER_SOURCE_DIR}}/middleware/   @security-team
+**/migrations/                      @database-team @security-team
+**/seeds/                           @database-team
+**/.env.example                     @security-team
+
+# =============================================================================
+# FRONTEND / CLIENT
+# UX Designer + Accessibility perspective. Map to humans who can review
+# visual hierarchy, accessibility, and result discoverability findings.
+# =============================================================================
+{{CLIENT_SOURCE_DIR}}/              @frontend-team
+
+# =============================================================================
+# INFRASTRUCTURE
+# DevOps/Infrastructure agent scope. Map to platform team or whoever
+# owns container, CI/CD, and deployment configuration.
+# =============================================================================
+**/Dockerfile                       @platform-team
+**/Dockerfile.*                     @platform-team
+**/*.yml                            @platform-team
+**/*.yaml                           @platform-team
+.github/workflows/                  @platform-team
+{{CONTAINER_COMPOSE_FILE}}          @platform-team @security-team
+
+# =============================================================================
+# FRAMEWORK CONFIGURATION
+# Changes to agent definitions, skills, and instructions affect how the
+# AI assistant behaves for the entire team. Require platform team review.
+# =============================================================================
+.github/agents/                     @platform-team
+.github/instructions/               @platform-team
+.github/skills/                     @platform-team
+.github/prompts/                    @platform-team
+docs/FRAMEWORK_PROFILE.md           @platform-team
+TOKENS.md                           @platform-team
+
+# =============================================================================
+# COMPLIANCE AND AUDIT (Enterprise profile only)
+# Audit records and ADRs are compliance evidence. Require a designated
+# compliance reviewer or tech lead sign-off.
+# =============================================================================
+docs/audit/                         @compliance-reviewer @team-lead
+docs/adr/                           @tech-lead @team-lead
+
+# =============================================================================
+# MONOREPO SERVICE BOUNDARIES (uncomment and customize if using monorepo)
+# Each service should have its own owner team for cross-service change review.
+# =============================================================================
+# services/api/                     @api-team
+# services/worker/                  @backend-team
+# services/frontend/                @frontend-team
+# shared/                           @platform-team @tech-lead
