@@ -1,0 +1,97 @@
+# CI Quality Gates — agentic-dev-framework
+# 
+# This template encodes the framework's four most critical non-negotiable quality gates.
+# Copy to .github/workflows/quality-gates.yml in your project and configure the thresholds.
+#
+# Replace {{COVERAGE_THRESHOLD}}, {{TEST_COMMAND}}, {{SOURCE_PATHS}} with your values
+# (or run BOOTSTRAP.prompt.md to configure automatically).
+
+name: Quality Gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  # Gate 1: Secret Scanning
+  # Never allow secrets, tokens, or credentials to be committed to source control.
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog-actions-scan@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  # Gate 2: Test Coverage Threshold
+  # Prevents coverage regression. Target: 90%+ (start at 80% and raise incrementally).
+  coverage-check:
+    name: Coverage Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests with coverage
+        run: {{TEST_COMMAND}} --coverage
+        # Add your test command here (e.g., npm test -- --coverage, pytest --cov)
+      - name: Check coverage threshold
+        run: |
+          # Replace with your coverage tool's threshold check
+          # Example for Jest: npx jest --coverage --coverageThreshold='{"global":{"lines":80}}'
+          echo "Configure coverage threshold check for your test framework"
+          # Minimum recommended: 80%. Target: 90%+
+
+  # Gate 3: Unreplaced Token Detection
+  # Catches {{TOKEN}} placeholders that were not resolved during bootstrap.
+  token-detection:
+    name: Unreplaced Token Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for unreplaced framework tokens
+        run: |
+          # Search for {{TOKEN}} patterns in committed source files
+          # Excludes TOKENS.md, BOOTSTRAP.prompt.md, and template files (where tokens are intentional)
+          if grep -r '{{[A-Z_]*}}' \
+            --include="*.ts" \
+            --include="*.tsx" \
+            --include="*.py" \
+            --include="*.go" \
+            --include="*.java" \
+            --exclude-dir=".github" \
+            --exclude="TOKENS.md" \
+            --exclude="BOOTSTRAP.prompt.md" \
+            .; then
+            echo "❌ Unreplaced {{TOKEN}} patterns found in source files. Run BOOTSTRAP.prompt.md."
+            exit 1
+          else
+            echo "✅ No unreplaced tokens found."
+          fi
+
+  # Gate 4: Open Handoffs Check
+  # Warns if there are more than 5 OPEN agent escalations that haven't been resolved.
+  handoff-check:
+    name: Open Handoffs Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check open handoffs count
+        run: |
+          if [ -f "docs/open-handoffs.md" ]; then
+            OPEN_COUNT=$(grep -c "\[OPEN\]" docs/open-handoffs.md || true)
+            echo "Open handoffs: $OPEN_COUNT"
+            if [ "$OPEN_COUNT" -gt 5 ]; then
+              echo "⚠️  WARNING: $OPEN_COUNT open agent handoffs in docs/open-handoffs.md"
+              echo "   Consider resolving some before merging."
+              # This is a warning, not a failure. Remove 'exit 0' to make it blocking.
+              exit 0
+            fi
+          fi
+          echo "✅ Open handoffs within acceptable range."

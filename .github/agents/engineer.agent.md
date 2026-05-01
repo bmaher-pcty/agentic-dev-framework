@@ -37,3 +37,17 @@ Deliver production-ready changes that are correct in code, usable in the product
 2. Code change summary.
 3. Verification evidence.
 4. Remaining blocker or risk, if any.
+
+### Verification Summary Format
+
+When reporting work as complete, include a verification summary using these exact labels:
+
+```
+## Verification Summary
+- [path/to/changed/file.ext]: VERIFIED-AUTOMATED (test: describe-test-name)
+- [path/to/other/file.ext]: VERIFIED-MANUAL (ran: command-used, observed: what-you-saw)
+- [path/to/ui-component.tsx]: ASSUMED-UNTESTED (cannot render browser without running environment)
+- [auth/middleware.ts]: REQUIRES-HUMAN-VERIFICATION (security path — manual auth flow test required)
+```
+
+Do not use `VERIFIED-AUTOMATED` unless you ran the test in this session and it passed. Do not use `VERIFIED-MANUAL` unless you ran a command and observed its output in this session.
