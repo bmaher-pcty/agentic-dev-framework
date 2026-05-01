@@ -1,0 +1,222 @@
+name: Framework Integrity
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  count-consistency:
+    name: Count Consistency
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Count agent files
+        id: agents
+        run: |
+          count=$(ls .github/agents/*.agent.md 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Agent files found: $count"
+
+      - name: Count skill files
+        id: skills
+        run: |
+          count=$(ls .github/skills/*.md 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Skill files found: $count"
+
+      - name: Verify agent count in copilot-instructions.md
+        run: |
+          declared=$(grep -o '[0-9]* specialized agents' .github/copilot-instructions.md | grep -o '^[0-9]*')
+          actual="${{ steps.agents.outputs.count }}"
+          echo "Declared: $declared | Actual: $actual"
+          if [ "$declared" != "$actual" ]; then
+            echo "❌ Agent count mismatch: copilot-instructions.md declares $declared but found $actual .agent.md files"
+            echo "Update the tagline in copilot-instructions.md to match the actual file count."
+            exit 1
+          fi
+          echo "✅ Agent count consistent: $actual"
+
+      - name: Verify skill count in copilot-instructions.md
+        run: |
+          declared=$(grep -o '[0-9]* domain skills' .github/copilot-instructions.md | head -1 | grep -o '^[0-9]*')
+          actual="${{ steps.skills.outputs.count }}"
+          echo "Declared: $declared | Actual: $actual"
+          if [ "$declared" != "$actual" ]; then
+            echo "❌ Skill count mismatch: copilot-instructions.md declares $declared but found $actual .md files in .github/skills/"
+            echo "Update the tagline and Domain Skills section in copilot-instructions.md."
+            exit 1
+          fi
+          echo "✅ Skill count consistent: $actual"
+
+      - name: Verify skill count in README.md
+        run: |
+          declared=$(grep -o '[0-9]* domain skills' README.md | head -1 | grep -o '^[0-9]*')
+          actual="${{ steps.skills.outputs.count }}"
+          echo "Declared: $declared | Actual: $actual"
+          if [ "$declared" != "$actual" ]; then
+            echo "❌ Skill count mismatch: README.md declares $declared but found $actual .md files"
+            echo "Update the skill count in README.md."
+            exit 1
+          fi
+          echo "✅ README.md skill count consistent: $actual"
+
+  token-completeness:
+    name: Token Completeness
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract all tokens from framework files
+        run: |
+          # Find all {{TOKEN}} patterns in agent and skill files
+          grep -roh '{{[A-Z][A-Z0-9_]*}}' .github/agents/ .github/skills/ .github/instructions/ .github/prompts/ 2>/dev/null \
+            | sort -u > /tmp/found_tokens.txt
+          echo "Tokens found in framework files:"
+          cat /tmp/found_tokens.txt
+
+      - name: Extract documented tokens from TOKENS.md
+        run: |
+          grep -o '`{{[A-Z][A-Z0-9_]*}}`' TOKENS.md \
+            | tr -d '`' | sort -u > /tmp/documented_tokens.txt
+          echo "Tokens documented in TOKENS.md:"
+          cat /tmp/documented_tokens.txt
+
+      - name: Check for undocumented tokens
+        run: |
+          # {{TOKEN}} is an intentional meta-placeholder in skill templates ("Replace {{TOKEN}} with...")
+          # It is not a real configuration token and is excluded from this check.
+          grep -v '^{{TOKEN}}$' /tmp/found_tokens.txt > /tmp/found_tokens_filtered.txt || true
+          undocumented=$(comm -23 /tmp/found_tokens_filtered.txt /tmp/documented_tokens.txt)
+          if [ -n "$undocumented" ]; then
+            echo "❌ Undocumented tokens found (present in framework files but missing from TOKENS.md):"
+            echo "$undocumented"
+            echo ""
+            echo "Add each undocumented token to TOKENS.md with a description and example values."
+            exit 1
+          fi
+          echo "✅ All tokens documented in TOKENS.md"
+
+  pin-verification:
+    name: Pin Verification (No @main or @latest)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for unpinned action references in CI templates
+        run: |
+          # Use Python to check only actual YAML `uses:` step declarations for unpinned refs.
+          # A plain grep on the workflow directory matches its own echo strings and comments.
+          python3 - <<'PYEOF'
+          import re, os, sys, glob
+
+          pattern = re.compile(r'^\s+(-\s+)?uses:\s+\S+@(main|latest|master)\b', re.MULTILINE)
+          violations = []
+          for fpath in glob.glob('.github/workflows/*.yml'):
+              content = open(fpath).read()
+              for i, line in enumerate(content.splitlines(), 1):
+                  if pattern.match(line):
+                      violations.append(f'{fpath}:{i}: {line.strip()}')
+
+          if violations:
+              print('❌ Unpinned action references found (uses: steps pinned to @main/@latest/@master):')
+              for v in violations:
+                  print(v)
+              print()
+              print('Pin all GitHub Actions to a specific version tag (e.g., @v4, not @main).')
+              sys.exit(1)
+          else:
+              print('✅ All action references are pinned')
+          PYEOF
+
+      - name: Check for unpinned references in skill/instruction examples
+        run: |
+          # Warn (don't fail) about @main or @latest in documentation examples
+          violations=$(grep -rn '@main\|@latest' .github/skills/ .github/instructions/ .github/agents/ 2>/dev/null || true)
+          if [ -n "$violations" ]; then
+            echo "⚠️  Warning: Unpinned references in documentation (review manually):"
+            echo "$violations"
+          else
+            echo "✅ No unpinned references in documentation"
+          fi
+
+  circular-nav-detection:
+    name: Circular Navigation Detection
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for direct file references that could create circular navigation
+        run: |
+          # Detect if any skill references itself
+          for skill_file in .github/skills/*.md; do
+            skill_name=$(basename "$skill_file" .md)
+            # Check if the skill references itself by name (circular self-reference)
+            if grep -q "#${skill_name}\b" "$skill_file" 2>/dev/null; then
+              echo "⚠️  Potential self-reference in $skill_file: references #$skill_name"
+            fi
+          done
+
+          # Check for A→B→A cycles in cross-references between framework files
+          # Build a simple adjacency list from "See also" and skill invocation references
+          python3 - <<'EOF'
+          import re, os, sys
+
+          refs = {}
+          skill_dir = ".github/skills"
+          agent_dir = ".github/agents"
+
+          all_files = []
+          for d in [skill_dir, agent_dir]:
+              if os.path.isdir(d):
+                  all_files.extend([os.path.join(d, f) for f in os.listdir(d) if f.endswith('.md')])
+
+          for fpath in all_files:
+              fname = os.path.basename(fpath).replace('.md', '').replace('.agent', '')
+              try:
+                  content = open(fpath).read()
+              except:
+                  continue
+              # Scope to the Procedure section only — "When to Use" sections intentionally
+              # reference complementary skills for disambiguation (not invocation), which
+              # would produce false-positive cycles if scanned.
+              proc_match = re.search(r'## Procedure\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+              proc_content = proc_match.group(1) if proc_match else ''
+              # Only match backtick-wrapped invocations: `#skill-name`
+              found = re.findall(r'`#([a-z][a-z0-9-]+)`', proc_content)
+              refs[fname] = list(set(found) - {fname})
+
+          # Detect cycles using DFS
+          def has_cycle(node, visited, rec_stack):
+              visited.add(node)
+              rec_stack.add(node)
+              for neighbor in refs.get(node, []):
+                  if neighbor not in refs:
+                      continue  # Skip references to non-existent files
+                  if neighbor not in visited:
+                      if has_cycle(neighbor, visited, rec_stack):
+                          return True
+                  elif neighbor in rec_stack:
+                      return True
+              rec_stack.discard(node)
+              return False
+
+          cycles_found = False
+          visited = set()
+          for node in refs:
+              if node not in visited:
+                  if has_cycle(node, visited, set()):
+                      print(f"❌ Circular reference detected involving: {node}")
+                      cycles_found = True
+
+          if cycles_found:
+              sys.exit(1)
+          else:
+              print("✅ No circular navigation detected")
+          EOF
